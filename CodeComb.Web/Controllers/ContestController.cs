@@ -59,9 +59,15 @@ namespace CodeComb.Web.Controllers
             Entity.User user = null;
             if(User.Identity.IsAuthenticated)
                 user = (from u in DbContext.Users where u.Username == User.Identity.Name select u).Single();
-            foreach (var problem in contest.Problems)
+            foreach (var problem in contest.Problems.OrderBy(x => x.Credit))
                 lstProblems.Add(new Models.View.ProblemInContest(problem, user));
             ViewBag.Problems = lstProblems;
+            return View(contest);
+        }
+
+        public ActionResult Statistics(int id)
+        {
+            var contest = DbContext.Contests.Find(id);
             return View(contest);
         }
 	}

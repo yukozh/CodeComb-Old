@@ -30,7 +30,7 @@
                     <p>评测机采用Cena Plus 2.0内核，其中部分评测服务器为Linux操作系统，部分评测服务器为Windows操作系统，因此您在使用int64类型时应当使用%lld，在使用uint64类型时应使用%llu。</p>
                     <p>下面是各个编译器的版本以及编译参数</p>
                     <small>
-                        <table style="width:auto;text-align:left;">
+                        <table>
                             <thead>
                                 <tr>
                                     <th>语言</th>
@@ -50,6 +50,12 @@
                                     <td>C++</td>
                                     <td>MinGW G++ 4.8.1</td>
                                     <td>g++ -O2 -o Main.exe -DONLINE_JUDGE -lm --static --std=c++98 Main.cpp</td>
+                                    <td>Main</td>
+                                </tr>
+                                <tr>
+                                    <td>C++ 11</td>
+                                    <td>MinGW G++ 4.8.1</td>
+                                    <td>g++ -O2 -o Main.exe -DONLINE_JUDGE -lm --static --std=c++11 Main.cpp</td>
                                     <td>Main</td>
                                 </tr>
                                 <tr>
@@ -84,13 +90,13 @@
                                 </tr>
                                 <tr>
                                     <td>C#</td>
-                                    <td>.Net 4</td>
+                                    <td>.Net 4.0</td>
                                     <td>csc Main.cs</td>
                                     <td>Main</td>
                                 </tr>
                                 <tr>
                                     <td>VB.Net</td>
-                                    <td>.Net 4</td>
+                                    <td>.Net 4.0</td>
                                     <td>vbc Main.cs</td>
                                     <td>Main</td>
                                 </tr>

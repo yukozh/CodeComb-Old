@@ -79,6 +79,16 @@ namespace CodeComb.Entity
         [Column("difficulty")]
         public int Difficulty { get; set; }
 
+        public IEnumerable<Status> GetContestStatuses()
+        {
+            return Statuses.Where(x => x.Time >= Contest.Begin && x.Time < Contest.End);
+        }
+
+        public int GetContestStatusesCount()
+        {
+            return Statuses.Where(x => x.Time >= Contest.Begin && x.Time < Contest.End).Count();
+        }
+
         public virtual ICollection<TestCase> TestCases { get; set; }
 
         public virtual ICollection<Clarification> Clarifications { get; set; }

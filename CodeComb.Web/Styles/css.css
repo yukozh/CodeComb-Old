@@ -439,7 +439,8 @@ blockquote:after, blockquote:before, q:after, q:before {
 }
 
 table {
-    table-layout: fixed;
+    table-layout: auto;
+    width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
 }
@@ -1868,4 +1869,50 @@ a.status-bg-nul, a.status-bg-nul:active, a.status-bg-nul:hover, a.status-bg-nul:
 
 .btn-highlight {
     background-image:url(/Images/btn-highlight.png);
+}
+
+table {
+    background:#FFF;
+	width:100%;
+	line-height:28px;
+	font-size:12px;
+    border:1px solid #e8e8e8;
+    /*-webkit-box-shadow: 0 0 10px rgba(0,0,0,.2);
+    box-shadow: 0 0 10px rgba(0,0,0,.2);
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=10, Direction=135,Color='#cccccc');*/
+}
+
+thead {
+    background-color:#1f67d3;
+}
+
+th {
+    text-align:left;
+	font-size:14px;
+	color:#FFF;
+	line-height:35px;
+	text-shadow:1px 1px 2px rgba(0,0,0,0.5);
+    padding:0 5px;
+}
+th a {
+	color:#FFF;
+}
+
+td {
+    font-size:14px;
+	line-height:35px;
+    padding:0 5px;
+}
+
+tr {
+    border-bottom:1px solid #e8e8e8;
+	transition:background-color .1s linear;
+	-webkit-transition:background-color .1s linear;
+	-moz-transition:background-color .1s linear;
+	-o-transition:background-color .1s linear;
+	-ie-transition:background-color .1s linear
+}
+
+tbody tr:hover {
+	background:#f2faff!important
 }

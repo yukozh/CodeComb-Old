@@ -41,7 +41,48 @@
                     <div class="post-title"><h2>比赛统计 - @Model.Title</h2></div>
                     <div class="post-info"></div>
                     <div class="post-content">
-                        <h2></h2>
+                        <table style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>题目</th>
+                                    <th>AC</th>
+                                    <th>PE</th>
+                                    <th>WA</th>
+                                    <th>OLE</th>
+                                    <th>TLE</th>
+                                    <th>MLE</th>
+                                    <th>RE</th>
+                                    <th>CE</th>
+                                    @if (Model.Format == ContestFormat.Codeforces || Model.Format == ContestFormat.TopCoder)
+                                    { 
+                                        <th>HKD</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{var num = 'A';}
+                                @foreach (var item in Model.Problems.OrderBy(x => x.Credit))
+                                { 
+                                    <tr>
+                                        <td>@(num++)</td>
+                                        <td>@item.Title</td>
+                                        <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.Accepted).Count()</td>
+                                        <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.PresentationError).Count()</td>
+                                        <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.WrongAnswer).Count()</td>
+                                        <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.OutputLimitExceeded).Count()</td>
+                                        <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.TimeLimitExceeded).Count()</td>
+                                        <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.MemoryLimitExceeded).Count()</td>
+                                        <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.RuntimeError).Count()</td>
+                                        <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.CompileError).Count()</td>
+                                        @if (Model.Format == ContestFormat.Codeforces || Model.Format == ContestFormat.TopCoder)
+                                        {
+                                            <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.Hacked).Count()</td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
