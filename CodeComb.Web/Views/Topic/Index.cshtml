@@ -1,0 +1,148 @@
+﻿@model CodeComb.Entity.Topic
+@{
+    ViewBag.Title = Model.Title + " - 主题";
+}
+<script type="text/javascript" src="~/Scripts/ckeditor/ckeditor.js"></script>
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="post-detail-wrap">
+                    <div class="post-action">@Html.ActionLink("← " + Model.Forum.Title, "Index", "Forum", new { id = Model.ForumID }, null)</div>
+                    <div class="post-title"><h2>@Model.Title</h2></div>
+                    <div class="post-info">
+                        @Html.Gravatar(Model.User.Gravatar, 180, "post-face") <a href="/User/@Model.UserID">@Html.Nickname(Model.User.Nickname, Model.User.Ratings.Sum(x => x.Credit) + 1500, "post-info")</a> @@@Html.ToTimeTip(Model.Time)
+                        @if (User.Identity.IsAuthenticated && (((CodeComb.Entity.User)ViewBag.CurrentUser).ID == Model.UserID || ((CodeComb.Entity.User)ViewBag.CurrentUser).Role >= UserRole.Master))
+                        {
+                            <a class="post-info" href="javascript:$('#DisplayArea').hide();$('#EditArea').fadeIn();CKEDITOR.replace('EditTopic',{toolbar: 'Basic',width:'100%',height:'170px'});" id="btnTopicEdit" class="post-info">编辑</a>
+                            <a class="post-info" href="javascript:$('#frmDeleteTopic').submit();" id="btnDeleteTopic" class="post-info">删除</a>
+                            using (Html.BeginForm("Delete", "Topic", FormMethod.Post, new { id = "frmDeleteTopic", style = "display:none;" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" value="@Model.ID" name="id" />
+                            }
+                            if (((CodeComb.Entity.User)ViewBag.CurrentUser).Role >= UserRole.Master)
+                            {
+                                if (Model.Top)
+                                {
+                                    <a class="post-info" href="javascript:$.post('/Topic/UnSetTop',$('#frmUnSetTop').serialize(),function(){alert('已经取消置顶');})">取消置顶</a>
+                                    using (Html.BeginForm("UnSetTop", "Topic", FormMethod.Post, new { id = "frmUnSetTop", style = "display:none" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" value="@Model.ID" name="id" />
+                                    }
+                                }
+                                else
+                                {
+                                    <a class="post-info" href="javascript:$.post('/Topic/SetTop',$('#frmSetTop').serialize(),function(){alert('已经设置置顶');})">置顶</a>
+                                    using (Html.BeginForm("SetTop", "Topic", FormMethod.Post, new { id = "frmSetTop", style = "display:none" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" value="@Model.ID" name="id" />
+                                    }
+                                }
+                            }
+                        }
+                    </div>
+                    <div class="post-content" id="DisplayArea">@Html.Sanitized(Model.Content)</div>
+                    @if (User.Identity.IsAuthenticated && ((CodeComb.Entity.User)ViewBag.CurrentUser).Role >= UserRole.Master)
+                    {
+                        <div class="post-content" id="EditArea" style="display:none">
+                            @using (Html.BeginForm("Edit", "Topic", FormMethod.Post, new { id = "frmEditTopic" }))
+                            {
+                                @Html.AntiForgeryToken();
+                                <input type="hidden" value="@Model.ID" name="id" />
+                                <p><textarea id="EditTopic" name="content">@Html.Sanitized(Model.Content)</textarea></p>
+                                <p><input id="btnEditSubmit" class="button button-def" value="提交" type="button" /></p>
+                            }
+                        </div>
+                        <script>
+                            $("#btnEditSubmit").click(function(){
+                                $("#EditTopic").val(CKEDITOR.instances.EditTopic.getData());
+                                $.post("/Topic/Edit/@(Model.ID)",$("#frmEditTopic").serialize(),function(){
+                                    javascript:CKEDITOR.instances.EditTopic.destroy();
+                                    $("#DisplayArea").html($("#EditTopic").val());
+                                    $("#EditArea").hide();
+                                    $("#DisplayArea").fadeIn();
+                                });
+                            });
+                        </script>
+                    }
+                    <div id="lstReplies">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <div class="post-comment" id="NewReplyOut">
+                                <div class="comment-item" id="NewReply">
+                                    <div class="comment-body">
+                                        <div class="comment-info">@Html.Nickname((string)ViewBag.CurrentUser.Nickname, ((User)ViewBag.CurrentUser).Ratings.Sum(x => x.Credit) + 1500)</div>
+                                        <div class="comment-content">
+                                            @using (Html.BeginForm("Create", "Reply", new { id = Model.ID }, FormMethod.Post, new { id = "frmPostReply" }))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                <textarea id="content" name="content"></textarea>
+                                                <input type="hidden" value="" name="father_id" id="father_id" />
+                                                <div class="form-line"><input id="btnSubmit" class="button button-def" value="回复" type="button"></div>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="comment-face">@Html.Gravatar((string)ViewBag.CurrentUser.Gravatar, 180, "")</div>
+                                </div>
+                            </div>
+                            <div class="post-comment" id="NewPost0" style="display:none">
+                                <div class="comment-item">
+                                    <div class="comment-body">
+                                        <div class="comment-info">@Html.Nickname((string)ViewBag.CurrentUser.Nickname, ((User)ViewBag.CurrentUser).Ratings.Sum(x => x.Credit) + 1500)</div>
+                                        <div class="comment-content">
+                                            <a href="javascript:$('#NewPost0').hide();CKEDITOR.instances.content.destroy();$('#father_id').val('');$('#NewReplyOut').prepend($('#NewReply'));CKEDITOR.replace('content',{toolbar:'Basic',width:'100%',height:'60px'});$('html,body').animate({scrollTop:$('#NewReplyOut').offset().top-50},1000); ">发表回复</a>
+                                        </div>
+                                    </div>
+                                    <div class="comment-face">@Html.Gravatar((string)ViewBag.CurrentUser.Gravatar, 180, "")</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div><div class="loading" id="iconLoading"></div></div>
+                </div>
+            </div>
+        </div>
+    </div><div class="clear"></div>
+</div>
+<script>
+    id = @Model.ID;
+</script>
+@if (User.Identity.IsAuthenticated)
+{
+    <script>
+        CKEDITOR.replace('content',
+        {
+            toolbar: 'Basic',
+            width: "100%",
+            height:"60px"
+        });
+        function PostReplyBinding()
+        {
+            $("#btnSubmit").unbind().click(function(){
+                $("#content").val(CKEDITOR.instances.content.getData());
+                var father_id = $("#father_id").val();
+                $.post("/Reply/Create/"+id,$("#frmPostReply").serialize(),function(){
+                    $('#NewPost0').hide();
+                    $("#NewReply"+(father_id==""?"Out":father_id)).prepend('<div class="comment-item"><div class="comment-body"><div class="comment-info">@ViewBag.CurrentUser.Nickname @@刚刚</div><div class="comment-content">'+$("#content").val()+'</div></div><div class="comment-face">{Gravatar}</div></div>'.replace("{Gravatar}","@Html.Gravatar((string)ViewBag.CurrentUser.Gravatar, 180, "")"));
+                    CKEDITOR.instances.content.destroy();
+                    $("#content").val("");
+                    $('#father_id').val("");
+                    $('#NewReplyOut').prepend($('#NewReply'));
+                    CKEDITOR.replace('content',{toolbar:'Basic',width:'100%',height:'60px'});
+                    $("html,body").animate({scrollTop:$("#NewReply"+(father_id==""?"Out":father_id)).offset().top - 50},300);
+                    PostReplyBinding();
+                });
+            });
+        }
+        PostReplyBinding();
+    </script>
+}
+else
+{
+    <script>
+        function PostReplyBinding(){}
+    </script>
+}

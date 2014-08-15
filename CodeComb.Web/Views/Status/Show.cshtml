@@ -1,0 +1,56 @@
+﻿@model CodeComb.Entity.Status
+@{
+    ViewBag.Title = "#"+Model.ID+" - 评测状态";
+}
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="post-detail-wrap">
+                    <div class="status-detail-wrap">
+                        <h2>Status - @Model.ID</h2>
+                        <div class="status-item" id="s_@Model.ID"></div>
+                        <blockquote>
+                            <p>Time usage: <span id="TimeUsage"></span>ms</p>
+                            <p>Memory usage: <span id="MemoryUsage"></span>KiB</p>
+                            <p>Language: <span id="Language"></span></p>
+                        </blockquote>
+                        <div class="status-content" id="lstDetails">
+                        </div>
+                        <div class="status-code">
+                            <h3>Source</h3>
+                            <pre>@Model.Code</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>
+<script>
+    $.getJSON("/Status/GetStatus/@Model.ID", {}, function (status) {
+        $("#Language").html(status.Language);
+        $("#MemoryUsage").html(status.MemoryUsage);
+        $("#TimeUsage").html(status.TimeUsage);
+        BuildStatusDetail(status);
+        GetDetails();
+    });
+    function GetDetails()
+    {
+        $.getJSON("/Status/GetStatusDetails/@Model.ID", {}, function (details) {
+            var html = "";
+            for (var i in details)
+            {
+                html += '<h3><a href="javascript:void(0)" class="btnDetail" did="' + details[i].ID + '">#' + details[i].ID + ': <span class="status-text-' + StatusCss[details[i].Result] + '">' + StatusDisplay[details[i].Result] + '</span> (' + details[i].TimeUsage + 'ms, ' + details[i].MemoryUsage + 'KiB)</a></h3>';
+                html += '<div class="status-detail-main" style="display:none" id="d_' + details[i].ID + '"><blockquote>';
+                html += details[i].Hint;
+                html += '</blockquote></div></div>';
+            }
+            $("#lstDetails").html(html);
+            $(".btnDetail").unbind().click(function () {
+                var did = $(this).attr("did");
+                $("#d_" + did).toggle();
+            });
+        });
+    }
+</script>

@@ -1,0 +1,79 @@
+﻿@model CodeComb.Entity.Contest
+@{
+    ViewBag.Title = @Model.Title;
+    var IsMaster = (bool)ViewBag.IsMaster;
+    var IsCreator = (bool)ViewBag.IsCreator;
+}
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="profile-actions">
+                    <a href="/Contest/@Model.ID" class="profile-btn"><img src="/Images/description.png" alt="比赛介绍" /></a>
+                    @if (Model.Format != ContestFormat.OI && DateTime.Now >= Model.Begin || IsMaster)
+                    {
+                        <a href="/Contest/Standings/@Model.ID" class="profile-btn"><img src="/Images/standings.png" alt="比赛排名" /></a>
+                        <a href="/Contest/Statistics/@Model.ID" class="profile-btn"><img src="/Images/statistics.png" alt="统计" /></a>
+
+                    }
+                    @if (DateTime.Now >= Model.Begin)
+                    {
+                        <a href="/Contest/Status/@Model.ID" class="profile-btn"><img src="/Images/status.png" alt="评测状态" /></a>
+                        if (Model.Format == ContestFormat.Codeforces || Model.Format == ContestFormat.TopCoder)
+                        {
+                            <a href="/Contest/Hack/@Model.ID" class="profile-btn"><img src="/Images/hack.png" alt="Hack状态" /></a>
+                        }
+                        if (Model.AllowClarification)
+                        {
+                            <a href="/Contest/Clar/@Model.ID" class="profile-btn"><img src="/Images/clar.png" alt="答疑平台" /></a>
+                        }
+                        if (Model.AllowPrintRequest)
+                        {
+                            <a href="/Contest/Print/@Model.ID" class="profile-btn"><img src="/Images/print.png" alt="打印服务" /></a>
+                        }
+                    }
+                    @if (IsMaster)
+                    {
+                        <a href="/Contest/Settings/General/@Model.ID" class="profile-btn"><img src="/Images/settings.png" alt="管理比赛" /></a>
+                    }
+                </div>
+                <div class="post-detail-wrap">
+                    <div class="post-title"><h2>@Model.Title</h2></div>
+                    <div class="post-info"></div>
+                    <div class="post-content">
+                        <blockquote class="@ViewBag.InfoCss">
+                            <p>Problems: @Model.Problems.Count</p>
+                            <p>Format: @Model.Format.ToString()</p>
+                            <p>Duration: @Html.ToTimeLength(Model.Begin, Model.End)</p>
+                            <p>Start: @Html.ToTimeTip(Model.Begin) (@Model.Begin.ToString("yyyy-MM-dd HH:ss") GMT+800)</p>
+                            @if (Model.RestBegin != null && Model.RestEnd != null)
+                            {
+                                <p>Rest: From @Model.RestBegin.Value.ToString("yyyy-MM-dd HH:ss") To @Model.RestEnd.Value.ToString("yyyy-MM-dd HH:ss")</p>
+                            }
+                            @if (DateTime.Now >= Model.Begin)
+                            {
+                                <p>Joined: @ViewBag.UserCount</p>
+                            }
+                            @if (Model.Problems.Sum(x => x.Difficulty) > 0)
+                            {
+                                <p>Difficulty: From @Model.RatingBegin To @Model.RatingEnd</p>
+                            }
+                        </blockquote>
+                        @Html.Sanitized(Model.Content)
+                        @if (DateTime.Now >= Model.Begin)
+                        {
+                            <div><h2>Problems</h2></div>
+                            <div class="post-content">
+                                @{var num = 'A';}
+                                @foreach (CodeComb.Web.Models.View.ProblemInContest problem in ViewBag.Problems)
+                                {
+                                    <div class="contest-problem-item">@Html.ActionLink(num++ + ": " + problem.Title, "Show", "Problem", new { id = problem.ID }, null)@Html.Sanitized(problem.Credits)@Html.Sanitized(problem.Status)@Html.Sanitized(problem.Lock)</div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>

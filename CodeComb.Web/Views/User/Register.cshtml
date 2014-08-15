@@ -1,0 +1,22 @@
+﻿@model RegisterStep1
+@{
+    ViewBag.Title = "第一步 - 注册";
+}
+
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="post-detail-wrap">
+                    <h2>Register</h2>
+                    @using (Html.BeginForm("Register", "User", FormMethod.Post, null))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="form-line">为了避免机器人注册，请填写您的 Email，我们会给您发送注册验证邮件。</div>
+                        <div class="form-line">@Html.TextBoxFor(x => x.Email, new { @class = "textbox" })<input type="submit" class="button button-def" value="发送验证邮件" /></div>
+                    }
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>

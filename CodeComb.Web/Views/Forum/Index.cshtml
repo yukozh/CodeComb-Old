@@ -1,0 +1,56 @@
+﻿@model Forum
+@{
+    if (Model == null)
+    {
+        ViewBag.BannerTitle = "论坛";
+        ViewBag.Title = "论坛";
+    }
+    else 
+    { 
+        ViewBag.BannerTitle = Model.Title;
+        ViewBag.Title = Model.Title + " - 论坛";
+    }
+}
+<div class="post-body">
+    <div class="cont-wrap">
+        <div class="grid_9">
+            <div id="lstTopics"></div>
+            <div><div class="loading" id="iconLoading"></div></div>
+        </div>
+        <div class="grid_3">
+            @if (User.Identity.IsAuthenticated && Request.RequestContext.RouteData.Values["id"] != null)
+            {
+                <div class="post-module">
+                    <div>@Html.ActionLink("发表新主题", "Create", "Topic", new { id = Request.RequestContext.RouteData.Values["id"] }, null)</div>
+                </div>
+            }
+        <div class="post-module">
+            @foreach (Forum item in ViewBag.ForumList)
+            {
+                <h3>@item.Title</h3>
+                <div class="post-module-content">
+                    @foreach (Forum child in item.Children.OrderBy(x => x.Sort))
+                    { 
+                        <div class="post-cate-item">@Html.ActionLink(child.Title, "Index", "Forum", new { id = child.ID }, null)</div>
+                    }
+                </div>
+            }
+        </div>
+            <div class="post-module">
+                <h3>Hot</h3>
+                <div class="post-module-content">
+                    @foreach (CodeComb.Entity.Topic item in ViewBag.HotTopics)
+                    {
+                        <div class="post-cate-item forum-sidebar-item"><div class="forum-sidebar-face">@Html.Gravatar(item.User.Gravatar, 180, "")</div>@Html.ActionLink(item.Title, "Index", "Topic", new { id = item.ID }, null)</div>
+                    }
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>
+@if (Request.RequestContext.RouteData.Values["id"] != null)
+{
+    <script>
+        id = @Request.RequestContext.RouteData.Values["id"];
+    </script>
+}

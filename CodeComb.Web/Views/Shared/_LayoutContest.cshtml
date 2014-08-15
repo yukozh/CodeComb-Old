@@ -1,0 +1,46 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    CodeComb.Entity.Contest CurrentContest = (CodeComb.Entity.Contest)ViewBag.CurrentContest;
+    bool IsMaster = (bool)ViewBag.IsMaster;
+    bool IsCreator = (bool)ViewBag.IsCreator;
+}
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="profile-actions">
+                    <a href="/Contest/@CurrentContest.ID" class="profile-btn"><img src="/Images/description.png" alt="比赛介绍" /></a>
+                    @if (DateTime.Now >= CurrentContest.Begin && IsMaster)
+                    {
+                        <a href="/Contest/Standings/@CurrentContest.ID" class="profile-btn"><img src="/Images/standings.png" alt="比赛排名" /></a>
+                        <a href="/Contest/Statistics/@CurrentContest.ID" class="profile-btn"><img src="/Images/statistics.png" alt="统计" /></a>
+
+                    }
+                    @if (DateTime.Now >= CurrentContest.Begin)
+                    {
+                        <a href="/Contest/Hacks/@CurrentContest.ID" class="profile-btn"><img src="/Images/status.png" alt="评测状态" /></a>
+                        if (CurrentContest.Format == ContestFormat.Codeforces || CurrentContest.Format == ContestFormat.TopCoder)
+                        {
+                            <a href="/Contest/Status/@CurrentContest.ID" class="profile-btn"><img src="/Images/hack.png" alt="Hack状态" /></a>
+                        }
+                        if (CurrentContest.AllowClarification)
+                        {
+                            <a href="/Contest/Clar/@CurrentContest.ID" class="profile-btn"><img src="/Images/clar.png" alt="答疑平台" /></a>
+                        }
+                        if (CurrentContest.AllowPrintRequest)
+                        {
+                            <a href="/Contest/Print/@CurrentContest.ID" class="profile-btn"><img src="/Images/print.png" alt="打印服务" /></a>
+                        }
+                    }
+                    @if (DateTime.Now >= CurrentContest.Begin && IsMaster)
+                    {
+                        <a href="/Contest/Settings/General/@CurrentContest.ID" class="profile-btn"><img src="/Images/settings.png" alt="管理比赛" /></a>
+                    }
+                </div>
+                <div class="post-detail-wrap">
+                    @RenderBody()
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>

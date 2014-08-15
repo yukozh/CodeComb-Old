@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<!--[if lt IE 7 ]> <html xmlns="http://www.w3.org/1999/xhtml" class="ie6 lte6 lte7 lte8 lte9"> <![endif]-->
+<!--[if IE 7 ]>    <html xmlns="http://www.w3.org/1999/xhtml" class="ie7 lte7 lte8 lte9"> <![endif]-->
+<!--[if IE 8 ]>    <html xmlns="http://www.w3.org/1999/xhtml" class="ie8 lte8 lte9"> <![endif]-->
+<!--[if IE 9 ]>    <html xmlns="http://www.w3.org/1999/xhtml" class="ie9 lte9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html xmlns="http://www.w3.org/1999/xhtml" class="">
+ <!--<![endif]-->
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <title>@ViewBag.Title - CodeComb</title>
+    <!--[if lt IE 9]>
+    <link href="/Styles/css-ie.css" rel="stylesheet" type="text/css" charset="UTF-8" />
+    <![endif]-->
+    <link href="~/Styles/css.css" rel="stylesheet" type="text/css" charset="UTF-8" />
+    <link href="~/Styles/colorbox.css" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/jquery-1.11.1.min.js"></script>
+    <script src="~/Scripts/codecomb.basic.js"></script>
+    <script src="~/Scripts/codecomb.ajax.js"></script>
+    <script src="~/Scripts/jquery.colorbox.js"></script>
+    <script src="~/Scripts/jquery.cookie.js"></script>
+    <!--[if lt IE 8]>
+    <script src="/Scripts/json2.js"></script>
+    <![endif]-->
+    <!--[if lt IE 9]>
+    <script src="/Scripts/jplaceholder.js"></script>
+    <script src="/Scripts/iefix.js"></script>
+    <![endif]-->
+    <!--[if lte IE 6]>
+    <script src="/Scripts/png.js"></script>
+    <![endif]-->
+    <script src="~/Scripts/jquery.signalR-2.1.1.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/codecomb.extend.js"></script>
+</head>
+<body class="page-contests page-contests-all">
+    @if (User.Identity.IsAuthenticated)
+    { 
+        <!-- page action buttons -->
+        <div class="page-actions">
+            <a href="javascript:CurrentContactID=null;PrivateMessageDispay();GetContacts();" id="btnPMDisplay" class="profile-btn"><img src="/Images/chat.png" alt="私聊" /></a>
+
+        </div>
+    }
+    <!-- header -->
+    <div class="page-header">
+        <div class="cont-wrap">
+            <div class="grid_12">
+                <div class="float-left">
+                    <a href="/" class="float-left page-header-item"><div class="page-header-item-text" style="height:32px;"><img id="logo" src="/Images/Logo-white.gif" alt="Code Comb" style="height:34px;" /></div><div class="page-header-item-bg"></div></a>
+                    <a href="/Problem" class="float-left page-header-item"><div class="page-header-item-text">题目</div><div class="page-header-item-bg"></div></a>
+                    <a href="/Contest" class="float-left page-header-item"><div class="page-header-item-text">比赛</div><div class="page-header-item-bg"></div></a>
+                    <a href="/Status" class="float-left page-header-item"><div class="page-header-item-text">记录</div><div class="page-header-item-bg"></div></a>
+                    <a href="/Forum" class="float-left page-header-item"><div class="page-header-item-text">论坛</div><div class="page-header-item-bg"></div></a>
+                    <a href="/Rating" class="float-left page-header-item"><div class="page-header-item-text">排名</div><div class="page-header-item-bg"></div></a>
+                    <a href="/FAQ" class="float-left page-header-item"><div class="page-header-item-text">FAQ</div><div class="page-header-item-bg"></div></a>
+                    <div class="clear"></div>
+                </div>
+                <div class="float-right">
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <a href="javascript:;" onclick="popupLogin.call(this)" class="float-left page-header-item role-show-login-form"><div class="page-header-item-text">登录</div><div class="page-header-item-bg"></div></a>
+                        <a href="/User/Register" class="float-left page-header-item"><div class="page-header-item-text">注册</div><div class="page-header-item-bg"></div></a>
+                        using (Html.BeginForm("Login", "User", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { style = "display:none;color:gray;", @class = "login-form" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <div class="form-line"><label>用户名</label><input name="Username" type="text" class="textbox role-login-user" /></div>
+                            <div class="form-line"><label>密　码</label><input name="Password" type="password" class="textbox role-login-pass" /></div>
+                            <div class="form-line"><input type="submit" class="button button-def" value="登录" /> @Html.CheckBox("Remember", false)记住我</div>
+                        }
+                    }
+                    else
+                    {
+                        <a href="/User/Center" class="float-left page-header-item"><div class="page-header-item-text">@Html.Gravatar((string)ViewBag.CurrentUser.Email, 180, "page-header-face") @ViewBag.CurrentUser.Nickname</div><div class="page-header-item-bg"></div></a>
+                        <a href="javascript:$('#frmLogout').submit();" class="float-left page-header-item"><div class="page-header-item-text">登出</div><div class="page-header-item-bg"></div></a>
+                        using (Html.BeginForm("Logout", "User", FormMethod.Post, new { id = "frmLogout", style = "display:none;" }))
+                        {
+                            @Html.AntiForgeryToken()
+                        }
+                    }
+                    <div class="clear"></div>
+                </div>
+                <div class="clear"></div>
+            </div><div class="clear"></div>
+        </div>
+    </div>
+    <!-- /header -->
+    <!-- post -->
+    <!-- banner -->
+    <div class="page-banner">
+        <div class="cont-wrap">
+            <div class="grid_12">
+                <div class="banner-text"><h1>@ViewBag.BannerTitle</h1></div>
+            </div><div class="clear"></div>
+        </div>
+    </div>
+    <!-- /banner -->
+    <!-- body -->
+    @RenderBody()
+    @Html.Partial("~/Views/Shared/_PrivateMessage.cshtml")
+    <script>
+        var username = "@User.Identity.Name";
+    </script>
+    <!-- /body -->
+    <!-- /post -->
+    <!-- footer -->
+    <div class="page-footer">
+        <div class="cont-wrap">
+            <div class="grid_12">
+                Copyright (C) 2014 CodeComb.
+            </div><div class="clear"></div>
+        </div>
+    </div>
+</body>
+</html>

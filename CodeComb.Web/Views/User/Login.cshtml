@@ -1,0 +1,23 @@
+﻿@model Login
+@{
+    ViewBag.Title = "登录";
+}
+
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="post-detail-wrap">
+                    <h2>Log in</h2>
+                    @using (Html.BeginForm("Login", "User", FormMethod.Post, null))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="form-line"><label class="reg-label">登录用户名: </label>@Html.TextBoxFor(x => x.Username, new { @class = "textbox" })<span class="reg-desc" style="color:red">@ViewBag.UsernameInfo</span></div>
+                        <div class="form-line"><label class="reg-label">登录密码: </label>@Html.PasswordFor(x => x.Password, new { @class = "textbox" })<span class="reg-desc" style="color:red">@ViewBag.PasswordInfo</span></div>
+                        <div class="form-line"><input type="submit" class="button button-def" value="登录"> @Html.CheckBoxFor(x => x.Remember)记住我</div>
+                    }
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>

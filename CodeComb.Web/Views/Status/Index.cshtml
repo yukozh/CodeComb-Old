@@ -1,0 +1,52 @@
+﻿
+@{
+    ViewBag.Title = "评测状态";
+    ViewBag.BannerTitle = "评测状态";
+}
+
+<div class="status-body">
+    <div class="cont-wrap">
+        <div class="grid_9">
+            <div id="lstStatuses"></div>
+            <div><div class="loading" id="iconLoading"></div></div>
+        </div><div class="grid_3">
+            <div class="post-module">
+                <h3>Filter</h3>
+                <div class="post-module-content post-module-status-filter">
+                    <div class="post-cate-item"><input id="txtNickname" type="text" placeholder="昵称" class="textbox"></div>
+                    <div class="post-cate-item"><input id="txtProblemID" type="text" placeholder="题目编号" class="textbox"></div>
+                    <div class="post-cate-item">
+                    <select id="lstResult">
+                        <option value="">全部状态</option>
+                        <option value="0">Accepted</option>
+                        <option value="1">Presentation Error</option>
+                        <option value="2">Wrong Answer</option>
+                        <option value="3">Output Limit Exceeded</option>
+                        <option value="4">Time Limit Exceeded</option>
+                        <option value="5">Memory Limit Exceeded</option>
+                        <option value="6">Runtime Error</option>
+                        <option value="7">Compile Error</option>
+                        <option value="8">System Error</option>
+                        <option value="9">Hacked</option>
+                        <option value="10">Running</option>
+                        <option value="11">Pending</option>
+                    </select></div>
+                    <div class="post-cate-item"><input id="btnFilter" type="button" class="button button-def" value="查询"></div>
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>
+<script>
+    var nickname, result, contest_id, problem_id;
+    contest_id == @(ViewContext.RouteData.Values["id"]?? "null");
+    $("#btnFilter").click(function () {
+        nickname = $("#txtNickname").val();
+        problem_id = parseInt($("#txtProblemID").val());
+        result = $("#lstResult").val();
+        page = 0;
+        $("#lstStatuses").html("");
+        lock = false;
+        Load();
+    });
+</script>

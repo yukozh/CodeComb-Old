@@ -1,0 +1,54 @@
+﻿@model RegisterStep2
+@{
+    ViewBag.Title = "第二步 - 注册";
+}
+<script>
+    function frmCheck()
+    {
+        $("#UsernameInfo").html("");
+        $("#RepeatInfo").html("");
+        if (!CheckPassword()) return false;
+        if (!CheckUsername()) return false;
+    }
+    function CheckUsername() {
+        $.post("/User/CheckName", {
+            Username: $("#Username").val()
+        }, function (data) {
+            if (data == "OK")
+                return true;
+            else return false;
+        });
+    }
+    function CheckPassword() {
+        if ($('#Password').val() != $('#repeat').val()) {
+            $("#RepeatInfo").html("两次密码输入不一致！");
+            $("#RepeatInfo").css("color:red");
+            return false;
+        }
+        return true;
+    }
+</script>
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="post-detail-wrap">
+                    <h2>Complete Your Register</h2>
+                    @using (Html.BeginForm("RegisterDetail", "User", FormMethod.Post, new
+                    {
+                        onsubmit = "frmCheck();"
+                    }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="form-line"><label class="reg-label">Email: </label>@Session["Email"]</div>
+                        <div class="form-line"><label class="reg-label">登录用户名: </label>@Html.TextBoxFor(x => x.Username, new { @class = "textbox" })<span id="UsernameInfo" class="reg-desc" style="color:red"></span></div>
+                        <div class="form-line"><label class="reg-label">登录密码: </label>@Html.PasswordFor(x => x.Password, new { @class = "textbox" })</div>
+                        <div class="form-line"><label class="reg-label">重复密码: </label>@Html.Password("repeat", "", new { @class = "textbox" })<span id="RepeatInfo" class="reg-desc">请重复输入密码</span></div>
+                        <div class="form-line"><label class="reg-label">昵称: </label>@Html.TextBoxFor(x => x.Nickname, new { @class = "textbox" })<span class="reg-desc">用于显示给别人</span></div>
+                        <div class="form-line"><input type="submit" class="button button-def" value="完成注册"></div>
+                    }
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>

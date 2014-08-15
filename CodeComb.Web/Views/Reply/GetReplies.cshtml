@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Reply>
+@{
+    Layout = null;
+}
+@foreach (Reply reply in Model)
+{
+    <div class="comment-item" id="reply_@(reply.ID)">
+        <div class="comment-body">
+            <div class="comment-info">
+                <a href="/User/@reply.UserID">@Html.Nickname(reply.User.Nickname, reply.User.Ratings.Sum(x => x.Credit) + 1500, "comment-info")</a> @@@Html.ToTimeTip(reply.Time)
+                @if (User.Identity.IsAuthenticated)
+                {
+                    if (reply.UserID == ViewBag.CurrentUser.ID || ((User)ViewBag.CurrentUser).Role >= UserRole.Master)
+                    {
+                        <a href="javascript:$.post('/Reply/Delete', $('#frmDeleteReply@(reply.ID)').serialize(),function(){$('#reply_@(reply.ID)').hide()});">删除</a>
+                        using (Html.BeginForm("Delete", "Reply", FormMethod.Post, new { id = "frmDeleteReply" + reply.ID, style = "display:none;" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" value="@reply.ID" name="id" />
+                        }
+                    }
+                    <a href="javascript:CKEDITOR.instances.content.destroy();$('#father_id').val('@reply.ID');$('#NewReply@(reply.ID)').prepend($('#NewReply')); CKEDITOR.replace('content',{toolbar:'Basic',width:'100%',height:'60px'});$('#NewPost0').show();$('html,body').animate({scrollTop:$('#NewReply@(reply.ID)').offset().top-50},300);">回复</a>
+                }
+            </div>
+            <div class="comment-content">@Html.Sanitized(reply.Content)</div>
+            @if (reply.Replies.Count() > 0 || User.Identity.IsAuthenticated)
+            {
+                if (User.Identity.IsAuthenticated)
+                {
+                    <div id="NewReply@(reply.ID)">
+                    </div>
+                }
+                <div class="comment-reply">
+                    @foreach (var replyinreply in reply.Replies.OrderByDescending(x => x.Time))
+                    {
+                        <div class="comment-item" id="reply_@(replyinreply.ID)">
+                            <div class="comment-body">
+                                <div class="comment-info">
+                                    <a href="/User/@replyinreply.UserID">@Html.Nickname(replyinreply.User.Nickname, replyinreply.User.Ratings.Sum(x => x.Credit) + 1500, "comment-info")</a> @@@Html.ToTimeTip(replyinreply.Time)
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        if (reply.UserID == ViewBag.CurrentUser.ID || reply.Father.UserID == ViewBag.CurrentUser.ID || ((User)ViewBag.CurrentUser).Role >= UserRole.Master)
+                                        {
+                                            <a href="javascript:$.post('/Reply/Delete', $('#frmDeleteReply@(reply.ID)').serialize(),function(){$('#reply_@(reply.ID)').hide()});">删除</a>
+                                            using (Html.BeginForm("Delete", "Reply", FormMethod.Post, new { id = "frmDeleteReply" + replyinreply.ID, style = "display:none;" }))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" value="@replyinreply.ID" name="id" />
+                                            }
+                                        }
+                                        <a href="javascript:CKEDITOR.instances.content.destroy();$('#father_id').val('@reply.ID');$('#NewReply@(reply.ID)').prepend($('#NewReply')); CKEDITOR.replace('content',{toolbar:'Basic',width:'100%',height:'60px'});$('#NewPost0').show();$('html,body').animate({scrollTop:$('#NewReply@(reply.ID)').offset().top-50},300);">回复</a>
+                                    }
+                                </div>
+                                <div class="comment-content">@Html.Sanitized(replyinreply.Content)</div>
+                            </div>
+                            <div class="comment-face">@Html.Gravatar(replyinreply.User.Gravatar, 180, "")</div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        <div class="comment-face">@Html.Gravatar(reply.User.Gravatar, 180, "")</div>
+    </div>
+}

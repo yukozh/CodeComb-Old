@@ -1,0 +1,253 @@
+﻿@{
+    ViewBag.Title = "FAQ";
+    ViewBag.BannerTitle = "常见问题解答";
+}
+
+<div class="contest-body">
+    <div class="cont-wrap">
+        <div class="grid_9">
+            <div class="contest-main">
+                <div class="post-info"></div>
+                <div id="section-1">
+                    <h2>赛制介绍</h2>
+                    <p>Code Comb支持五种赛制，分别为：ACM/ICPC、Normal-OI、OPJ-OI、Codeforces、Topcoder</p>
+                    <h3>ACM/ICPC</h3>
+                    <p>ACM/ICPC是国际大学生程序设计竞赛。在ACM/ICPC赛制下，比赛时可查看自己提交的代码的评测结果，也可随时观看实时排名。 当比赛结束后，会公布所有人的代码与评测结果。 题目只有通过/不通过两种结果，没有部分分。 选手通过某题时，计算罚时，罚时为本题目未通过的提交次数*20分钟。 最终排名以通过题目数为第一关键字，罚时为第二关键字的方式计算。</p>
+                    <h3>Normal OI</h3>
+                    <p>OI竞赛为中学生信息学奥林匹克竞赛，其中包括NOIP、NOI、IOI等赛事。在OI赛制下，比赛时选手提交代码的评测结果不可见，他人提交的代码不可见，实时排名亦不可见。 当比赛结束后，会公布比赛排名、所有选手代码和所有提交记录评测结果。 题目有部分分，选手相应题目的得分按照他最后一次提交的评测结果不是“编译失败”的记录的得分计算。</p>
+                    <h3>OPJ OI</h3>
+                    <p>OpenJudge OI的评测方式则允许实时查看评测结果，并且有部分分，排名以总分为第一关键字降序排名，如果分数相同则以提交次数为第二关键字升序排名。</p>
+                    <h3>Codeforces</h3>
+                    <p>Codeforces赛制分为两个阶段，Pretest阶段和System Test阶段，前者从比赛开始至比赛结束，在此期间用户提交程序需通过数据库中标记为Pretest的测试数据，通过后可以获得基础分，如果通过前存在没有通过全部Pretest的记录，且至少通过了一个Pretest测试点，每条记录将被扣50分。通过Pretest后，您可以选择锁定该题目，锁定后此题将无法继续提交，但可以查看他人代码，并且设计测试数据使对方程序运行错误，如果成功将获得100分加成，否则被扣50分。比赛结束后系统将进行System Test，将所有通过Pretest的记录进行重测，重测时数据为Pretest数据、系统完整数据和比赛过程中Hack成功的所有数据。最终排名也会随之变化。</p>
+                    <p>基础分的算法为：基础分 = 题目分值 * (1 - 0.004 * 分钟数)</p>
+                    <p>每条记录只能被Hack一次，被成功Hack后，该选手的该题得分将清零直至再次通过Pretest，该选手再次提交时，Pretest中将增加之前Hack的数据，只有通过Pretest点及Hack数据才算通过Pretest。</p>
+                    <p>在Code Comb上，将不执行Room分配机制。</p>
+                    <h3>TopCoder</h3>
+                    <p>TopCoder赛制分为三个阶段：解题阶段、中场休息、Hack阶段，解题阶段时，打开任意题目，相应题目开始计算动态分，成功通过样例则计入本题分数，Hack阶段选手可以查看任意其他人的代码，并且进行Hack。</p>
+                </div>
+                <div id="section-2">
+                    <h2>评测环境</h2>
+                    <p>评测机采用Cena Plus 2.0内核，其中部分评测服务器为Linux操作系统，部分评测服务器为Windows操作系统，因此您在使用int64类型时应当使用%lld，在使用uint64类型时应使用%llu。</p>
+                    <p>下面是各个编译器的版本以及编译参数</p>
+                    <small>
+                        <table style="width:auto;text-align:left;">
+                            <thead>
+                                <tr>
+                                    <th>语言</th>
+                                    <th>编译器及版本</th>
+                                    <th>编译命令行</th>
+                                    <th>运行命令行</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>C</td>
+                                    <td>MinGW GCC 4.8.1</td>
+                                    <td>g++ -O2 -o Main.exe -DONLINE_JUDGE -lm --static --std=c99 Main.c</td>
+                                    <td>Main</td>
+                                </tr>
+                                <tr>
+                                    <td>C++</td>
+                                    <td>MinGW G++ 4.8.1</td>
+                                    <td>g++ -O2 -o Main.exe -DONLINE_JUDGE -lm --static --std=c++98 Main.cpp</td>
+                                    <td>Main</td>
+                                </tr>
+                                <tr>
+                                    <td>Java</td>
+                                    <td>JDK 1.7</td>
+                                    <td>javac Main.java</td>
+                                    <td>java Main</td>
+                                </tr>
+                                <tr>
+                                    <td>Pascal</td>
+                                    <td>Free Pascal 2.6</td>
+                                    <td>fpc -O2 -dONLINE_JUDGE Main.pas</td>
+                                    <td>Main</td>
+                                </tr>
+                                <tr>
+                                    <td>Python</td>
+                                    <td>Python 2.7</td>
+                                    <td>脚本语言无需编译</td>
+                                    <td>python Main.py</td>
+                                </tr>
+                                <tr>
+                                    <td>Python</td>
+                                    <td>Python 3.3</td>
+                                    <td>脚本语言无需编译</td>
+                                    <td>python Main.py</td>
+                                </tr>
+                                <tr>
+                                    <td>Ruby</td>
+                                    <td>Ruby 2.0.0</td>
+                                    <td>脚本语言无需编译</td>
+                                    <td>ruby Main.rb</td>
+                                </tr>
+                                <tr>
+                                    <td>C#</td>
+                                    <td>.Net 4</td>
+                                    <td>csc Main.cs</td>
+                                    <td>Main</td>
+                                </tr>
+                                <tr>
+                                    <td>VB.Net</td>
+                                    <td>.Net 4</td>
+                                    <td>vbc Main.cs</td>
+                                    <td>Main</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </small>
+                </div>
+                <div id="section-3">
+                    <h2>评级系统</h2>
+                    <p>注册成为Code Comb会员后，你将有初始的1500点能力值，当您参加评级赛后，该分数将会根据您的答题情况增减。</p>
+                    <p>每场评级赛均有等级区分，从低等级至高等级分别为：R, L3, L2, L1, S</p>
+                    <p><b>评级R</b>：选手能力值低于1500，昵称为默认颜色。</p>
+                    <p><b>评级L3</b>：选手能力值1500~1700，昵称为绿色。</p>
+                    <p><b>评级L2</b>：选手能力值1700~2000，昵称为天蓝色。</p>
+                    <p><b>评级L1</b>：选手能力值2000~2400，昵称为橙色。</p>
+                    <p><b>评级S</b>：选手能力值大于2400，昵称为红色。</p>
+                </div>
+                <div id="section-4">
+                    <h2>举办比赛</h2>
+                    <p>任何用户都可以举办比赛，比赛可以是私有的，需要通过输入正确的密码才能参加比赛，也可以是公开的，允许任何人参加比赛。</p>
+                    <p>如果比赛欲获得官方支持，升级为评级赛，请在创建比赛时勾选相应选项，并给出每个题目的能力值评估，同时每题均提交高质量的解题报告，以便Code Comb官方审核，同时您至少留出3天的时间，让Code Comb进行审核。</p>
+                    <p>成功创建比赛后，您可以设定比赛管理员以及比赛志愿者，比赛管理员可以和您一样修改比赛题目、在答疑系统中给予选手回复，志愿者则可通过电脑、手机客户端获取到选手通过题目情况，客户端会给出分发气球（仿真ACM/ICPC赛制）的建议以及需要打印的材料（如果该场比赛勾选了允许提交打印材料）。</p>
+                    <h3>特殊比较器</h3>
+                    <p>传统的评测方式是去行末空格与文末回车，如果您出的题目正好是需要按照此方式进行校验，则您只需提供题目的输入数据与输出数据。</p>
+                    <p>如果您提交的题目是多解题目，则需编写Special Judge，Special Judge程序负责校验选手程序结果，评测机通过命令行调用，同时传递三个参数，分别为：答案文件位置，选手输出文件位置，输入文件位置。</p>
+                    <p>下面是一个特殊比较器的例子</p>
+                    <pre>#include &lt;cassert&gt;
+#include &lt;cstdio&gt;
+#include &lt;cstdlib&gt;
+#include &lt;cstring&gt;
+//一些定义
+const int ACCEPT = 0;
+const int WRONG_ANSWER = 1;
+//fstd 标准输出 fout 选手输出 fin 标准输入
+FILE *fstd,*fout,*fin;
+int LastCharStd = -2,LastCharOut=-2;
+//检查下一个字符
+inline int Peek(FILE* f){
+    if(f==fstd){
+        if(LastCharStd == -2)
+            LastCharStd=fgetc(f);
+        return LastCharStd;
+    }else{
+        if(LastCharOut == -2)
+            LastCharOut=fgetc(f);
+        return LastCharOut;
+    }
+}
+//取出下一个字符
+inline void Pop(FILE* f){
+    if(f==fstd){
+        if(LastCharStd == -2)
+            fgetc(f);
+        else
+            LastCharStd = -2;
+    }else{
+        if(LastCharOut == -2)
+            fgetc(f);
+        else
+            LastCharOut = -2;
+    }
+}
+//判断字符是否为空白
+inline bool IsSpace(int ch){
+    return ch&gt;=0 && (ch&lt;=32 || ch&gt;=127);
+}
+//执行比较操作。
+bool DoCompare(){
+    int stdPosition=0,outPosition=0;
+    bool stdInSpace=true,outInSpace=true;
+    while(true){
+        int stdC=Peek(fstd),outC=Peek(fout);
+        if(stdC==EOF && outC==EOF){
+            return true;
+        }else if(stdC==EOF && IsSpace(outC)){
+            outPosition++;
+            Pop(fout);
+        }else if(outC==EOF && IsSpace(stdC)){
+            stdPosition++;
+            Pop(fstd);
+        }else if(IsSpace(stdC) && IsSpace(outC)){
+            stdPosition++;
+            outPosition++;
+            stdInSpace=true;
+            outInSpace=true;
+            Pop(fstd);
+            Pop(fout);
+        }else if(IsSpace(stdC) && outInSpace){
+            stdPosition++;
+            Pop(fstd);
+        }else if(IsSpace(outC) && stdInSpace){
+            outPosition++;
+            Pop(fout);
+        }else if(stdC==outC){
+            stdPosition++;
+            outPosition++;
+            stdInSpace=false;
+            outInSpace=false;
+            Pop(fstd);
+            Pop(fout);
+        }else{
+            printf("答案文件的第%d字节",stdPosition+1);
+            if(stdC==EOF){
+                printf("&lt;eof&gt;");
+            }else{
+                printf("0x%x",stdC);
+            }
+            printf("不能匹配输出文件的第%d字节",outPosition+1);
+            if(outC==EOF){
+                printf("%lt;EOF%gt;");
+            }else{
+                printf("0x%x",outC);
+            }
+            puts("");
+            return false;
+        }
+    }
+}
+int main(int argc, char* argv[])
+{
+    if(argc!=4){
+        printf("参数不足 %d",argc);
+        return -1;
+    }
+    //打开文件
+    if(NULL==(fstd=fopen(argv[1],"r"))){
+        return -1;
+    }
+    if(NULL==(fout=fopen(argv[2],"r"))){
+        return -1;
+    }
+    if(NULL==(fin=fopen(argv[3],"r"))){
+        return -1;
+    }
+    if(DoCompare()){
+        return ACCEPT;
+    }else{
+        return WRONG_ANSWER;
+    }
+}
+</pre>
+                    <h3>数据范围校验器</h3>
+                    <p>如果您的比赛赛制设定为Codeforces或TopCoder，您需要为每个题目设置一个数据范围校验器，使用这个校验器来读取选手提交上来的数据，并检验其合法性，如果合法，程序返回0，否则返回其他值。</p>
+                    <h3>标程</h3>
+                    <p>如果您的比赛赛制设定为Codeforces或TopCoder，您需要为每个题目设置一个标程，该标程必须是本题正确的算法，系统将选手通过数据范围校验器的数据注入到本程序中，取出本程序的结果，与选手程序输出的结果对比。</p>
+                </div>
+            </div>
+        </div>
+    </div><div class="grid_3">
+        <div class="post-module">
+            <h3>Navigator</h3>
+            <div class="post-module-content">
+                <div class="post-cate-item"><a href="#section-1">赛制介绍</a></div>
+                <div class="post-cate-item"><a href="#section-2">评测环境</a></div>
+                <div class="post-cate-item"><a href="#section-3">评级系统</a></div>
+                <div class="post-cate-item"><a href="#section-4">举办比赛</a></div>
+            </div>
+        </div>
+    </div><div class="clear"></div>
+</div>

@@ -1,0 +1,51 @@
+﻿@model IEnumerable<CodeComb.Entity.Contest>
+@{
+    ViewBag.Title = "比赛列表";
+    ViewBag.BannerTitle = "比赛列表";
+}
+<div class="post-body">
+    <div class="cont-wrap">
+        <div class="grid_9">
+            <h2>Incoming Contests</h2>
+            @foreach (var item in Model)
+            {
+                <div class="post-item post-item-zip">
+                    <div class="post-title"><h2>@Html.ActionLink(item.Title, "Show", "Contest", new { id = item.ID }, null)</h2></div>
+                    <div class="post-info">
+                        @item.Problems.Count Problems, Format: @item.Format.ToString(), Duration: @Html.ToVagueTimeLength(item.Begin, item.End), 
+                        @Html.ToTimeTip(item.Begin) 开始 (@item.Begin.ToString("yyyy-MM-dd HH:mm:ss"))
+                    </div>
+                    <div class="post-content">
+                        @Html.Sanitized(item.Content)
+                        <p>@Html.ActionLink("查看详情", "Show", "Contest", new { id = item.ID }, null)</p>
+                    </div>
+                </div>
+            }
+
+            <h2>Passed Contests</h2>
+            <div id="lstContests"></div>
+            <div><div class="loading" id="iconLoading"></div></div>
+        </div><div class="grid_3">
+            <div class="post-module">
+                <h3>Filter by Kind</h3>
+                <div class="post-module-content">
+                    <div class="post-cate-item"><a href="javascript:format=0;$('#lstContests').html('');page=0;lock=false;Load();">ACM/ICPC</a></div>
+                    <div class="post-cate-item"><a href="javascript:format=1;$('#lstContests').html('');page=0;lock=false;Load();">OI</a></div>
+                    <div class="post-cate-item"><a href="javascript:format=2;$('#lstContests').html('');page=0;lock=false;Load();">Codeforces</a></div>
+                    <div class="post-cate-item"><a href="javascript:format=3;$('#lstContests').html('');page=0;lock=false;Load();">TopCoder</a></div>
+                </div>
+            </div>
+            @*<div class="post-module">
+                    <h3>Filter by Level</h3>
+                    <div class="post-module-content">
+                        <div class="post-cate-item"><a href="#">Level 1</a></div>
+                        <div class="post-cate-item"><a href="#">Level 2</a></div>
+                        <div class="post-cate-item"><a href="#">Level 3</a></div>
+                    </div>
+                </div>*@
+        </div><div class="clear"></div>
+    </div>
+</div>
+<script>
+    var format = null;
+</script>

@@ -1,0 +1,149 @@
+﻿@model CodeComb.Entity.User
+@{
+    ViewBag.Title = Model.Nickname + " - 用户信息";
+}
+<!--[if lt IE 9]>
+    <script type="text/javascript" src="/Scripts/excanvas.js"></script>
+<![endif]-->
+
+<script type="text/javascript" src="~/Scripts/jquery.flot.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.flot.time.js"></script>
+
+<style>
+    td {
+        border-top: 1px solid #dddddd;
+        padding-left: 10px;
+    }
+    th {
+        padding-left: 10px;
+    }
+</style>
+<div class="profile-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="profile-wrap-outer">
+                <div class="profile-actions">
+                    <a href="#" class="profile-btn"><img src="/Images/profile.png" alt="个人信息" /></a>
+                    <a href="#" id="btnAddContact" uid="@Model.ID" class="profile-btn"><img src="/Images/chat.png" alt="私聊" /></a>
+                    <a href="#" class="profile-btn"><img src="/Images/status.png" alt="记录" /></a>
+                    <a href="#" class="profile-btn"><img src="/Images/forum.png" alt="帖子" /></a>
+                    <a href="#" class="profile-btn"><img src="/Images/settings.png" alt="设置" /></a>
+                </div>
+                <div class="profile-wrap">
+                    <div class="profile-top">
+                        <div class="float-left">@Html.Gravatar(Model.Gravatar, 180, "profile-face")</div>
+                        <div class="profile-top-right"><div class="profile-name"><h1>@Html.Nickname(Model.Nickname, Model.Ratings.Sum(x => x.Credit) + 1500)</h1></div><div class="profile-signature">@Model.Motto</div><div class="clear"></div></div>
+                    </div><div class="profile-content">
+                        <div class="profile-item">
+                            <div><h2>Rating @(Model.Ratings.Sum(x=>x.Credit)+1500)</h2></div>
+                            <div id="chart" style="width:100%;height:300px;"></div>
+                            <script>
+                                $(document).ready(function () {
+                                    var markings = [
+                                    { color: '#f33', lineWidth: 1, yaxis: { from: 2400 } },
+                                    { color: '#ffbb55', lineWidth: 1, yaxis: { from: 2000, to: 2400 } },
+                                    { color: '#aaf', lineWidth: 1, yaxis: { from: 1700, to: 2000 } },
+                                    { color: '#7f7', lineWidth: 1, yaxis: { from: 1500, to: 1700 } },
+                                    { color: '#ccc', lineWidth: 1, yaxis: { from: 0, to: 1500 } },
+                                    ];
+                                    var line = [
+                                    @foreach (CodeComb.Entity.Rating item in Model.Ratings)
+                                    {
+                                        @:[@Html.ToTimeStamp(item.Time)000, @(Model.Ratings.Where(x => x.Time <= item.Time).Sum(x => x.Credit) + 1500), "@item.Contest.Title",@item.Credit],
+                                    }
+                                    []];
+                                    var max = line[0][1];
+                                    var min = line[0][1];
+                                    for(var i = 1; i < line.length; i++)
+                                    {
+                                        if (line[i][1] > max) max = line[i][1];
+                                        if (line[i][1] < min) min = line[i][1];
+                                    }
+                                    var obligate = parseInt((max - min) / 3);
+                                    var plot = $.plot($("#chart"), [{ data: line }], {
+                                        lines: { show: true },
+                                        xaxis: { mode: "time" },
+                                        yaxis: { min: min - obligate, ticks: [1000, 1500, 1700, 2000, 2400, Math.ceil((max + obligate) / 100) * 100] },
+                                        points: { show: true },
+                                        grid: {
+                                            hoverable: true,
+                                            markings: markings
+                                        }
+                                    });
+                                    function showTooltip(x, y, contents) {
+                                        $('<div id="tooltip">' + contents + '</div>').css({
+                                            position: 'absolute',
+                                            display: 'none',
+                                            top: y - 20,
+                                            left: x + 10,
+                                            border: '1px solid #fdd',
+                                            padding: '2px',
+                                            'z-index': '10',
+                                            'font-size': '11px',
+                                            'background-color': '#fee',
+                                            opacity: 0.80
+                                        }).appendTo("body").fadeIn(200);
+                                    }
+
+                                    $("#chart").bind("plothover", function (event, pos, item) {
+                                        if (item) {
+                                            $("#tooltip").remove();
+                                            var total = line[item.dataIndex][1];
+                                            var title = line[item.dataIndex][2];
+                                            var change = line[item.dataIndex][3];
+                                            var html;
+                                            if (change > 0)
+                                                html = total + " (+" + change + ")<br/>" + title;
+                                            else
+                                                html = total + " (" + change + ")<br/>" + title;
+                                            showTooltip(item.pageX, item.pageY, html);
+                                        }
+                                    });
+                                });
+                            </script>
+                        </div>
+                        <div class="profile-item">
+                            <div><h2>Contests</h2></div>
+                            <table style="table-layout: auto;width:100%; text-align: left">
+                                <thead>
+                                    <tr>
+                                        <th>时间</th>
+                                        <th>比赛</th>
+                                        <th>增减</th>
+                                        <th>新值</th>
+                                        <th>评级</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Ratings.OrderByDescending(x => x.Time))
+                                    {
+                                        <tr style="line-height:50px;height:50px;background-color:@(item.Credit < 0 ? "#f2dede" : "#dff0d8")">
+                                            <td>@item.Time.ToString("yyyy-MM-dd HH:mm")</td>
+                                            <td>@item.Contest.Title</td>
+                                            <td>@(item.Credit < 0 ? item.Credit.ToString() : "+" + item.Credit)</td>
+                                            <td>@(Model.Ratings.Where(x => x.Time <= item.Time).Sum(x => x.Credit) + 1500)</td>
+                                            <td>@Html.ToLevelStr((Model.Ratings.Where(x => x.Time <= item.Time).Sum(x => x.Credit) + 1500))</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>
+@if (User.Identity.IsAuthenticated)
+{
+    <script>
+        $("#PrivateMessage").click(function () {
+            var id = @Model.ID;
+            var contacts = $.cookie("@User.Identity.Name");
+            if(contacts == null) contacts = new Array();
+            contacts.push(id);
+            $.cookie("@User.Identity.Name",contacts);
+        });
+        $(".inline").colorbox({inline:true, width:"auto"});
+    </script>
+}

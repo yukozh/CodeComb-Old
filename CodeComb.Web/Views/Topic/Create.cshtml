@@ -1,0 +1,34 @@
+﻿@model Post
+@{
+    ViewBag.Title = "发表新主题";
+}
+<script type="text/javascript" src="~/Scripts/ckeditor/ckeditor.js"></script>  
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="post-detail-wrap">
+                    <div class="post-action"><a href="javascript:history.back()">← 返回</a></div>
+                    <div class="post-content">
+                        @using (Html.BeginForm("Create", "Topic", new { id = Request.RequestContext.RouteData.Values["id"] }, FormMethod.Post, null))
+                        { 
+                            @Html.AntiForgeryToken()
+                            @Html.Hidden("ForumID", Request.RequestContext.RouteData.Values["id"])
+                            <p>@Html.TextBoxFor(x => x.Title, new { placeHolder="请输入标题", @class="textbox"})</p>
+                            <p>@Html.TextAreaFor(x => x.Content, null)</p>
+                            <p><input id="btnSubmit" type="submit" class="button button-def" value="发表"></p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>
+<script>
+    CKEDITOR.replace('Content',
+    {
+        toolbar: 'Basic',
+        width: "100%",
+        height:"170px"
+    });
+</script>
