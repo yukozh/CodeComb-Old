@@ -1,7 +1,7 @@
 ﻿@model CodeComb.Entity.Problem
 @{
     ViewBag.Title = Model.Title;
-    ViewBag.Title = Model.Title;
+    ViewBag.BannerTitle = Model.Title;
 }
 
 @if (Model.Contest.Begin <= DateTime.Now && DateTime.Now <= Model.Contest.End)
@@ -113,7 +113,7 @@ else
     <div style="display:none">
         <div id="CodeEditBox">
             <h3>提交评测</h3>
-            <pre id="editor" style="min-width:600px;height:320px"></pre>
+            <textarea id="editor" style="width:600px;height:280px;font-size:12px;"></textarea>
             <p>
                 <select id="lstLanguages">
                     @{var i = 0;}

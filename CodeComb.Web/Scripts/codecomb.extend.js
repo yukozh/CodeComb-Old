@@ -1,5 +1,5 @@
 ﻿var IsPMOpened = false;
-
+var editor;
 var CurrentContactID = null;
 
 function GetContacts()
@@ -158,54 +158,58 @@ $(document).ready(function () {
     $.connection.hub.start();
 
     $("#btnLoadCodeEditBox").click(function () {
-        $.colorbox({ inline: true, width: "auto", href: "#CodeEditBox" });
+        $.colorbox({ inline: true, width: "650px", href: "#CodeEditBox", onComplete: function () { editor.refresh(); } });
     });
     function RefreshHighLight() {
         var language_id = $("#lstLanguages").val();
-        switch (language_id) {
+        switch (parseInt(language_id)) {
             case 0:
-                editor.getSession().setMode("ace/mode/c_cpp");
+                editor.setOption('mode', 'text/x-csrc');
                 break;
             case 1:
-                editor.getSession().setMode("ace/mode/c_cpp");
+                editor.setOption('mode', 'text/x-c++src');
                 break;
             case 2:
-                editor.getSession().setMode("ace/mode/c_cpp");
+                editor.setOption('mode', 'text/x-c++src');
                 break;
             case 3:
-                editor.getSession().setMode("ace/mode/java");
+                eeditor.setOption('mode', 'text/x-java');
                 break;
             case 4:
-                editor.getSession().setMode("ace/mode/pascal");
+                editor.setOption('mode', 'text/x-pascal');
                 break;
             case 5:
-                editor.getSession().setMode("ace/mode/python");
+                editor.setOption('mode', 'text/x-python');
                 break;
             case 6:
-                editor.getSession().setMode("ace/mode/python");
+                editor.setOption('mode', 'text/x-python');
                 break;
             case 7:
-                editor.getSession().setMode("ace/mode/ruby");
+                editor.setOption('mode', 'text/x-ruby');
                 break;
             case 8:
-                editor.getSession().setMode("ace/mode/csharp");
+                editor.setOption('mode', 'text/x-csharp');
                 break;
             case 9:
-                editor.getSession().setMode("ace/mode/vbscript");
+                editor.setOption('mode', 'text/x-vb');
                 break;
+            default: break;
         }
+        editor.refresh();
     }
-    var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/textmate");
-    editor.getSession().setMode("ace/mode/c_cpp");
-    editor.setShowPrintMargin(false);
-    editor.setAutoScrollEditorIntoView(true);
-    editor.setOptions({
-        minLines: 18,
-        maxLines: 18
-    });
-    RefreshHighLight();
-    $("#lstLanguages").change(function () {
+    if ($("#editor").length > 0)
+    {
+        editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+            lineNumbers: true,
+            matchBrackets: true,
+            indentUnit: 4,
+            smartIndent: false,
+            mode: "text/x-c++src",
+            theme: "neat"
+        });
         RefreshHighLight();
-    });
+        $("#lstLanguages").change(function () {
+            RefreshHighLight();
+        });
+    }
 });
