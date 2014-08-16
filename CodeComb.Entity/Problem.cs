@@ -22,6 +22,9 @@ namespace CodeComb.Entity
         [Column("title")]
         public string Title { get; set; }
 
+        [Column("background")]
+        public string Background { get; set; }
+
         [Column("description")]
         public string Description { get; set; }
 
