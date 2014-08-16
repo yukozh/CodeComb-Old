@@ -14,5 +14,10 @@ namespace CodeComb.Web.Controllers
         {
             return View();
         }
-	}
+        public ActionResult Show(int id)
+        {
+            var problem = DbContext.Problems.Find(id);
+            return View(problem);
+        }
+	}   
 }

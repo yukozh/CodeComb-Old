@@ -55,6 +55,11 @@ namespace CodeComb.Entity
 
         public virtual Problem Problem { get; set; }
 
+        public string GetStatusAsString()
+        {
+            return CommonEnums.JudgeResultDisplay[ResultAsInt];
+        }
+
         public virtual ICollection<JudgeTask> JudgeTasks { get; set; }
 
         public virtual ICollection<Hack> Hacks { get; set; }

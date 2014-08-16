@@ -460,6 +460,7 @@
     <Content Include="Scripts\ckeditor\plugins\wsc\README.md" />
     <Content Include="Scripts\ckeditor\README.md" />
     <Content Include="Scripts\ckeditor\skins\moono\readme.md" />
+    <Content Include="ClassDiagram1.cd" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Images\banner.png" />
     <Content Include="Images\logo-white.gif" />
@@ -711,11 +712,11 @@
     <Content Include="Views\Contest\Show.cshtml" />
     <Content Include="Views\Shared\_LayoutContest.cshtml" />
     <Content Include="Views\Contest\Statistics.cshtml" />
+    <Content Include="Views\Problem\Show.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\PrivateMessage\" />
-    <Folder Include="Views\Problem\" />
     <Folder Include="Views\Test\" />
   </ItemGroup>
   <ItemGroup>

@@ -79,6 +79,12 @@ namespace CodeComb.Entity
         [Column("difficulty")]
         public int Difficulty { get; set; }
 
+        [Column("time_limit")]
+        public int TimeLimit { get; set; }
+
+        [Column("memory_limit")]
+        public int MemoryLimit { get; set; }
+
         public IEnumerable<Status> GetContestStatuses()
         {
             return Statuses.Where(x => x.Time >= Contest.Begin && x.Time < Contest.End);

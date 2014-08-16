@@ -1,0 +1,92 @@
+﻿@model CodeComb.Entity.Problem
+@{
+    ViewBag.Title = Model.Title;
+    ViewBag.Title = Model.Title;
+}
+
+@if (Model.Contest.Begin <= DateTime.Now && DateTime.Now <= Model.Contest.End)
+{
+    <div class="contest-body">
+        <div class="cont-wrap">
+            <div class="grid_9">
+                <div class="contest-main">
+                    <div class="post-info"></div>
+                    <div>
+                        <h3>背景</h3>
+                        <div class="post-content"><p>for beginngers，特设此题，^_^</p></div>
+                        <h3>描述</h3>
+                        <div class="post-content"><p>输入两个自然数，输出他们的和</p></div>
+                        <h3>输入格式</h3>
+                        <div class="post-content"><p>两个自然数x和y (0<=x,y<=32767)</p></div>
+                        <h3>输出格式</h3>
+                        <div class="post-content"><p>一个数，即x和y的和</p></div>
+                        <h3>样例输入</h3>
+                        <div class="post-content"><pre>123 500</pre></div>
+                        <h3>样例输出</h3>
+                        <div class="post-content"><pre>623</pre></div>
+                        <h3>限制</h3>
+                        <div class="post-content"><p>各个测试点 1s</p></div>
+                        <h3>递交代码</h3>
+                        <div class="post-content">
+                            <pre id="editor">#include &lt;iostream&gt;
+using namespace std;
+int main() {
+    int a,b;
+    cin &gt;&gt; a &gt;&gt; b;
+    cout &lt;&lt; a + b &lt;&lt; endl;
+    return 0;
+}</pre><div><input class="button button-def" type="button" value="Submit"></div>
+                        </div>
+                    </div>
+                </div>
+            </div><div class="grid_3">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="post-module">
+                        <p><a href="#">提交评测</a></p>
+                        @foreach (var status in Model.GetContestStatuses().Where(x => x.User.Username == User.Identity.Name).OrderByDescending(x => x.Time).ToList())
+                        { 
+                            <p>@status.Time.ToString("MM-dd HH:mm") @status.GetStatusAsString()</p>
+                        }
+                    </div>
+                }
+                <div class="post-module">
+                    <h3>Limits</h3>
+                    <div class="post-module-content">
+                        <div class="post-cate-item">Time: @(Model.TimeLimit)ms per test case</div>
+                        <div class="post-cate-item">Memory: @(Model.MemoryLimit)KiB</div>
+                        <div class="post-cate-item">Java class name: Main</div>
+                        <div class="post-cate-item">Judge mode: @(System.String.IsNullOrEmpty(Model.SpecialJudge) ? "Normal" : "Special")</div>
+                    </div>
+                </div>
+                <div class="post-module module-contest-problems">
+                    <h3>Problems</h3>
+                    <div class="post-module-content">
+                        <div class="contest-problem-item post-cate-item"><div class=""><a href="#" target="_blank" class="status-tag status-bg-nul">N/A</a></div><a href="problem.html">A: A+B Problem</a></div>
+                        <div class="contest-problem-item post-cate-item"><div class=""><a href="#" target="_blank" class="status-tag status-bg-ac">AC</a></div><a href="problem.html">B: A+B Problem</a></div>
+                        <div class="contest-problem-item post-cate-item"><div class=""><a href="#" target="_blank" class="status-tag status-bg-tle">TLE</a></div><a href="problem.html">C: A+B Problem</a></div>
+                    </div>
+                </div>
+
+                <div class="post-module">
+                    <h3>Public Questions</h3>
+                    <div class="post-module-content">
+                        <div class="post-cate-item">xxx</div>
+                    </div>
+                </div>
+
+                <div class="post-module">
+                    <h3>Ask Question</h3>
+                    <div class="post-module-content">
+                        <div class="post-cate-item">xxx</div>
+                    </div>
+                </div>
+
+            </div><div class="clear"></div>
+        </div>
+    </div>
+}
+else
+{
+
+}

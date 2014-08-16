@@ -21,6 +21,13 @@ namespace CodeComb.Web
             );
 
             routes.MapRoute(
+                name: "Problem",
+                url: "Problem/{id}",
+                defaults: new { controller = "Problem", action = "Show" },
+                constraints: new { id = @"\d+" }
+            );
+
+            routes.MapRoute(
                 name: "ContestStatus",
                 url: "Contest/Status/{id}",
                 defaults: new { controller = "Status", action = "Index" },
