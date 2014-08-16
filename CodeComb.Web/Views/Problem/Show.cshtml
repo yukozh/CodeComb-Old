@@ -37,14 +37,14 @@
                             var i = 1;
                             foreach (var testcase in Model.TestCases.Where(x => x.Type == TestCaseType.Sample).ToList())
                             { 
-                            <h3>样例数据 #@i</h3>
+                            <h3>样例数据 @(i++)</h3>
                             <div class="post-content">
                                 <p>输入</p>
-                                <blockquote class="pending">
+                                <blockquote class="testcase">
                                     @testcase.Input.TrimEnd('\n')
                                 </blockquote>
                                 <p>输出</p>
-                                <blockquote class="pending">
+                                <blockquote class="testcase">
                                     @testcase.Output.TrimEnd('\n')
                                 </blockquote>
                             </div>
@@ -55,17 +55,13 @@
                             <h3>备注</h3>
                             <div class="post-content">@Html.Sanitized(Model.Hint)</div>
                         }
-                        <h3>递交代码</h3>
-                        <div class="post-content">
-                            <pre id="editor"></pre><div><input class="button button-def" type="button" value="Submit"></div>
-                        </div>
                     </div>
                 </div>
             </div><div class="grid_3">
                 @if (User.Identity.IsAuthenticated)
                 {
                     <div class="post-module">
-                        <p><a href="#">提交评测</a></p>
+                        <p><a href="javascript:void(0)" id="btnLoadCodeEditBox">提交评测</a></p>
                         @foreach (var status in Model.GetContestStatuses().Where(x => x.User.Username == User.Identity.Name).OrderByDescending(x => x.Time).ToList())
                         { 
                             <p>@status.Time.ToString("MM-dd HH:mm") @status.GetStatusAsString()</p>
@@ -116,18 +112,26 @@ else
 {
     <div style="display:none">
         <div id="CodeEditBox">
-            <pre id="editor" style="width:100%;height:490px;"></pre>
+            <h3>提交评测</h3>
+            <pre id="editor" style="min-width:600px;height:320px"></pre>
+            <p>
+                <select id="lstLanguages">
+                    @{var i = 0;}
+                    @foreach (var name in CodeComb.Entity.CommonEnums.LanguageDisplay)
+                    {
+                        if (((CodeComb.Entity.User)ViewBag.CurrentUser).CommonLanguageAsInt == i)
+                        {
+                            <option value="@(i++)" selected>@name</option>
+                        }
+                        else
+                        { 
+                            <option value="@(i++)">@name</option>
+                        }
+                    }
+                </select>
+                <button role="button" class="button button-def">提交</button>
+                <button role="button" class="button">清空</button>
+            </p>
         </div>
     </div>
-    <script>
-        var editor = ace.edit("editor");
-        editor.setTheme("ace/theme/textmate");
-        editor.getSession().setMode("ace/mode/c_cpp");
-        editor.setShowPrintMargin(false);
-        editor.setAutoScrollEditorIntoView(true);
-        editor.setOptions({
-            minLines: 5,
-            maxLines: Infinity
-        });
-    </script>
 }

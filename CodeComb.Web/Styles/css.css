@@ -511,7 +511,9 @@ blockquote {
     blockquote.inprogress {
         border-left-color: #ff8080;
     }
-
+    blockquote.testcase {
+        border-left-color: rgb(226, 239, 250);
+    }
 li ol, li ul {
     margin: 0;
 }

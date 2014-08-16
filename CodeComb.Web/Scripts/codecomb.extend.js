@@ -156,4 +156,56 @@ $(document).ready(function () {
         if (!IsPMOpened) $("#btnPMDisplay").addClass("btn-highlight");
     };
     $.connection.hub.start();
+
+    $("#btnLoadCodeEditBox").click(function () {
+        $.colorbox({ inline: true, width: "auto", href: "#CodeEditBox" });
+    });
+    function RefreshHighLight() {
+        var language_id = $("#lstLanguages").val();
+        switch (language_id) {
+            case 0:
+                editor.getSession().setMode("ace/mode/c_cpp");
+                break;
+            case 1:
+                editor.getSession().setMode("ace/mode/c_cpp");
+                break;
+            case 2:
+                editor.getSession().setMode("ace/mode/c_cpp");
+                break;
+            case 3:
+                editor.getSession().setMode("ace/mode/java");
+                break;
+            case 4:
+                editor.getSession().setMode("ace/mode/pascal");
+                break;
+            case 5:
+                editor.getSession().setMode("ace/mode/python");
+                break;
+            case 6:
+                editor.getSession().setMode("ace/mode/python");
+                break;
+            case 7:
+                editor.getSession().setMode("ace/mode/ruby");
+                break;
+            case 8:
+                editor.getSession().setMode("ace/mode/csharp");
+                break;
+            case 9:
+                editor.getSession().setMode("ace/mode/vbscript");
+                break;
+        }
+    }
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/textmate");
+    editor.getSession().setMode("ace/mode/c_cpp");
+    editor.setShowPrintMargin(false);
+    editor.setAutoScrollEditorIntoView(true);
+    editor.setOptions({
+        minLines: 18,
+        maxLines: 18
+    });
+    RefreshHighLight();
+    $("#lstLanguages").change(function () {
+        RefreshHighLight();
+    });
 });
