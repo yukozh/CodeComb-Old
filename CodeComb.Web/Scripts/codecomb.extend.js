@@ -158,7 +158,7 @@ $(document).ready(function () {
     $.connection.hub.start();
 
     $("#btnLoadCodeEditBox").click(function () {
-        $.colorbox({ inline: true, width: "650px", href: "#CodeEditBox", onComplete: function () { editor.refresh(); } });
+        $.colorbox({ inline: true, width: "700px", href: "#CodeEditBox", onComplete: function () { editor.refresh(); } });
     });
     function RefreshHighLight() {
         var language_id = $("#lstLanguages").val();
@@ -212,4 +212,7 @@ $(document).ready(function () {
             RefreshHighLight();
         });
     }
+    $("#btnClearCodeBox").click(function () {
+        editor.setValue("");
+    });
 });
