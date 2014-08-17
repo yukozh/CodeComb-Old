@@ -140,12 +140,12 @@ function ClarResponse(id)
                       + '<p><strong>Question: <span style="color:blue">' + question + '</span></strong></p>'
                       + '<p><strong>Answer: </strong></p>'
                       + '<p><textarea id="txtClarResponse" style="width:620px;" class="textbox"></textarea></p>'
-                      + '<p><input id="btnClarResponse" type="button" class="button button-def" value="提交" /> <input type="checkbox" id="chkBroadcast" />Broadcast</p>'
+                      + '<p><input id="btnClarResponse" type="button" class="button button-def" value="提交" /> <input type="checkbox" id="chkBroadcast"" />Broadcast</p>'
                       + '<input type="hidden" id="clar_id" cid="' + clarid + '" />';
         $.colorbox({
             html: html, width: '700px', onComplete: function () {
                 $("#btnClarResponse").unbind().click(function () {
-                    $.post("/Contest/ResponseClar/" + $("#clar_id").attr("cid"), { answer: $("#txtClarResponse").val(), broadcast: $("#chkBroadcast").val() }, function () {
+                    $.post("/Contest/ResponseClar/" + $("#clar_id").attr("cid"), { answer: $("#txtClarResponse").val(), broadcast: $("#chkBroadcast").is(':checked') }, function () {
                         $.colorbox.close();
                     });
                 });
