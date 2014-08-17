@@ -48,5 +48,12 @@ namespace CodeComb.Web.Controllers
             SignalR.CodeCombHub.context.Clients.All.onStatusChanged(status);
             return Content("Done");
         }
+
+        public ActionResult Clar(int id)
+        {
+            var clar = DbContext.Clarifications.Find(id);
+            SignalR.CodeCombHub.context.Clients.All.onClarificationsResponsed(new Models.View.Clar(clar));
+            return Content("done");
+        }
 	}
 }

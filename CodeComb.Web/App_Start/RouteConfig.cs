@@ -28,6 +28,13 @@ namespace CodeComb.Web
             );
 
             routes.MapRoute(
+                name: "ProblemStatus",
+                url: "Problem/Status/{pid}",
+                defaults: new { controller = "Status", action = "Index" },
+                constraints: new { pid = @"\d+" }
+            );
+
+            routes.MapRoute(
                 name: "ContestStatus",
                 url: "Contest/Status/{id}",
                 defaults: new { controller = "Status", action = "Index" },

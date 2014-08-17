@@ -213,6 +213,7 @@
     <Compile Include="Helpers\String.cs" />
     <Compile Include="Helpers\Time.cs" />
     <Compile Include="Models\View\ChatRecord.cs" />
+    <Compile Include="Models\View\Clar.cs" />
     <Compile Include="Models\View\Contact.cs" />
     <Compile Include="Models\View\Contest.cs" />
     <Compile Include="Models\View\HomeContest.cs" />
@@ -461,7 +462,6 @@
     <Content Include="Scripts\ckeditor\plugins\wsc\README.md" />
     <Content Include="Scripts\ckeditor\README.md" />
     <Content Include="Scripts\ckeditor\skins\moono\readme.md" />
-    <Content Include="ClassDiagram1.cd" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Images\banner.png" />
     <Content Include="Images\logo-white.gif" />
