@@ -1,7 +1,12 @@
 ﻿@model CodeComb.Entity.Problem
 @{
     ViewBag.Title = Model.Title;
-    ViewBag.BannerTitle = Model.Title;
+    if (Model.Contest.Begin <= DateTime.Now && DateTime.Now <= Model.Contest.End)
+    {
+        ViewBag.BannerTitle = Model.Title;
+    }
+    var IsMaster = (bool)ViewBag.IsMaster;
+    var IsCreator = (bool)ViewBag.IsCreator;
 }
 
 @if (Model.Contest.Begin <= DateTime.Now && DateTime.Now <= Model.Contest.End)
@@ -106,7 +111,78 @@
 }
 else
 {
-
+    <div class="post-detail-body">
+        <div class="cont-wrap">
+            <div class="grid_12">
+                <div class="post-detail-wrap-outer">
+                    <div class="profile-actions">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <a href="javascript:void(0)" id="btnLoadCodeEditBox" class="profile-btn"><img src="/Images/code.png" alt="提交代码" /></a>
+                        }
+                        <a href="/Problem/Status/@Model.ID" class="profile-btn"><img src="/Images/status.png" alt="评测状态" /></a>
+                        @if (Model.Contest.AllowClarification)
+                        {
+                            <a href="/Contest/Clar/@Model.ID" class="profile-btn"><img src="/Images/clar.png" alt="答疑平台" /></a>
+                        }
+                        @if (IsMaster)
+                        {
+                            <a href="/Contest/Settings/General/@Model.Contest.ID" class="profile-btn"><img src="/Images/settings.png" alt="管理比赛" /></a>
+                        }
+                    </div>
+                    <div class="post-detail-wrap">
+                        <div class="post-title"><h2>@Model.Title</h2></div>
+                        <div class="post-info">
+                            <div class="post-cate-item">Time Limit: @(Model.TimeLimit)ms&nbsp;&nbsp;&nbsp;&nbsp;Memory Limit: @(Model.MemoryLimit)KiB&nbsp;&nbsp;&nbsp;&nbsp;Java class name: Main&nbsp;&nbsp;&nbsp;&nbsp;Judge mode: @(System.String.IsNullOrEmpty(Model.SpecialJudge) ? "Normal" : "Special")</div>
+                            @if (!System.String.IsNullOrEmpty(Model.Background))
+                            {
+                                <h3>背景</h3>
+                                <div class="post-content">@Html.Sanitized(Model.Background)</div>
+                            }
+                            @if (!System.String.IsNullOrEmpty(Model.Description))
+                            {
+                                <h3>描述</h3>
+                                <div class="post-content">@Html.Sanitized(Model.Description)</div>
+                            }
+                            @if (!System.String.IsNullOrEmpty(Model.Input))
+                            {
+                                <h3>输入格式</h3>
+                                <div class="post-content">@Html.Sanitized(Model.Input)</div>
+                            }
+                            @if (!System.String.IsNullOrEmpty(Model.Output))
+                            {
+                                <h3>输出格式</h3>
+                                <div class="post-content">@Html.Sanitized(Model.Output)</div>
+                            }
+                            @if (Model.TestCases.Where(x => x.Type == TestCaseType.Sample).Count() > 0)
+                            {
+                                var i = 1;
+                                foreach (var testcase in Model.TestCases.Where(x => x.Type == TestCaseType.Sample).ToList())
+                                {
+                                    <h3>样例数据 @(i++)</h3>
+                                    <div class="post-content">
+                                        <p>输入</p>
+                                        <blockquote class="testcase">
+                                            @testcase.Input.TrimEnd('\n')
+                                        </blockquote>
+                                        <p>输出</p>
+                                        <blockquote class="testcase">
+                                            @testcase.Output.TrimEnd('\n')
+                                        </blockquote>
+                                    </div>
+                                }
+                            }
+                            @if (!System.String.IsNullOrEmpty(Model.Hint))
+                            {
+                                <h3>备注</h3>
+                                <div class="post-content">@Html.Sanitized(Model.Hint)</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div><div class="clear"></div>
+        </div>
+    </div>
 }
 @if (User.Identity.IsAuthenticated)
 {
