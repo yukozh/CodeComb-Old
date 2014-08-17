@@ -70,5 +70,39 @@ namespace CodeComb.Web.Controllers
             var contest = DbContext.Contests.Find(id);
             return View(contest);
         }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult Print(int id, string content)
+        {
+            var contest = DbContext.Contests.Find(id);
+            if (!contest.AllowPrintRequest)
+                return RedirectToAction("Message", "Shared", new { msg = "这场比赛没有开放打印服务！" });
+            if(DateTime.Now < contest.Begin || DateTime.Now >= contest.End)
+                return RedirectToAction("Message", "Shared", new { msg = "只有在比赛进行时才可以使用打印服务！" });
+            DbContext.PrintRequests.Add(new Entity.PrintRequest 
+            {
+                PrintFinished = false,
+                Content = content,
+                Time = DateTime.Now,
+                ContestID = id,
+                UserID = ViewBag.CurrentUser.ID
+            });
+            DbContext.SaveChanges();
+            return RedirectToAction("Message", "Shared", new { msg = "打印材料提交成功，您当前的队列位置为：" + contest.PrintRequests.Where(x => !x.PrintFinished).Count() });
+        }
+
+        [Authorize]
+        public ActionResult Print(int id)
+        {
+            var contest = DbContext.Contests.Find(id);
+            if (!contest.AllowPrintRequest)
+                return RedirectToAction("Message", "Shared", new { msg = "这场比赛没有开放打印服务！" });
+            if (DateTime.Now < contest.Begin || DateTime.Now >= contest.End)
+                return RedirectToAction("Message", "Shared", new { msg = "只有在比赛进行时才可以使用打印服务！" });
+            return View(contest);
+        }
 	}
 }

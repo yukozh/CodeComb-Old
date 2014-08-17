@@ -546,6 +546,7 @@
     <Content Include="Views\Shared\_LayoutContest.cshtml" />
     <Content Include="Views\Contest\Statistics.cshtml" />
     <Content Include="Views\Problem\Show.cshtml" />
+    <Content Include="Views\Contest\Print.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
