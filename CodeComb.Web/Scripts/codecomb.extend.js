@@ -124,6 +124,36 @@ function ShowClar(id)
     });
 }
 
+function ClarResponse(id)
+{
+    $.getJSON("/Contest/GetClar/" + id, {}, function (clar) {
+        var title, question, answer, clarid;
+        title = '<span style="color:blue">' + clar.ProblemRelation + "</span>";
+        if (!clar.NoProblemRelation)
+            title = "Problem: " + title;
+        clarid = clar.ID;
+        question = clar.Question;
+        answer = clar.Answer;
+        var html = '<h2>Judge\'s Response</h2>'
+                      + '<p><strong>' + title + '</strong></p>'
+                      + '<p><strong>Clar Id: <span style="color:blue">' + clarid + '</span></strong></p>'
+                      + '<p><strong>Question: <span style="color:blue">' + question + '</span></strong></p>'
+                      + '<p><strong>Answer: </strong></p>'
+                      + '<p><textarea id="txtClarResponse" style="width:100%" class="textbox"></textarea></p>'
+                      + '<p><input id="btnClarResponse" type="button" value="提交" /></p>'
+                      + '<input type="hidden" id="clar_id" cid="' + clarid + '" />';
+        $.colorbox({
+            html: html, width: '700px', onComplete: function () {
+                $("#btnClarResponse").unbind().click(function () {
+                    $.post("/Contest/ResponseClar/" + $("#clar_id").attr("cid"), { answer: $("#txtClarResponse").val(), broadcast: $("#chkBroadcast").val() }, function () {
+                        $.colorbox.close();
+                    });
+                });
+            }
+        });
+    });
+}
+
 $(document).ready(function () {
     $("#btnAddContact").click(function () {
         var uid = $(this).attr("uid");

@@ -64,8 +64,8 @@
                                     <tr>
                                         <td>@item.ID</td>
                                         <td>@(item.ProblemID == null ? "General" : item.Problem.Title)</td>
-                                        <td style="max-width: 200px; overflow: hidden; white-space: nowrap;"><a href="javascript:ShowClar(@item.ID)">@item.Question</a></td>
-                                        <td style="max-width: 200px; overflow: hidden; white-space: nowrap;"><a href="javascript:ShowClar(@item.ID)">@item.Answer</a></td>
+                                        <td><a href="javascript:ShowClar(@item.ID)">@(item.Question.Length >= 20 ? item.Question.Substring(0, 17) + "..." : item.Question)</a></td>
+                                        <td><a href="javascript:ShowClar(@item.ID)">@(item.Answer.Length >= 20 ? item.Answer.Substring(0, 17) + "..." : item.Answer)</a></td>
                                         <td>@item.Status.ToString()</td>
                                         @if (IsMaster)
                                         {
@@ -83,8 +83,9 @@
                             {
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="id" />
-                                <textarea style="width:100%" name="question"></textarea>
+                                <textarea style="width:100%" name="question" class="textbox"></textarea>
                                 <p>
+                                    <input type="submit" value="提交问题" class="button button-def" />
                                     <select name="problem_id">
                                         <option value="">General</option>
                                         @{
@@ -94,7 +95,8 @@
                                                 <option value="@item.ID">@(i++): @item.Title</option>
                                             }
                                         }
-                                    </select> <input type="submit" value="提交问题" class="button button-def" />
+                                    </select>
+                                    <input type="checkbox" id="chkBroadcast" />Broadcast
                                 </p>
                             }
                         }

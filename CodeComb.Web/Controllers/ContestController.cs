@@ -196,5 +196,29 @@ namespace CodeComb.Web.Controllers
             clarifications = clarifications.OrderByDescending(x => x.Time).ToList();
             return View(clarifications);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        [Authorize]
+        public ActionResult ResponseClar(int id, string answer, bool broadcast)
+        {
+            if (!ViewBag.IsMaster)
+            {
+                return Content("No");
+            }
+            var clar = DbContext.Clarifications.Find(id);
+            if(broadcast)
+                clar.Status = Entity.ClarificationStatus.BroadCast;
+            else 
+                clar.Status = Entity.ClarificationStatus.Private;
+            clar.Answer = answer;
+            DbContext.SaveChanges();
+            if (broadcast)
+                SignalR.CodeCombHub.context.Clients.All.onClarificationsResponsed(new Models.View.Clar(clar));
+            else
+                SignalR.CodeCombHub.context.Clients.Group(clar.User.Username).onClarificationsResponsed(new Models.View.Clar(clar));
+            return Content("Yes");
+        }
 	}
 }
