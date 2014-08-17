@@ -1,0 +1,18 @@
+﻿一、用户中心
+1、/User/Center应指向/User/{我的ID}
+2、/User/Settings/{ID} 可以设置用户的基本资料，其中可以修改偏好语言、密码、Gravatar、昵称。需要判断是否为Master以上级别，如果是Master以上级别或者是CurrentUser则可编辑
+3、/User/Status/{ID} 查询某个用户的评测状态
+4、/User/Solution/{ID} 查看该用户提交的题解
+
+二、题解模块
+1、题解列表
+2、上传题解
+3、题解详细页面
+
+三、比赛设置
+1、题目管理（题目描述、输入输出格式、测试数据、spj、数据范围校验器、标程设定等）
+2、比赛基本信息管理
+
+四、评测机
+1、Judge Interface
+2、Web API

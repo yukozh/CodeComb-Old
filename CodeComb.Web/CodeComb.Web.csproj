@@ -511,6 +511,7 @@
     <Content Include="Styles\colorbox.css" />
     <Content Include="Styles\css-ie.css" />
     <Content Include="Styles\css.css" />
+    <Content Include="TodoList.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
