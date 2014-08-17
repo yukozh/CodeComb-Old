@@ -24,6 +24,10 @@ namespace CodeComb.Web.Controllers
                                        where u.Username == requestContext.HttpContext.User.Identity.Name
                                        select u).Single();
             }
+            else
+            {
+                ViewBag.CurrentUser = null;
+            }
         }
 	}
 }

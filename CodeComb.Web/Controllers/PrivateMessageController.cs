@@ -55,6 +55,7 @@ namespace CodeComb.Web.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateInput(false)]
         public ActionResult PostMessage(int receiver_id, string content)
         {
             var message = new Entity.Message 

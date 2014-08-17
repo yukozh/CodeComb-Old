@@ -80,9 +80,13 @@
                 <div class="post-module module-contest-problems">
                     <h3>Problems</h3>
                     <div class="post-module-content">
-                        <div class="contest-problem-item post-cate-item"><div class=""><a href="#" target="_blank" class="status-tag status-bg-nul">N/A</a></div><a href="problem.html">A: A+B Problem</a></div>
-                        <div class="contest-problem-item post-cate-item"><div class=""><a href="#" target="_blank" class="status-tag status-bg-ac">AC</a></div><a href="problem.html">B: A+B Problem</a></div>
-                        <div class="contest-problem-item post-cate-item"><div class=""><a href="#" target="_blank" class="status-tag status-bg-tle">TLE</a></div><a href="problem.html">C: A+B Problem</a></div>
+                        @{
+                            var n = 'A';
+                            foreach (StatusSnapshot item in ViewBag.Problems)
+                            {
+                                <div class="contest-problem-item post-cate-item"><div class=""><a href="javascript:void(0)" class="status-tag status-bg-@item.Css">@item.Result</a></div>@Html.ActionLink(n++ + ": " + item.ProblemTitle, "Show", "Problem", new { id = item.ProblemID }, null)</div>
+                            }
+                        }
                     </div>
                 </div>
 

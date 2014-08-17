@@ -17,6 +17,10 @@ namespace CodeComb.Web.Controllers
         public ActionResult Show(int id)
         {
             var problem = DbContext.Problems.Find(id);
+            var Problems = new List<Models.View.StatusSnapshot>();
+            foreach (var p in problem.Contest.Problems.OrderBy(x=>x.Credit))
+                Problems.Add(new Models.View.StatusSnapshot(p.Contest, ViewBag.CurrentUser));
+            ViewBag.Problems = Problems;
             return View(problem);
         }
 	}   

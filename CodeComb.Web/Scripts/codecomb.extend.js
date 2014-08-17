@@ -51,7 +51,7 @@ function AutoAddContact(id)
 
 function GetCookie()
 {
-    var tmp = $.cookie(username);
+    var tmp = $.cookie("c_" + username);
     if (tmp == null) tmp = "";
     var contact_ids = tmp.split(',');
     return contact_ids;
@@ -64,7 +64,7 @@ function SetCookie(ids)
         if (parseInt(ids[i]) > 0)
             ret += ids[i] + ",";
     ret = ret.substr(0, ret.length - 1);
-    $.cookie(username, ret);
+    $.cookie("c_" + username, ret, { path: "/" });
 }
 
 function PrivateMessageDispay()
