@@ -104,5 +104,97 @@ namespace CodeComb.Web.Controllers
                 return RedirectToAction("Message", "Shared", new { msg = "只有在比赛进行时才可以使用打印服务！" });
             return View(contest);
         }
+
+        [HttpGet]
+        public ActionResult GetClar(int id)
+        {
+            var uid = 0;
+            if (User.Identity.IsAuthenticated)
+                uid = (int)ViewBag.CurrentUser.ID;
+            var clar = DbContext.Clarifications.Find(id);
+            if (clar.Status != Entity.ClarificationStatus.BroadCast && clar.UserID != uid)
+                return Json(null, JsonRequestBehavior.AllowGet);
+            return Json(new Models.View.Clar(clar), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Clar(int id)
+        {
+            var clarifications = (from c in DbContext.Clarifications
+                                  where c.ContestID == id
+                                  && c.StatusAsInt == (int)Entity.ClarificationStatus.BroadCast
+                                  select c).ToList();
+            ViewBag.CurrentContest = DbContext.Contests.Find(id);
+            if (User.Identity.IsAuthenticated)
+            {
+                var _problems = (from p in DbContext.Problems
+                                 where p.ContestID == id
+                                 orderby p.Credit descending
+                                 select p).ToList();
+                var problems = new List<Models.View.ClarProblem>();
+                foreach (var p in _problems)
+                    problems.Add(new Models.View.ClarProblem(p));
+                ViewBag.Problems = problems;
+                var uid = (int)ViewBag.CurrentUser.ID;
+                clarifications = clarifications.Union((from c in DbContext.Clarifications
+                                                       where c.ContestID == id
+                                                       && c.UserID == uid
+                                                       select c).ToList()).ToList();
+            }
+            clarifications = clarifications.OrderByDescending(x => x.Time).ToList();
+            return View(clarifications);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        [Authorize]
+        public ActionResult Clar(int id,int? problem_id, string question)
+        {
+            //合法性验证
+            var contest = DbContext.Contests.Find(id);
+            if (!contest.AllowClarification)
+                return RedirectToAction("Message", "Shared", new { msg = "本场比赛没有开启答疑平台！" });
+            var problem = DbContext.Problems.Find(problem_id);
+            if (problem.ContestID != contest.ID)
+                return RedirectToAction("Message", "Shared", new { msg = "没有找到该题！" });
+
+            var clar = new Entity.Clarification
+            {
+                ContestID = id,
+                ProblemID = problem_id,
+                Status = Entity.ClarificationStatus.Pending,
+                Question = question,
+                Answer = "",
+                Time = DateTime.Now,
+                UserID = ViewBag.CurrentUser.ID
+            };
+            DbContext.Clarifications.Add(clar);
+            DbContext.SaveChanges();
+
+            //重新载入Model
+            var clarifications = (from c in DbContext.Clarifications
+                                  where c.ContestID == id
+                                  && c.Status == Entity.ClarificationStatus.BroadCast
+                                  select c).ToList();
+            ViewBag.CurrentContest = DbContext.Contests.Find(id);
+            if (User.Identity.IsAuthenticated)
+            {
+                var _problems = (from p in DbContext.Problems
+                                    where p.ContestID == id
+                                    orderby p.Credit descending
+                                    select p).ToList();
+                var problems = new List<Models.View.ClarProblem>();
+                foreach (var p in _problems) 
+                    problems.Add(new Models.View.ClarProblem(p));
+                ViewBag.Problems = problems;
+                var uid = (int)ViewBag.CurrentUser.ID;
+                clarifications = clarifications.Union((from c in DbContext.Clarifications
+                                                       where c.ContestID == id
+                                                       && c.UserID == uid
+                                                       select c).ToList()).ToList();
+            }
+            clarifications = clarifications.OrderByDescending(x => x.Time).ToList();
+            return View(clarifications);
+        }
 	}
 }

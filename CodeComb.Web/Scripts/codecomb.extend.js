@@ -105,6 +105,25 @@ function PostMessage()
     $.post("/PrivateMessage/PostMessage", { receiver_id: CurrentContactID, content: $("#txtMessageContent").val(), rnd: Math.random() }, function () { $("#txtMessageContent").val(""); });
 }
 
+function ShowClar(id)
+{
+    $.getJSON("/Contest/GetClar/" + id, {}, function (clar) {
+        var title, question, answer, clarid;
+        title = '<span style="color:blue">' + clar.ProblemRelation + "</span>";
+        if (!clar.NoProblemRelation)
+            title = "Problem: " + title;
+        clarid = clar.ID;
+        question = clar.Question;
+        answer = clar.Answer;
+        var html = '<h2>Judge\'s Response</h2>'
+                      + '<p><strong>' + title + '</strong></p>'
+                      + '<p><strong>Clar Id: <span style="color:blue">' + clarid + '</span></strong></p>'
+                      + '<p><strong>Question: <span style="color:blue">' + question + '</span></strong></p>'
+                      + '<p><strong>Answer: <span style="color:blue">' + answer + '</span></strong></p>';
+        $.colorbox({ html: html, width: '700px' });
+    });
+}
+
 $(document).ready(function () {
     $("#btnAddContact").click(function () {
         var uid = $(this).attr("uid");

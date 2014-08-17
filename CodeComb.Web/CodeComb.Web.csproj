@@ -214,6 +214,7 @@
     <Compile Include="Helpers\Time.cs" />
     <Compile Include="Models\View\ChatRecord.cs" />
     <Compile Include="Models\View\Clar.cs" />
+    <Compile Include="Models\View\ClarProblem.cs" />
     <Compile Include="Models\View\Contact.cs" />
     <Compile Include="Models\View\Contest.cs" />
     <Compile Include="Models\View\HomeContest.cs" />
@@ -547,6 +548,7 @@
     <Content Include="Views\Contest\Statistics.cshtml" />
     <Content Include="Views\Problem\Show.cshtml" />
     <Content Include="Views\Contest\Print.cshtml" />
+    <Content Include="Views\Contest\Clar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
