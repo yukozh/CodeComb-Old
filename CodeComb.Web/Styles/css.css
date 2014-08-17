@@ -1729,6 +1729,11 @@ a.status-bg-nul, a.status-bg-nul:active, a.status-bg-nul:hover, a.status-bg-nul:
     color: #a0a0a0;
 }
 
+.status-point-hidden {
+    background: #f0895a;
+    color: #f0895a;
+}
+
 .status-point-mle, .status-point-rte, .status-point-tle {
     background: #9400e0;
     color: #9400e0;

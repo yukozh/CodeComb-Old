@@ -119,8 +119,8 @@ function LoadStatuses() {
     }
 }
 
-var StatusCss = ["ac", "pe", "wa", "ole", "tle", "mle", "rte", "ce", "se", "hacked", "running", "pending"];
-var StatusDisplay = ["Accepted", "Presentation Error", "Wrong Answer", "Output Limit Exceeded", "Time Limit Exceeded", "Memory Limit Exceeded", "Runtime Error", "Compile Error", "System Error", "Hacked", "Running", "Pending"];
+var StatusCss = ["ac", "pe", "wa", "ole", "tle", "mle", "rte", "ce", "se", "hacked", "running", "pending","hidden"];
+var StatusDisplay = ["Accepted", "Presentation Error", "Wrong Answer", "Output Limit Exceeded", "Time Limit Exceeded", "Memory Limit Exceeded", "Runtime Error", "Compile Error", "System Error", "Hacked", "Running", "Pending","Hidden"];
 
 function BuildStatus(status)
 {
@@ -129,7 +129,7 @@ function BuildStatus(status)
                   + '<div class="status-face">' + status.Gravatar + '</div>'
                   + '<div class="status-cont"><div class="status-name"><h2>' + status.Nickname + '</h2></div></div>'
                   + '<div class="status-info">' + status.ProblemTitle + ' @' + status.TimeTip + '</div>'
-                  + '<div class="status-status">' + status.Result + ' (' + status.Statistics[0] + '/' + status.PointCount + ')</div>'
+                  + '<div class="status-status">' + status.Result + (status.PointCount > 1 ? ' (' + status.Statistics[0] + '/' + status.PointCount + ')' : "") + '</div>'
                   + '</div><div class="status-points">';
     var per = parseInt(100 / status.PointCount);
     var _per = 100 - per * status.PointCount;
@@ -139,7 +139,7 @@ function BuildStatus(status)
         if (i == status.Statistics.length - 1 && _per != 0)
             __per = _per;
         if (status.Statistics[i] > 0)
-            html += '<div class="status-point-item status-point-' + StatusCss[i] + '" style="width:' + __per * status.Statistics[i] + '%"><div class="status-point-desc">' + StatusDisplay[i] + ' : ' + status.Statistics[i] + '</div></div>';
+            html += '<div class="status-point-item status-point-' + StatusCss[i] + '" style="width:' + __per * status.Statistics[i] + '%"><div class="status-point-desc">' + StatusDisplay[i] + (status.PointCount > 1 ? ' : ' + status.Statistics[i] : "") + '</div></div>';
     }
     html += '</div></a>';
     if ($("#s_" + status.ID).length > 0) {
@@ -155,16 +155,16 @@ function BuildStatusDetail(status) {
                   + '<div class="status-face">' + status.Gravatar + '</div>'
                   + '<div class="status-cont"><div class="status-name"><h2><a href="/User/' + status.UserID + '">' + status.Nickname + '</a></h2></div></div>'
                   + '<div class="status-info"><a href="/Problem/' + status.ProblemID + '">' + status.ProblemTitle + '<a/> @' + status.TimeTip + '</div>'
-                  + '<div class="status-status">' + status.Result + ' (' + status.Statistics[0] + '/' + status.PointCount + ')</div>'
+                  + '<div class="status-status">' + status.Result + (status.PointCount > 1 ? ' (' + status.Statistics[0] + '/' + status.PointCount + ')' : "") + '</div>'
                   + '</div><div class="status-points">';
     var per = parseInt(100 / status.PointCount);
     var _per = 100 - per * status.PointCount;
     for (var i = 0; i < status.Statistics.length; i++) {
         var __per = per;
-        if (i == status.Statistics.length - 1)
+        if (i == status.Statistics.length - 1 && _per != 0)
             __per = _per;
         if (status.Statistics[i] > 0)
-            html += '<div class="status-point-item status-point-' + StatusCss[i] + '" style="width:' + __per * status.Statistics[i] + '%"><div class="status-point-desc">' + StatusDisplay[i] + ' : ' + status.Statistics[i] + '</div></div>';
+            html += '<div class="status-point-item status-point-' + StatusCss[i] + '" style="width:' + __per * status.Statistics[i] + '%"><div class="status-point-desc">' + StatusDisplay[i] + (status.PointCount > 1 ? ' : ' + status.Statistics[i] : "") + '</div></div>';
     }
     html += '</div></div>';
     if ($("#s_" + status.ID).length > 0) {

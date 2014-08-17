@@ -8,7 +8,7 @@ namespace CodeComb.Web.Models.View
     public class Status
     {
         public Status() { }
-        public Status(Entity.Status status) 
+        public Status(Entity.Status status)
         {
             var statistics = new int[Entity.CommonEnums.JudgeResultDisplay.Count()];
             var _statistics = from jt in status.JudgeTasks
@@ -18,13 +18,15 @@ namespace CodeComb.Web.Models.View
                 statistics[item.Key] = item.Value;
             var _result = "";
             if (status.Result == Entity.JudgeResult.Pending)
-                    _result = "Pending";
-                else if (status.Result == Entity.JudgeResult.Running)
-                    _result = "Running";
-                else if (status.Result == Entity.JudgeResult.Accepted)
-                    _result = "Accepted";
-                else
-                    _result = "Not Accepted";
+                _result = "Pending";
+            else if (status.Result == Entity.JudgeResult.Running)
+                _result = "Running";
+            else if (status.Result == Entity.JudgeResult.Accepted)
+                _result = "Accepted";
+            else if (status.Result == Entity.JudgeResult.Hidden)
+                _result = "Hidden";
+            else
+                _result = "Not Accepted";
             ID = status.ID;
             _Nickname = status.User.Nickname;
             Nickname = Helpers.ColorName.GetNicknameHtml(status.User.Nickname, status.User.Ratings.Sum(x => x.Credit) + 1500);

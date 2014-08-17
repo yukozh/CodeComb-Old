@@ -17,10 +17,13 @@
                         </blockquote>
                         <div class="status-content" id="lstDetails">
                         </div>
-                        <div class="status-code">
-                            <h3>Source</h3>
-                            <pre>@Model.Code</pre>
-                        </div>
+                        @if (ViewBag.Showable)
+                        { 
+                            <div class="status-code">
+                                <h3>Source</h3>
+                                <pre>@Model.Code</pre>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

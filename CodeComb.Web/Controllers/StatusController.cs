@@ -18,7 +18,66 @@ namespace CodeComb.Web.Controllers
         public ActionResult Show(int id)
         {
             var status = DbContext.Statuses.Find(id);
+            var contest = status.Problem.Contest;
+            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            bool Showable = false;
+            if (DateTime.Now >= contest.End || user.Role >= Entity.UserRole.Master || (from m in contest.Managers select m.ID).ToList().Contains(user.ID))
+                Showable = true;
+            if (contest.Format == Entity.ContestFormat.TopCoder && DateTime.Now >= contest.RestEnd)
+                Showable = true;
+            if (contest.Format == Entity.ContestFormat.Codeforces && (from l in status.Problem.Locks where l.UserID == user.ID select l).Count() > 0)
+                Showable = true;
+            if (DateTime.Now >= contest.End && !status.Public)
+                Showable = false;
+            ViewBag.Showable = Showable;
             return View(status);
+        }
+
+        [HttpGet]
+        public ActionResult GetStatus(int id)
+        {
+            var status = DbContext.Statuses.Find(id);
+            var contest = status.Problem.Contest;
+            var user = ViewBag.CurrentUser==null?new Entity.User():(Entity.User)ViewBag.CurrentUser;
+            if (DateTime.Now >= contest.End || user.Role >= Entity.UserRole.Master || (from m in contest.Managers select m.ID).ToList().Contains(user.ID))
+            {
+                return Json(new Models.View.Status(status), JsonRequestBehavior.AllowGet);
+            }
+            if (contest.Format == Entity.ContestFormat.ACM)
+            {
+                status.JudgeTasks = new List<Entity.JudgeTask>
+                    { 
+                        new Entity.JudgeTask
+                        {
+                            Result = status.Result,
+                            MemoryUsage = status.JudgeTasks.Max(x=>x.MemoryUsage),
+                            TimeUsage = status.JudgeTasks.Max(x=>x.TimeUsage),
+                            Hint="比赛期间不提供详细信息",
+                            StatusID = status.ID
+                        }
+                    };
+            }
+            else if (contest.Format == Entity.ContestFormat.OI)
+            {
+                status.Result = Entity.JudgeResult.Hidden;
+                status.JudgeTasks = new List<Entity.JudgeTask>
+                    { 
+                        new Entity.JudgeTask
+                        {
+                            Result = Entity.JudgeResult.Hidden,
+                            MemoryUsage = status.JudgeTasks.Max(x=>x.MemoryUsage),
+                            TimeUsage = status.JudgeTasks.Max(x=>x.TimeUsage),
+                            Hint="比赛期间不提供详细信息",
+                            StatusID = status.ID
+                        }
+                    };
+            }
+            else
+            {
+                foreach (var jt in status.JudgeTasks)
+                    jt.Hint = "比赛期间不提供详细信息";
+            }
+            return Json(new Models.View.Status(status), JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -41,21 +100,59 @@ namespace CodeComb.Web.Controllers
             _statuses = _statuses.OrderByDescending(x => x.Time);
             var statuses = new List<Models.View.Status>();
             foreach (var status in _statuses.Skip(10 * page).Take(10).ToList())
+            {
+                var user = ViewBag.CurrentUser==null?new Entity.User():(Entity.User)ViewBag.CurrentUser;
+                var contest = status.Problem.Contest;
+                if (DateTime.Now >= contest.End || user.Role >= Entity.UserRole.Master || (from m in contest.Managers select m.ID).ToList().Contains(user.ID))
+                {
+                    statuses.Add(new Models.View.Status(status));
+                    continue;
+                }
+                if (contest.Format == Entity.ContestFormat.ACM)
+                {
+                    status.JudgeTasks = new List<Entity.JudgeTask>
+                    { 
+                        new Entity.JudgeTask
+                        {
+                            Result = status.Result,
+                            MemoryUsage = status.JudgeTasks.Max(x=>x.MemoryUsage),
+                            TimeUsage = status.JudgeTasks.Max(x=>x.TimeUsage),
+                            Hint="比赛期间不提供详细信息",
+                            StatusID = status.ID
+                        }
+                    };
+                }
+                else if (contest.Format == Entity.ContestFormat.OI)
+                {
+                    status.Result = Entity.JudgeResult.Hidden;
+                    status.JudgeTasks = new List<Entity.JudgeTask>
+                    { 
+                        new Entity.JudgeTask
+                        {
+                            Result = Entity.JudgeResult.Hidden,
+                            MemoryUsage = status.JudgeTasks.Max(x=>x.MemoryUsage),
+                            TimeUsage = status.JudgeTasks.Max(x=>x.TimeUsage),
+                            Hint="比赛期间不提供详细信息",
+                            StatusID = status.ID
+                        }
+                    };
+                }
+                else
+                {
+                    foreach (var jt in status.JudgeTasks)
+                        jt.Hint = "比赛期间不提供详细信息";
+                }
                 statuses.Add(new Models.View.Status(status));
+            }
             return Json(statuses, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
-        public ActionResult GetStatus(int id)
-        {
-            var status = DbContext.Statuses.Find(id);
-            return Json(new Models.View.Status(status), JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public ActionResult GetStatusDetails(int id)
         {
             //TODO: 针对不同权限不同赛制提供有限的内容
+            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            var contest = DbContext.Statuses.Find(id).Problem.Contest;
             var judgetasks = (from jt in DbContext.JudgeTasks
                                where jt.StatusID == id
                                select jt).ToList();
@@ -63,7 +160,18 @@ namespace CodeComb.Web.Controllers
             int index = 0;
             foreach (var jt in judgetasks)
                 statusdetails.Add(new Models.View.StatusDetail(jt, index++));
-            return Json(statusdetails, JsonRequestBehavior.AllowGet);
+            if (DateTime.Now >= contest.End || user.Role >= Entity.UserRole.Master || (from m in contest.Managers select m.ID).ToList().Contains(user.ID))
+                return Json(statusdetails, JsonRequestBehavior.AllowGet);
+            if (contest.Format == Entity.ContestFormat.ACM || contest.Format == Entity.ContestFormat.OI)
+            {
+                return Json(new object(), JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                foreach (var sd in statusdetails)
+                    sd.Hint = "比赛期间不提供详细信息显示";
+                return Json(statusdetails, JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]
