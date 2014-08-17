@@ -79,7 +79,7 @@
                         <h3>提交问题</h3>
                         @if (User.Identity.IsAuthenticated)
                         {
-                            using (Html.BeginForm("CreateClar", "Contest", FormMethod.Post, new { id = "frmCreateClar" }))
+                            using (Html.BeginForm("Clar", "Contest", FormMethod.Post, new { id = "frmCreateClar" }))
                             {
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="id" />
