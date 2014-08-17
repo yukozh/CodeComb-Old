@@ -155,7 +155,7 @@ namespace CodeComb.Web.Controllers
             if (!contest.AllowClarification)
                 return RedirectToAction("Message", "Shared", new { msg = "本场比赛没有开启答疑平台！" });
             var problem = DbContext.Problems.Find(problem_id);
-            if (problem.ContestID != contest.ID)
+            if (problem != null && problem.ContestID != contest.ID)
                 return RedirectToAction("Message", "Shared", new { msg = "没有找到该题！" });
 
             var clar = new Entity.Clarification
@@ -174,7 +174,7 @@ namespace CodeComb.Web.Controllers
                            let master_ids = (from m in DbContext.ContestManagers
                                              where m.ContestID == contest.ID
                                              select id).ToList()
-                           where u.Role >= Entity.UserRole.Master
+                           where u.RoleAsInt >= (int)Entity.UserRole.Master
                            || master_ids.Contains(u.ID)
                            select u.Username).ToList();
             foreach (var master in masters)
@@ -183,7 +183,7 @@ namespace CodeComb.Web.Controllers
             //重新载入Model
             var clarifications = (from c in DbContext.Clarifications
                                   where c.ContestID == id
-                                  && c.Status == Entity.ClarificationStatus.BroadCast
+                                  && c.StatusAsInt == (int)Entity.ClarificationStatus.BroadCast
                                   select c).ToList();
             ViewBag.CurrentContest = DbContext.Contests.Find(id);
             if (User.Identity.IsAuthenticated)
@@ -207,7 +207,6 @@ namespace CodeComb.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [ValidateInput(false)]
         [Authorize]
         public ActionResult ResponseClar(int id, string answer, bool broadcast)
