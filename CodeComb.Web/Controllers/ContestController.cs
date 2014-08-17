@@ -170,6 +170,15 @@ namespace CodeComb.Web.Controllers
             };
             DbContext.Clarifications.Add(clar);
             DbContext.SaveChanges();
+            var masters = (from u in DbContext.Users
+                           let master_ids = (from m in DbContext.ContestManagers
+                                             where m.ContestID == contest.ID
+                                             select id).ToList()
+                           where u.Role >= Entity.UserRole.Master
+                           || master_ids.Contains(u.ID)
+                           select u.Username).ToList();
+            foreach (var master in masters)
+                SignalR.CodeCombHub.context.Clients.Group(master).onClarificationsRequested(clar.ID);
 
             //重新载入Model
             var clarifications = (from c in DbContext.Clarifications

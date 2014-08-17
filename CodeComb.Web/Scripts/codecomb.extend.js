@@ -220,6 +220,9 @@ $(document).ready(function () {
                       + '<p><strong>Answer: <span style="color:blue">' + answer + '</span></strong></p>';
         $.colorbox({ html: html, width: '700px' });
     }
+    CodeCombHub.client.onClarificationsRequested = function (id) {
+        ClarResponse(id);
+    }
     $.connection.hub.start();
 
     $("#btnLoadCodeEditBox").click(function () {
