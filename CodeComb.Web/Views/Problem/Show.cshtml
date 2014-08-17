@@ -13,7 +13,7 @@
                     <div class="post-info"></div>
                     <div>
                         @if (!System.String.IsNullOrEmpty(Model.Background))
-                        { 
+                        {
                             <h3>背景</h3>
                             <div class="post-content">@Html.Sanitized(Model.Background)</div>
                         }
@@ -32,22 +32,22 @@
                             <h3>输出格式</h3>
                             <div class="post-content">@Html.Sanitized(Model.Output)</div>
                         }
-                        @if (Model.TestCases.Where(x=>x.Type == TestCaseType.Sample).Count()>0)
+                        @if (Model.TestCases.Where(x => x.Type == TestCaseType.Sample).Count() > 0)
                         {
                             var i = 1;
                             foreach (var testcase in Model.TestCases.Where(x => x.Type == TestCaseType.Sample).ToList())
-                            { 
-                            <h3>样例数据 @(i++)</h3>
-                            <div class="post-content">
-                                <p>输入</p>
-                                <blockquote class="testcase">
-                                    @testcase.Input.TrimEnd('\n')
-                                </blockquote>
-                                <p>输出</p>
-                                <blockquote class="testcase">
-                                    @testcase.Output.TrimEnd('\n')
-                                </blockquote>
-                            </div>
+                            {
+                                <h3>样例数据 @(i++)</h3>
+                                <div class="post-content">
+                                    <p>输入</p>
+                                    <blockquote class="testcase">
+                                        @testcase.Input.TrimEnd('\n')
+                                    </blockquote>
+                                    <p>输出</p>
+                                    <blockquote class="testcase">
+                                        @testcase.Output.TrimEnd('\n')
+                                    </blockquote>
+                                </div>
                             }
                         }
                         @if (!System.String.IsNullOrEmpty(Model.Hint))
@@ -63,7 +63,7 @@
                     <div class="post-module">
                         <p><a href="javascript:void(0)" id="btnLoadCodeEditBox">提交评测</a></p>
                         @foreach (var status in Model.GetContestStatuses().Where(x => x.User.Username == User.Identity.Name).OrderByDescending(x => x.Time).ToList())
-                        { 
+                        {
                             <p>@status.Time.ToString("MM-dd HH:mm") @status.GetStatusAsString()</p>
                         }
                     </div>
@@ -81,26 +81,22 @@
                     <h3>Problems</h3>
                     <div class="post-module-content">
                         @{
-                            var n = 'A';
-                            foreach (StatusSnapshot item in ViewBag.Problems)
-                            {
-                                <div class="contest-problem-item post-cate-item"><div class=""><a href="javascript:void(0)" class="status-tag status-bg-@item.Css">@item.Result</a></div>@Html.ActionLink(n++ + ": " + item.ProblemTitle, "Show", "Problem", new { id = item.ProblemID }, null)</div>
-                            }
+                var n = 'A';
+                foreach (StatusSnapshot item in ViewBag.Problems)
+                {
+                    <div class="contest-problem-item post-cate-item"><div class=""><a href="javascript:void(0)" class="status-tag status-bg-@item.Css">@item.Result</a></div>@Html.ActionLink(n++ + ": " + item.ProblemTitle, "Show", "Problem", new { id = item.ProblemID }, null)</div>
+                }
                         }
                     </div>
                 </div>
 
                 <div class="post-module">
-                    <h3>Public Questions</h3>
+                    <h3>Broadcasts</h3>
                     <div class="post-module-content">
-                        <div class="post-cate-item">xxx</div>
-                    </div>
-                </div>
-
-                <div class="post-module">
-                    <h3>Ask Question</h3>
-                    <div class="post-module-content">
-                        <div class="post-cate-item">xxx</div>
+                        @foreach (var item in Model.Clarifications.Where(x => x.Status == ClarificationStatus.BroadCast).OrderByDescending(x => x.Time))
+                        {
+                            <div class="post-cate-item">@Html.ActionLink(item.Question, "Clar", "Contest", new { id = Model.ID }, null)</div>
+                        }
                     </div>
                 </div>
 
@@ -112,30 +108,35 @@ else
 {
 
 }
-@if (User.Identity.IsAuthenticated) 
+@if (User.Identity.IsAuthenticated)
 {
     <div style="display:none">
         <div id="CodeEditBox">
             <h3>提交评测</h3>
-            <textarea id="editor" style="width:600px;height:280px;font-size:12px;"></textarea>
-            <p>
-                <select id="lstLanguages">
-                    @{var i = 0;}
-                    @foreach (var name in CodeComb.Entity.CommonEnums.LanguageDisplay)
-                    {
-                        if (((CodeComb.Entity.User)ViewBag.CurrentUser).CommonLanguageAsInt == i)
+            @using (Html.BeginForm("Create", "Status", FormMethod.Post, new { id = "frmSubmitCode" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" value="@Model.ID" name="problem_id" />
+                <textarea id="editor" name="code" style="width:600px;height:280px;font-size:12px;"></textarea>
+                <p>
+                    <select id="lstLanguages" name="language_id">
+                        @{var i = 0;}
+                        @foreach (var name in CodeComb.Entity.CommonEnums.LanguageDisplay)
                         {
-                            <option value="@(i++)" selected>@name</option>
+                            if (((CodeComb.Entity.User)ViewBag.CurrentUser).CommonLanguageAsInt == i)
+                            {
+                                <option value="@(i++)" selected>@name</option>
+                            }
+                            else
+                            {
+                                <option value="@(i++)">@name</option>
+                            }
                         }
-                        else
-                        { 
-                            <option value="@(i++)">@name</option>
-                        }
-                    }
-                </select>
-                <button role="button" id="btnSubmitCode" class="button button-def">提交</button>
-                <button role="button" id="btnClearCodeBox" class="button">清空</button>
-            </p>
+                    </select>
+                    <input type="button" id="btnSubmitCode" class="button button-def" value="提交" />
+                    <input type="button" id="btnClearCodeBox" class="button" value="清空" />
+                </p>
+            }
         </div>
     </div>
 }

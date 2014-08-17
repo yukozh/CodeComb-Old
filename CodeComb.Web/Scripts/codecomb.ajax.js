@@ -109,7 +109,7 @@ function LoadStatuses() {
             rnd: Math.random()
         }, function (statuses) {
             if (statuses.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
-            for (var i in statuses) {
+            for (var i = statuses.length - 1; i >= 0; i--) {
                 BuildStatus(statuses[i]);
             }
             lock = false;
@@ -136,7 +136,7 @@ function BuildStatus(status)
     for (var i = 0; i < status.Statistics.length; i++)
     {
         var __per = per;
-        if (i == status.Statistics.length - 1)
+        if (i == status.Statistics.length - 1 && _per != 0)
             __per = _per;
         if (status.Statistics[i] > 0)
             html += '<div class="status-point-item status-point-' + StatusCss[i] + '" style="width:' + __per * status.Statistics[i] + '%"><div class="status-point-desc">' + StatusDisplay[i] + ' : ' + status.Statistics[i] + '</div></div>';
@@ -146,7 +146,7 @@ function BuildStatus(status)
         $("#s_" + status.ID).html(html);
     }
     else {
-        $("#lstStatuses").append(html);
+        $("#lstStatuses").prepend(html);
     }
 }
 function BuildStatusDetail(status) {

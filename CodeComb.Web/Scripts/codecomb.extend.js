@@ -126,7 +126,7 @@ $(document).ready(function () {
     //SignalR
     var CodeCombHub = $.connection.codeCombHub;
     CodeCombHub.client.onStatusChanged = function (status) {
-        if ($("#lstStatuses") > 0) {
+        if ($("#lstStatuses").length > 0) {
             if ($("#s_" + status.ID).length > 0) {
                 BuildStatus(status);
             }
@@ -141,10 +141,10 @@ $(document).ready(function () {
         }
     };
     CodeCombHub.client.onStatusCreated = function (status) {
-        if ($("#lstStatuses") > 0)
+        if ($("#lstStatuses").length > 0)
         {
             if (contest_id != null && status.ContestID != contest_id) return;
-            if (status._Nickname.indexOf(nickname) < 0) return;
+            if (nickname != null && status._Nickname.indexOf(nickname) < 0) return;
             if (problem_id != null && problem_id != 0 && status.ProblemID != problem_id) return;
             BuildStatus(status);
         }
@@ -214,5 +214,21 @@ $(document).ready(function () {
     }
     $("#btnClearCodeBox").click(function () {
         editor.setValue("");
+    });
+
+    $("#btnSubmitCode").click(function () {
+        $.colorbox({ html: '<h3>评测结果</h3><p>正在等待系统验证及分配评测资源...</p>', width:'700px' });
+        $.post("/Status/Create", $("#frmSubmitCode").serialize(), function (data) {
+            if (data == "Problem not existed")
+                $.colorbox({ html: '<h3>评测结果</h3><p>不存在这道题目！</p>', width: '700px' });
+            else if(data=="Insufficient permissions")
+                $.colorbox({ html: '<h3>评测结果</h3><p>权限不足！</p>', width: '700px' });
+            else if (data == "Locked")
+                $.colorbox({ html: '<h3>评测结果</h3><p>您已锁定了该题，无法再次提交！</p>', width: '700px' });
+            else if (data == "Wrong phase")
+                $.colorbox({ html: '<h3>评测结果</h3><p>本阶段不允许提交！</p>', width: '700px' });
+            else
+                alert(data);
+        });
     });
 });

@@ -39,7 +39,7 @@
 </div>
 <script>
     var nickname, result, contest_id, problem_id;
-    contest_id == @(ViewContext.RouteData.Values["id"]?? "null");
+    contest_id = @(ViewContext.RouteData.Values["id"]?? "null");
     $("#btnFilter").click(function () {
         nickname = $("#txtNickname").val();
         problem_id = parseInt($("#txtProblemID").val());
