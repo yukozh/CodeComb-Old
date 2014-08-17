@@ -82,7 +82,7 @@
                             using (Html.BeginForm("Clar", "Contest", FormMethod.Post, new { id = "frmCreateClar" }))
                             {
                                 @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" />
+                                <input type="hidden" name="id" value="@ViewContext.RouteData.Values["id"]" />
                                 <textarea style="width:100%" name="question" class="textbox"></textarea>
                                 <p>
                                     <input type="submit" value="提交问题" class="button button-def" />
@@ -96,7 +96,6 @@
                                             }
                                         }
                                     </select>
-                                    <input type="checkbox" id="chkBroadcast" />Broadcast
                                 </p>
                             }
                         }
