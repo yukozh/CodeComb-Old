@@ -1,0 +1,30 @@
+﻿@model Solution
+@{
+    ViewBag.Title = Model.Title + " - " + Model.Problem.Title;
+}
+
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="post-detail-wrap">
+                    <div class="post-title"><h2>@Model.Title</h2></div>
+                    <div class="post-info">
+                        @Html.Gravatar(Model.User.Gravatar, 180, "post-face") <a href="/User/@Model.UserID">@Html.Nickname(Model.User.Nickname, Model.User.Ratings.Sum(x => x.Credit) + 1500, "post-info")</a> 标签：@ViewBag.Tags)
+                        @if (User.Identity.IsAuthenticated && (((CodeComb.Entity.User)ViewBag.CurrentUser).ID == Model.UserID || ((CodeComb.Entity.User)ViewBag.CurrentUser).Role >= UserRole.Master))
+                        {
+                            <a class="post-info" href="javascript:$('#DisplayArea').hide();$('#EditArea').fadeIn();CKEDITOR.replace('EditTopic',{toolbar: 'Basic',width:'100%',height:'170px'});" id="btnTopicEdit" class="post-info">编辑</a>
+                            <a class="post-info" href="javascript:$('#frmDeleteSolution').submit();" id="btnDeleteTopic" class="post-info">删除</a>
+                            using (Html.BeginForm("Delete", "Solution", FormMethod.Post, new { id = "frmDeleteSolution", style = "display:none;" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" value="@Model.ID" name="id" />
+                            }
+                        }
+                    </div>
+                    <div class="post-content" id="DisplayArea">@Html.Sanitized(Model.Content)</div>
+                </div>
+            </div>
+        </div>
+    </div><div class="clear"></div>
+</div>

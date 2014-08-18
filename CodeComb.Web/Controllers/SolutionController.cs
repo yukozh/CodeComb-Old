@@ -58,5 +58,44 @@ namespace CodeComb.Web.Controllers
                              select s).ToList();
             return View();
         }
-	}
+
+        public ActionResult Show(int id)
+        {
+            var solution = DbContext.Solutions.Find(id);
+            var problem = solution.Problem;
+            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            if (DateTime.Now < problem.Contest.End && user.Role < Entity.UserRole.Master && !(from m in problem.Contest.Managers select m.ID).Contains(user.ID))
+                return RedirectToAction("Message", "Shared", new { msg = "目前还不能使用结题报告系统！" });
+            var tags = "";
+            var i = 0;
+            foreach (var tag in solution.SolutionTags)
+            {
+                if (++i == solution.SolutionTags.Count)
+                {
+                    tags += tag.AlgorithmTag.Title;
+                }
+                else
+                {
+                    tags += (tag.AlgorithmTag.Title + ",");
+                }
+            }
+            ViewBag.Tags = tags;
+            return View(solution);
+        }
+
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            var solution = DbContext.Solutions.Find(id);
+            var problem = solution.Problem;
+            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            if (DateTime.Now < problem.Contest.End && user.Role < Entity.UserRole.Master && !(from m in problem.Contest.Managers select m.ID).Contains(user.ID) && solution.UserID != user.ID)
+                return RedirectToAction("Message", "Shared", new { msg = "您无权删除这份解题报告！" });
+            DbContext.Solutions.Remove(solution);
+            DbContext.SaveChanges();
+            return RedirectToAction("Index", "Solution", new { id = problem.ID });
+        }
+    }
 }

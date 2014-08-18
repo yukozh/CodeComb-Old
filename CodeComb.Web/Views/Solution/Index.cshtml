@@ -15,7 +15,7 @@
                     <a href="/Problem/@ViewContext.RouteData.Values["id"]" class="profile-btn"><img src="/Images/description.png" alt="返回题目" /></a>
                 </div>
                 <div class="post-detail-wrap">
-                    @(User.Identity.IsAuthenticated)
+                    @(User.Identity.IsAuthenticated && IsAccepted)
                     {
                         @Html.ActionLink("我要提交解题报告", "Create", "Solution", new { id = ViewContext.RouteData.Values["id"] }, null)
                     }
@@ -34,8 +34,8 @@
                                 @foreach (var item in Model)
                                 { 
                                     <tr>
-                                        <td>@item.Title</td>
-                                        <td>@Html.Nickname(item.User.Nickname, item.User.Ratings.Sum(x => x.Credit) + 1500, "post-info")</td>
+                                        <td>@Html.ActionLink(item.Title, "Show", "Solution", new { id = item.ID }, null)</td>
+                                        <td><a href="/User/@item.UserID">@Html.Nickname(item.User.Nickname, item.User.Ratings.Sum(x => x.Credit) + 1500, "post-info")</a> </td>
                                         <td>
                                             @{ 
                                                 var i = 0;

@@ -552,6 +552,7 @@
     <Content Include="Views\Contest\Print.cshtml" />
     <Content Include="Views\Contest\Clar.cshtml" />
     <Content Include="Views\Solution\Index.cshtml" />
+    <Content Include="Views\Solution\Show.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
