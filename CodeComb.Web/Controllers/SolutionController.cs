@@ -97,5 +97,44 @@ namespace CodeComb.Web.Controllers
             DbContext.SaveChanges();
             return RedirectToAction("Index", "Solution", new { id = problem.ID });
         }
+
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        [HttpPost]
+        public ActionResult Edit(int id, Solution model)
+        {
+            var solution = DbContext.Solutions.Find();
+            if (!ViewBag.IsMaster && solution.UserID != ViewBag.CurrentUser.ID)
+                return RedirectToAction("Message", "Shared", new { msg="权限不足！"});
+            solution.Language = model.Language;
+            solution.Title = model.Title;
+            solution.Code = model.Code;
+            solution.Content = model.Content;
+            DbContext.SaveChanges();
+            return RedirectToAction("EditTags", "Solution", new { id = solution.ID });
+        }
+
+        [Authorize]
+        public ActionResult Edit(int id)
+        {
+            var solution = DbContext.Solutions.Find();
+            if (!ViewBag.IsMaster && solution.UserID != ViewBag.CurrentUser.ID)
+                return RedirectToAction("Message", "Shared", new { msg = "权限不足！" });
+            return View(solution);
+        }
+
+        [Authorize]
+        public ActionResult EditTags(int id)
+        {
+            var solution = DbContext.Solutions.Find();
+            if (!ViewBag.IsMaster && solution.UserID != ViewBag.CurrentUser.ID)
+                return RedirectToAction("Message", "Shared", new { msg = "权限不足！" });
+            ViewBag.Tags = (from at in DbContext.AlgorithmTags
+                            where at.FatherID == null
+                            orderby at.ID ascending
+                            select at).ToList();
+            return View(solution);
+        }
     }
 }

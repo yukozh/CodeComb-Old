@@ -1,0 +1,50 @@
+﻿@model Solution
+@{
+    ViewBag.Title = "编辑解题报告";
+}
+
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="profile-actions">
+                    <a href="/Problem/Status/@Model.ID" class="profile-btn"><img src="/Images/status.png" alt="评测状态" /></a>
+                </div>
+                <div class="post-detail-wrap">
+                    <div class="post-title"><h2>编辑解题报告</h2></div>
+                    <div class="post-content">
+                        @using (Html.BeginForm("Edit", "Solution", new { id = Model.ID }, FormMethod.Post, null))
+                        {
+                            @Html.AntiForgeryToken()
+                            <p>标题</p>
+                            <p>@Html.TextBoxFor(x => x.Title, new { @class="textbox"})</p>
+                            <p>代码</p>
+                            <p>@Html.TextAreaFor(x => x.Code, new { id = "editor" })</p>
+                            <p>
+                                语言：<select id="lstLanguages" name="LanguageAsInt">
+                                    @{
+                                        var i = 0;
+                                        foreach (var name in CodeComb.Entity.CommonEnums.LanguageDisplay)
+                                        {
+                                            if (Model.LanguageAsInt == i)
+                                            {
+                                                <option value="@(i++)" selected>@name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@(i++)">@name</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </p>
+                            <p>内容</p>
+                            <p>@Html.TextAreaFor(x => x.Content, new { @class="ckeditor"})</p>
+                            <p><input type="submit" value="提交" class="button button-def" /></p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>

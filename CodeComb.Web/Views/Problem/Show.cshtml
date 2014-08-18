@@ -196,16 +196,18 @@ else
                 <textarea id="editor" name="code" style="width:600px;height:280px;font-size:12px;"></textarea>
                 <p>
                     <select id="lstLanguages" name="language_id">
-                        @{var i = 0;}
-                        @foreach (var name in CodeComb.Entity.CommonEnums.LanguageDisplay)
-                        {
-                            if (((CodeComb.Entity.User)ViewBag.CurrentUser).CommonLanguageAsInt == i)
+                        @{
+                            var i = 0;
+                            foreach (var name in CodeComb.Entity.CommonEnums.LanguageDisplay)
                             {
-                                <option value="@(i++)" selected>@name</option>
-                            }
-                            else
-                            {
-                                <option value="@(i++)">@name</option>
+                                if (((CodeComb.Entity.User)ViewBag.CurrentUser).CommonLanguageAsInt == i)
+                                {
+                                    <option value="@(i++)" selected>@name</option>
+                                }
+                                else
+                                {
+                                    <option value="@(i++)">@name</option>
+                                }
                             }
                         }
                     </select>

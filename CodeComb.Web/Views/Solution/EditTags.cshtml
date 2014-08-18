@@ -1,0 +1,32 @@
+﻿@model Solution
+@{
+    ViewBag.Title = "编辑标签 - "+Model.Title;
+    List<AlgorithmTag> Tags = ViewBag.Tags;
+}
+
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="profile-actions">
+                    <a href="/Problem/Status/@Model.ID" class="profile-btn"><img src="/Images/status.png" alt="评测状态" /></a>
+                </div>
+                <div class="post-detail-wrap">
+                    <div class="post-title"><h2>编辑标签</h2></div>
+                    <div class="post-content">
+                        @foreach (var tag in Tags)
+                        { 
+                            <p><strong>@tag.Title</strong></p>
+                            <p>
+                                @foreach (var child in tag.Children)
+                                {
+                                    <a href="javascript:SetSolutionTag(@child.ID)" class="btn-tag">@child.Title</a>
+                                }
+                            </p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>

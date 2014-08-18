@@ -31,8 +31,8 @@ namespace CodeComb.Entity
         [Column("content")]
         public string Content { get; set; }
 
-        [Column("source")]
-        public string Source { get; set; }
+        [Column("code")]
+        public string Code { get; set; }
 
         [Column("language")]
         public int LanguageAsInt { get; set; }
