@@ -8,22 +8,27 @@ using CodeComb.Database;
 
 namespace CodeComb.Web.Controllers
 {
-    public class ProblemController : BaseController
+    public class SolutionController : BaseController
     {
         protected override void Initialize(System.Web.Routing.RequestContext requestContext)
         {
             base.Initialize(requestContext);
             ViewBag.IsMaster = false;
             ViewBag.IsCreator = false;
+            ViewBag.IsAccepted = false;
             if (!User.Identity.IsAuthenticated) return;
             var id = requestContext.RouteData.Values["id"] == null ? null : (int?)Convert.ToInt32(requestContext.RouteData.Values["id"]);
             if (id == null) return;
-            var contest = DbContext.Problems.Find(id).Contest;
+            var problem = DbContext.Problems.Find(id);
+            var contest = problem.Contest;
             var user = (from u in DbContext.Users where u.Username == User.Identity.Name select u).Single();
+            if (problem.Statuses.Where(x => x.UserID == user.ID && x.ResultAsInt == (int)Entity.JudgeResult.Accepted).Count() > 0)
+                ViewBag.IsAccepted = true;
             if (user.Role >= UserRole.Master)
             {
                 ViewBag.IsMaster = true;
                 ViewBag.IsCreator = true;
+                ViewBag.IsAccepted = true;
             }
             else
             {
@@ -31,29 +36,27 @@ namespace CodeComb.Web.Controllers
                 if (contestmanager != null)
                 {
                     ViewBag.IsMaster = true;
+                    ViewBag.IsAccepted = true;
                     if (contestmanager.IsCreator)
                         ViewBag.IsCreator = true;
                 }
             }
         }
+
         //
-        // GET: /Problem/
-        public ActionResult Index()
-        {
-            return View();
-        }
-        public ActionResult Show(int id)
+        // GET: /Solution/
+        public ActionResult Index(int id)
         {
             var problem = DbContext.Problems.Find(id);
-            var contest = problem.Contest;
             var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
-            if (DateTime.Now < contest.Begin && user.Role < Entity.UserRole.Master && (from m in contest.Managers select m.ID).ToList().Contains(user.ID))
-                return RedirectToAction("Message", "Shared", new { msg = "您无权查看该题目！" });
-            var Problems = new List<Models.View.StatusSnapshot>();
-            foreach (var p in problem.Contest.Problems.OrderBy(x=>x.Credit))
-                Problems.Add(new Models.View.StatusSnapshot(p.Contest, ViewBag.CurrentUser));
-            ViewBag.Problems = Problems;
-            return View(problem);
+
+            if (DateTime.Now < problem.Contest.End && user.Role < Entity.UserRole.Master && !(from m in problem.Contest.Managers select m.ID).Contains(user.ID))
+                return RedirectToAction("Message", "Shared", new { msg = "目前还不能使用结题报告系统！" });
+            var solutions = (from s in DbContext.Solutions
+                             where s.ProblemID == id
+                             orderby s.ID descending
+                             select s).ToList();
+            return View();
         }
-	}   
+	}
 }

@@ -37,40 +37,14 @@ namespace CodeComb.Entity
         [Column("language")]
         public int LanguageAsInt { get; set; }
 
-        [Column("alogorithm_tags")]
-        public string AlgorithmTagsAsString { get; set; }
-
-        [NotMapped]
-        public List<int> AlgorithmTags 
-        {
-            get 
-            {
-                var ids = AlgorithmTagsAsString.Split('|');
-                var ret = new List<int>();
-                foreach (var id in ids)
-                {
-                    ret.Add(Convert.ToInt32(id));
-                }
-                return ret;
-            }
-            set 
-            {
-                string dest = "";
-                foreach (var id in value)
-                {
-                    dest += id.ToString() + "|";
-                }
-                dest = dest.TrimEnd('|');
-                AlgorithmTagsAsString = dest;
-            }
-        }
-
         [NotMapped]
         public Language Language
         {
             get { return (Language)LanguageAsInt; }
             set { LanguageAsInt = (int)value; }
         }
+
+        public virtual ICollection<SolutionTag> SolutionTags { get; set; }
 
         public override bool Equals(object obj)
         {

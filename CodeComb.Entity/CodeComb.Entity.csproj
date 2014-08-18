@@ -75,7 +75,7 @@
     <Compile Include="PrintRequest.cs" />
     <Compile Include="Problem.cs" />
     <Compile Include="EmailVerification.cs" />
-    <Compile Include="ProblemTag.cs" />
+    <Compile Include="SolutionTag.cs" />
     <Compile Include="Rating.cs" />
     <Compile Include="Reply.cs" />
     <Compile Include="Solution.cs" />

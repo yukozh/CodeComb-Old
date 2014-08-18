@@ -7,17 +7,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CodeComb.Entity
 {
-    [Table("problem_tags")]
-    public class ProblemTag
+    [Table("solution_tags")]
+    public class SolutionTag
     {
         [Column("id")]
         public int ID { get; set; }
 
-        [Column("problem_id")]
-        [ForeignKey("Problem")]
-        public int ProblemID { get; set; }
+        [Column("solution_id")]
+        [ForeignKey("Solution")]
+        public int SolutionID { get; set; }
 
-        public virtual Problem Problem { get; set; }
+        public virtual Solution Solution { get; set; }
 
         [Column("algorithm_id")]
         [ForeignKey("AlgorithmTag")]
@@ -27,7 +27,7 @@ namespace CodeComb.Entity
 
         public override bool Equals(object obj)
         {
-            var data = obj as ProblemTag;
+            var data = obj as SolutionTag;
             if (data.ID == this.ID) return true;
             return false;
         }

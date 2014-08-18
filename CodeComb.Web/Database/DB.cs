@@ -31,8 +31,9 @@ namespace CodeComb.Database
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<Token> Tokens { get; set; }
         public DbSet<AlgorithmTag> AlgorithmTags { get; set; }
-        public DbSet<ProblemTag> ProblemTags { get; set; }
+        public DbSet<SolutionTag> SolutionTags { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Solution> Solutions { get; set; }
 
         public DB()
             : base("mysqldb")
@@ -93,9 +94,9 @@ namespace CodeComb.Database
                 .HasMany(p => p.Statuses)
                 .WithRequired(s => s.Problem);
 
-            modelBuilder.Entity<Problem>()
-               .HasMany(p => p.ProblemTags)
-               .WithRequired(p => p.Problem);
+            modelBuilder.Entity<Solution>()
+               .HasMany(s => s.SolutionTags)
+               .WithRequired(st => st.Solution);
 
             modelBuilder.Entity<Problem>()
                .HasMany(p => p.Solutions)

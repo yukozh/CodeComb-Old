@@ -104,8 +104,6 @@ namespace CodeComb.Entity
 
         public virtual ICollection<Status> Statuses { get; set; }
 
-        public virtual ICollection<ProblemTag> ProblemTags { get; set; }
-
         public virtual ICollection<Solution> Solutions { get; set; }
 
         public virtual ICollection<Glance> Glances { get; set; }

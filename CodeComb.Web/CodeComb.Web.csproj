@@ -193,6 +193,7 @@
     <Compile Include="Controllers\RatingController.cs" />
     <Compile Include="Controllers\ReplyController.cs" />
     <Compile Include="Controllers\SharedController.cs" />
+    <Compile Include="Controllers\SolutionController.cs" />
     <Compile Include="Controllers\StatusController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\TopicController.cs" />
@@ -550,6 +551,7 @@
     <Content Include="Views\Problem\Show.cshtml" />
     <Content Include="Views\Contest\Print.cshtml" />
     <Content Include="Views\Contest\Clar.cshtml" />
+    <Content Include="Views\Solution\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
