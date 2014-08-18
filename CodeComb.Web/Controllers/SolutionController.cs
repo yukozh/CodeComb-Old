@@ -104,7 +104,7 @@ namespace CodeComb.Web.Controllers
         [HttpPost]
         public ActionResult Edit(int id, Solution model)
         {
-            var solution = DbContext.Solutions.Find();
+            var solution = DbContext.Solutions.Find(id);
             if (!ViewBag.IsMaster && solution.UserID != ViewBag.CurrentUser.ID)
                 return RedirectToAction("Message", "Shared", new { msg="权限不足！"});
             solution.Language = model.Language;
@@ -118,7 +118,7 @@ namespace CodeComb.Web.Controllers
         [Authorize]
         public ActionResult Edit(int id)
         {
-            var solution = DbContext.Solutions.Find();
+            var solution = DbContext.Solutions.Find(id);
             if (!ViewBag.IsMaster && solution.UserID != ViewBag.CurrentUser.ID)
                 return RedirectToAction("Message", "Shared", new { msg = "权限不足！" });
             return View(solution);
@@ -127,7 +127,7 @@ namespace CodeComb.Web.Controllers
         [Authorize]
         public ActionResult EditTags(int id)
         {
-            var solution = DbContext.Solutions.Find();
+            var solution = DbContext.Solutions.Find(id);
             if (!ViewBag.IsMaster && solution.UserID != ViewBag.CurrentUser.ID)
                 return RedirectToAction("Message", "Shared", new { msg = "权限不足！" });
             ViewBag.Tags = (from at in DbContext.AlgorithmTags
@@ -135,6 +135,45 @@ namespace CodeComb.Web.Controllers
                             orderby at.ID ascending
                             select at).ToList();
             return View(solution);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult GetTags(int id)
+        {
+            var solution = DbContext.Solutions.Find(id);
+            if (!ViewBag.IsMaster && solution.UserID != ViewBag.CurrentUser.ID)
+                return Json(null, JsonRequestBehavior.AllowGet);
+            var tags = (from t in solution.SolutionTags
+                        select t.AlgorithmTagID).ToList();
+            return Json(tags, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult SetTag(int id, int tid)
+        {
+            var solution = DbContext.Solutions.Find(id);
+            if (!ViewBag.IsMaster && solution.UserID != ViewBag.CurrentUser.ID)
+                return Content("Failed");
+            var tag = solution.SolutionTags.Where(x => x.AlgorithmTagID == tid).SingleOrDefault();
+            if (tag == null)
+            {
+                tag = new SolutionTag
+                {
+                    AlgorithmTagID = tid,
+                    SolutionID = id
+                };
+                DbContext.SolutionTags.Add(tag);
+                DbContext.SaveChanges();
+                return Content("Added");
+            }
+            else
+            {
+                DbContext.SolutionTags.Remove(tag);
+                DbContext.SaveChanges();
+                return Content("Deleted");
+            }
         }
     }
 }
