@@ -560,6 +560,7 @@
     <Content Include="Views\Contest\Standings.cshtml" />
     <Content Include="Views\ContestSettings\General.cshtml" />
     <Content Include="Views\ContestSettings\Problems.cshtml" />
+    <Content Include="Views\Problem\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

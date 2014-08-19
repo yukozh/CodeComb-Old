@@ -72,8 +72,7 @@ namespace CodeComb.Web.Controllers
         public ActionResult Create(int id)
         {
             var contest = DbContext.Contests.Find(id);
-            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
-            if (DateTime.Now < contest.Begin && user.Role < Entity.UserRole.Master && (from m in contest.Managers select m.ID).ToList().Contains(user.ID))
+            if (!ViewBag.IsMaster)
                 return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
             DbContext.Problems.Add(new Problem 
             { 
@@ -105,13 +104,52 @@ namespace CodeComb.Web.Controllers
         public ActionResult Delete(int id)
         {
             var problem = DbContext.Problems.Find(id);
-            var contest = problem.Contest;
-            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
-            if (DateTime.Now < contest.Begin && user.Role < Entity.UserRole.Master && (from m in contest.Managers select m.ID).ToList().Contains(user.ID))
+            if (!ViewBag.IsMaster)
                 return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
             DbContext.Problems.Remove(problem);
             DbContext.SaveChanges();
             return RedirectToAction("Problems", "ContestSettings", new { id = id });
+        }
+
+        [Authorize]
+        public ActionResult Edit(int id)
+        {
+            if (!ViewBag.IsMaster)
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            var problem = DbContext.Problems.Find(id);
+            return View(problem);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult Edit(int id, Problem model)
+        {
+            if (!ViewBag.IsMaster)
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            var problem = DbContext.Problems.Find(id);
+            problem.TimeLimit = model.TimeLimit;
+            problem.MemoryLimit = model.MemoryLimit;
+            problem.Background = model.Background;
+            problem.Description = model.Description;
+            problem.Input = model.Input;
+            problem.Output = model.Output;
+            problem.Hint = model.Hint;
+            problem.Title = model.Title;
+            problem.Credit = model.Credit;
+            if (user.Role >= Entity.UserRole.Master)
+            {
+                problem.Difficulty = model.Difficulty;
+            }
+            else
+            {
+                if (problem.TimeLimit > 5000) problem.TimeLimit = 5000;
+                if (problem.MemoryLimit > 1024 * 128) problem.TimeLimit = 1024 * 128;
+            }
+            DbContext.SaveChanges();
+            return RedirectToAction("Edit", "Problem", new { id = id });
         }
 	}   
 }
