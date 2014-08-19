@@ -228,5 +228,10 @@ namespace CodeComb.Web.Controllers
                 SignalR.CodeCombHub.context.Clients.Group(clar.User.Username).onClarificationsResponsed(new Models.View.Clar(clar));
             return Content("Yes");
         }
+
+        public ActionResult Standings(int id)
+        {
+            return View();
+        }
 	}
 }
