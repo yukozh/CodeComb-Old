@@ -23,7 +23,7 @@
                                 }
                             </p>
                         }
-                        <p>@Html.ActionLink("查看本解题报告", "Show", "Solution", new { id = Model.ID }, new { @class = "button button-def" })</p>
+                        <p><input type="button" value="查看本解题报告" class="button button-def" onclick="window.location='/Solution/Show/@Model.ID'" /> </p>
                     </div>
                 </div>
             </div>

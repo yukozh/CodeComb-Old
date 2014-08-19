@@ -1212,6 +1212,11 @@ body {
     vertical-align: top;
 }
 
+.post-info a, a:visited {
+    color: #119eea;
+    text-decoration: none;
+}
+
 .post-content {
     margin: 20px 0 0 20px;
     color: #434343;
@@ -1927,7 +1932,7 @@ tbody tr:hover {
 .label {
     padding: 3px 5px 3px 5px;
     font-size:14px;
-    color:black;
+    color:black!important;
     text-decoration:none!important;
 }
 

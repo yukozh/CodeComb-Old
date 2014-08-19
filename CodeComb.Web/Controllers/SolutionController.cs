@@ -52,6 +52,7 @@ namespace CodeComb.Web.Controllers
             if (DateTime.Now < problem.Contest.End && user.Role < Entity.UserRole.Master && !(from m in problem.Contest.Managers select m.ID).Contains(user.ID))
                 return RedirectToAction("Message", "Shared", new { msg = "目前还不能使用解题报告系统！" });
             ViewBag.CurrentContest = problem.Contest;
+            ViewBag.ProblemTitle = problem.Title;
             var solutions = (from s in DbContext.Solutions
                              where s.ProblemID == id
                              orderby s.ID descending

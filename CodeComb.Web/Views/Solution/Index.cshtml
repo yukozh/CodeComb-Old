@@ -1,9 +1,10 @@
 ﻿@model IEnumerable<Solution>
 @{
-    ViewBag.Title = "解题报告";
+    ViewBag.Title = "解题报告 - " + ViewBag.ProblemTitle;
     var IsMaster = (bool)ViewBag.IsMaster;
     var IsCreator = (bool)ViewBag.IsCreator;
     var IsAccepted = (bool)ViewBag.IsAccepted;
+    string[] Css = { "green", "orange", "blue", "purple", "red" };
 }
 
 <div class="post-detail-body">
@@ -18,7 +19,7 @@
                     }
                 </div>
                 <div class="post-detail-wrap">
-                    <div class="post-title"><h2>解题报告 - @ViewBag.CurrentContest.Title</h2></div>
+                    <div class="post-title"><h2>解题报告 - @ViewBag.ProblemTitle</h2></div>
                     <div class="post-info"></div>
                     <div class="post-content">
                         <table>
@@ -40,13 +41,12 @@
                                                 var i = 0;
                                                 foreach (var tag in item.SolutionTags)
                                                 {
-                                                    if (++i != item.SolutionTags.Count)
-                                                    { 
-                                                        @(tag.AlgorithmTag.Title+",")
-                                                    }
-                                                    else
-                                                    { 
-                                                        @tag.AlgorithmTag.Title
+                                                    if (tag.AlgorithmTag.FatherID != null)
+                                                    {
+                                                        if (tag.AlgorithmTag.Father.Title == tag.AlgorithmTag.Title || tag.AlgorithmTag.Father.Children.Count == 1)
+                                                        {<a href="javascript:void(0);" class="btn-tag @(Css[i++%5]) label">@tag.AlgorithmTag.Father.Title</a>}
+                                                        else
+                                                        {<a href="javascript:void(0);" class="btn-tag @(Css[i++%5]) label">@tag.AlgorithmTag.Father.Title @tag.AlgorithmTag.Title</a>}
                                                     }
                                                 }
                                             }
