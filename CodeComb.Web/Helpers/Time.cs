@@ -20,28 +20,28 @@ namespace CodeComb.Web.Helpers
                 if (sec > 0)
                     return sec + "秒前";
                 else
-                    return sec + "秒后";
+                    return -sec + "秒后";
             }
             else if (Math.Abs(sec) < 60 * 60)
             {
                 if (sec > 0)
                     return sec / 60 + "分钟前";
                 else
-                    return sec / 60 + "分钟后";
+                    return -sec / 60 + "分钟后";
             }
             else if (Math.Abs(sec) < 60 * 60 * 24)
             {
                 if (sec > 0)
                     return sec / 60 / 60 + "小时前";
                 else
-                    return sec / 60 / 60 + "小时后";
+                    return -sec / 60 / 60 + "小时后";
             }
             else if (Math.Abs(sec) < 60 * 60 * 24 * 30)
             {
                 if (sec > 0)
                     return sec / 60 / 60 / 24 + "天前";
                 else
-                    return sec / 60 / 60 / 24 + "天后";
+                    return -sec / 60 / 60 / 24 + "天后";
             }
             return time.ToString("yyyy-MM-dd");
         }

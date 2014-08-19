@@ -623,8 +623,8 @@ a, a:visited {
     .textbox:focus {
         border-color: #ffdf00;
         background: #fcfcfc;
-        -webkit-box-shadow: 0 0 5px #ffdf00;
-        box-shadow: 0 0 5px #ffdf00;
+        -webkit-box-shadow: 0 0 10px #ffdf00;
+        box-shadow: 0 0 10px #ffdf00;
     }
 
 .button {
