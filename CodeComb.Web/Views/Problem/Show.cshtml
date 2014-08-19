@@ -64,15 +64,17 @@
                 </div>
             </div><div class="grid_3">
                 @if (User.Identity.IsAuthenticated)
-                {
-                    <div class="post-module">
-                        <p><a href="javascript:void(0)" id="btnLoadCodeEditBox">提交评测</a></p>
-                        @foreach (var status in Model.GetContestStatuses().Where(x => x.User.Username == User.Identity.Name).OrderByDescending(x => x.Time).ToList())
-                        {
-                            <p>@status.Time.ToString("MM-dd HH:mm") @status.GetStatusAsString()</p>
-                        }
-                    </div>
-                }
+{
+    <div class="post-module module-contest-problems">
+        <p><a href="javascript:void(0)" id="btnLoadCodeEditBox">提交评测</a></p>
+        <div class="post-module-content">
+            @foreach (CodeComb.Entity.Status status in ViewBag.Statuses)
+        {
+                <div class="contest-problem-item post-cate-item"><div class=""><span class="status-tag status-bg-@Html.GetResultCss(status.Result)">@Html.GetResultShortTitle(status.Result)</span></div>@Html.ActionLink(status.Time.ToString("MM-dd HH:mm"), "Show", "Status", new { id=status.ID}, null)</div>
+        }
+            </div>
+        </div>
+}
                 <div class="post-module">
                     <h3>Limits</h3>
                     <div class="post-module-content">
@@ -89,7 +91,7 @@
                 var n = 'A';
                 foreach (StatusSnapshot item in ViewBag.Problems)
                 {
-                    <div class="contest-problem-item post-cate-item"><div class=""><a href="javascript:void(0)" class="status-tag status-bg-@item.Css">@item.Result</a></div>@Html.ActionLink(n++ + ": " + item.ProblemTitle, "Show", "Problem", new { id = item.ProblemID }, null)</div>
+                    <div class="contest-problem-item post-cate-item"><div class=""><span class="status-tag status-bg-@item.Css">@item.Result</span></div>@Html.ActionLink(n++ + ": " + item.ProblemTitle, "Show", "Problem", new { id = item.ProblemID }, null)</div>
                 }
                         }
                     </div>
@@ -100,7 +102,7 @@
                     <div class="post-module-content">
                         @foreach (var item in Model.Clarifications.Where(x => x.Status == ClarificationStatus.BroadCast).OrderByDescending(x => x.Time))
                         {
-                            <div class="post-cate-item">@Html.ActionLink(item.Question, "Clar", "Contest", new { id = Model.ID }, null)</div>
+                            <div class="post-cate-item"><a href="javascript:ShowClar(@item.ID)">@item.Question</a></div>
                         }
                     </div>
                 </div>

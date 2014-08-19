@@ -53,6 +53,15 @@ namespace CodeComb.Web.Controllers
             foreach (var p in problem.Contest.Problems.OrderBy(x=>x.Credit))
                 Problems.Add(new Models.View.StatusSnapshot(p.Contest, ViewBag.CurrentUser));
             ViewBag.Problems = Problems;
+            var statuses = problem.GetContestStatuses().Where(x => x.User.Username == User.Identity.Name).OrderByDescending(x => x.Time).ToList();
+            if (contest.Format == ContestFormat.OI)
+            {
+                foreach (var s in statuses)
+                {
+                    s.Result = JudgeResult.Hidden;
+                }
+            }
+            ViewBag.Statuses = statuses;
             return View(problem);
         }
 	}   

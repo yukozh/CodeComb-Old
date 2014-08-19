@@ -1506,16 +1506,16 @@ body {
     color: #24c100;
 }
 
-.status-bg-ac {
+.status-bg-ac, .status-bg-hidden {
     background-color: #24c100;
     color: #fff;
 }
 
-a.status-bg-ac, a.status-bg-ac:active, a.status-bg-ac:hover, a.status-bg-ac:visited {
+a.status-bg-ac, a.status-bg-ac:active, a.status-bg-ac:hover, a.status-bg-ac:visited, .status-bg-hidden, .status-bg-hidden:active, .status-bg-hidden:hover, .status-bg-hidden:visited {
     color: #fff;
 }
 
-    a.status-bg-ac:hover {
+    a.status-bg-ac:hover a.status-bg-hidden:hover {
         background-color: #2ae100;
         text-decoration: none;
     }

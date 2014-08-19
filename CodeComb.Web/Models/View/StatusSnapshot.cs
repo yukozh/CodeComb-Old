@@ -30,7 +30,7 @@ namespace CodeComb.Web.Models.View
                 }
                 if (contest.Format == Entity.ContestFormat.OI)
                 {
-                    Result = "PND";
+                    Result = "HID";
                     Css = "ac";
                     return;
                 }
