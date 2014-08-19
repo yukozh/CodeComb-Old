@@ -209,9 +209,34 @@ namespace CodeComb.Web.Controllers
                 Result = Entity.JudgeResult.Pending
             };
             DbContext.Statuses.Add(status);
-            var testcase_ids = (from tc in problem.TestCases
-                                where tc.Type == Entity.TestCaseType.Overall
+            List<int> testcase_ids;
+            if (DateTime.Now < contest.Begin || DateTime.Now >= contest.End || contest.Format == Entity.ContestFormat.ACM|| contest.Format == Entity.ContestFormat.OPJOI|| contest.Format == Entity.ContestFormat.OI)
+            {
+                testcase_ids = (from tc in problem.TestCases
+                                where tc.Type != Entity.TestCaseType.Sample
                                 select tc.ID).ToList();
+            }
+            else if (contest.Format == Entity.ContestFormat.Codeforces)
+            {
+                testcase_ids = (from tc in problem.TestCases
+                                where tc.Type == Entity.TestCaseType.Unilateralism
+                                select tc.ID).ToList();
+            }
+            else
+            {
+                if (DateTime.Now < contest.RestBegin)
+                {
+                    testcase_ids = (from tc in problem.TestCases
+                                    where tc.Type == Entity.TestCaseType.Sample
+                                    select tc.ID).ToList();
+                }
+                else
+                {
+                    testcase_ids = (from tc in problem.TestCases
+                                    where tc.Type != Entity.TestCaseType.Sample
+                                    select tc.ID).ToList();
+                }
+            }
             foreach (var id in testcase_ids)
             {
                 DbContext.JudgeTasks.Add(new Entity.JudgeTask

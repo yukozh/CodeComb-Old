@@ -8,12 +8,12 @@ namespace CodeComb.Judge.Interface
 {
     public interface IRunner
     {
-        public string Compiler { get; set; }
-        public string CompileArguments { get; set; }
-        public string Runner { get; set; }
-        public string RunArguments { get; set; }
-        public string WorkingDirectory { get; set; }
-        public Models.ProcessFeedback Compile();
-        public Models.ProcessFeedback Run();
+        string Compiler { get; set; }
+        string CompileArguments { get; set; }
+        string Runner { get; set; }
+        string RunArguments { get; set; }
+        string WorkingDirectory { get; set; }
+        Models.ProcessFeedback Compile();
+        Models.ProcessFeedback Run();
     }
 }
