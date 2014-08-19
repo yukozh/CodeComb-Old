@@ -42,6 +42,7 @@ namespace CodeComb.Web.Controllers
         {
             return View();
         }
+
         public ActionResult Show(int id)
         {
             var problem = DbContext.Problems.Find(id);
@@ -63,6 +64,54 @@ namespace CodeComb.Web.Controllers
             }
             ViewBag.Statuses = statuses;
             return View(problem);
+        }
+        
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(int id)
+        {
+            var contest = DbContext.Contests.Find(id);
+            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            if (DateTime.Now < contest.Begin && user.Role < Entity.UserRole.Master && (from m in contest.Managers select m.ID).ToList().Contains(user.ID))
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            DbContext.Problems.Add(new Problem 
+            { 
+                Difficulty = 0,
+                Background = null,
+                Input = null,
+                Output =null,
+                Description = null,
+                SpecialJudge="",
+                SpecialJudgeLanguage = Language.C,
+                StandardSource = "",
+                StandardSourceLanguage = Language.C,
+                RangeChecker = "",
+                RangeCheckerLanguage = Language.C,
+                MemoryLimit = 65536,
+                TimeLimit = 1000,
+                Title = "新建题目",
+                Hint = null,
+                ContestID = id,
+                Credit = 0
+            });
+            DbContext.SaveChanges();
+            return RedirectToAction("Problems", "ContestSettings", new { id = id });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id)
+        {
+            var problem = DbContext.Problems.Find(id);
+            var contest = problem.Contest;
+            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            if (DateTime.Now < contest.Begin && user.Role < Entity.UserRole.Master && (from m in contest.Managers select m.ID).ToList().Contains(user.ID))
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            DbContext.Problems.Remove(problem);
+            DbContext.SaveChanges();
+            return RedirectToAction("Problems", "ContestSettings", new { id = id });
         }
 	}   
 }

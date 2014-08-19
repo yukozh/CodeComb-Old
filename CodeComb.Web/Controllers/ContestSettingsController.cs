@@ -70,5 +70,15 @@ namespace CodeComb.Web.Controllers
             DbContext.SaveChanges();
             return RedirectToAction("General", "ContestSettings", new { id = id });
         }
+
+        [Authorize]
+        public ActionResult Problems(int id)
+        {
+            if (!ViewBag.IsMaster)
+                return RedirectToAction("Message", "Shared", new { msg = "您没有权限对本场比赛进行任何修改！" });
+            ViewBag.ContestFormats = Enum.GetNames(typeof(Entity.ContestFormat));
+            var contest = DbContext.Contests.Find(id);
+            return View(contest);
+        }
 	}
 }

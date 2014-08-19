@@ -1,0 +1,63 @@
+﻿@model CodeComb.Entity.Contest
+@{
+    ViewBag.Title = "题目列表 - " + Model.Title;
+    var IsMaster = (bool)ViewBag.IsMaster;
+    var IsCreator = (bool)ViewBag.IsCreator;
+}
+
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="profile-actions">
+                    <a href="/Contest/@Model.ID" class="profile-btn"><img src="/Images/back.png" alt="返回比赛" /></a>
+                    <a href="/Contest/Settings/General/@Model.ID" class="profile-btn"><img src="/Images/description.png" alt="基本信息管理" /></a>
+                    <a href="/Contest/Settings/Problems/@Model.ID" class="profile-btn"><img src="/Images/code.png" alt="题目管理" /></a>
+                    <a href="/Contest/Settings/Manager/@Model.ID" class="profile-btn"><img src="/Images/standings.png" alt="管理员管理" /></a>
+                    <a href="/Contest/Settings/Manager/@Model.ID" class="profile-btn"><img src="/Images/judgers.png" alt="其他操作" /></a>
+                </div>
+                <div class="post-detail-wrap">
+                    <div class="post-title"><h2>题目列表 - @Model.Title</h2></div>
+                    <div class="post-info"></div>
+                    <div class="post-content">
+                        <p><a href="javascript:$('#frmCreateProblem').submit();">添加题目</a></p>
+                        @using (Html.BeginForm("Create", "Problem", new { id = Model.ID }, FormMethod.Post, new { id = "frmCreateProblem" }))
+                        {
+                            @Html.AntiForgeryToken()
+                        }
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>题目编号</th>
+                                    <th>题目名称</th>
+                                    <th>分值</th>
+                                    <th>能力值</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{var i = 'A';
+                                    foreach (var item in Model.Problems.OrderBy(x => x.Credit))
+                                    {
+                                        <tr>
+                                            <td>@(i++)</td>
+                                            <td>@Html.ActionLink(item.Title, "Show", "Problem", new { id = item.ID }, null)</td>
+                                            <td>@item.Credit</td>
+                                            <td>@item.Difficulty</td>
+                                            <td>@Html.ActionLink("编辑", "Edit", "Problem", new { id = item.ID }, null) <a href="javascript:$('#ProblemID').val(@item.ID);$('#frmDeleteProblem').submit();">删除</a></td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                        @using (Html.BeginForm("Delete", "Problem", FormMethod.Post, new { id="frmDeleteProblem"}))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" id="ProblemID" value="0" />
+                        }
+                    </div>
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>

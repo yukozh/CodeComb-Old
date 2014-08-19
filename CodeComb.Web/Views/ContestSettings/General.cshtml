@@ -4,6 +4,7 @@
     var IsMaster = (bool)ViewBag.IsMaster;
     var IsCreator = (bool)ViewBag.IsCreator;
 }
+<script type="text/javascript" src="~/Scripts/ckeditor/ckeditor.js"></script>  
 <div class="post-detail-body">
     <div class="cont-wrap">
         <div class="grid_12">
@@ -22,10 +23,10 @@
                         @using (Html.BeginForm("General","ContestSettings",new{id = Model.ID}, FormMethod.Post,null))
                         { 
                             @Html.AntiForgeryToken()
-                            <p>比赛名称：@Html.TextBoxFor(x => x.Title, new { @class="textbox"})</p>
-                            <p>比赛介绍：@Html.TextAreaFor(x => x.Content, new { @id="editor"})</p>
+                            <p>比赛名称：@Html.TextBoxFor(x => x.Title, new { @class="textbox", style="width:470px"})</p>
+                            <p>比赛介绍：@Html.TextAreaFor(x => x.Content, new { @class="ckeditor"})</p>
                             <p>比赛赛制：<select name="FormatAsInt" id="lstContestFormat">
-                                    @for (int i = 0; i < ViewBag.ContestFormats.Count(); i++)
+                                    @for (int i = 0; i < ((string[])ViewBag.ContestFormats).Count(); i++)
                                     { 
                                         <option value="@i">@ViewBag.ContestFormats[i]</option>
                                     }
