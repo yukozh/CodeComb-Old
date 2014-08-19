@@ -20,7 +20,7 @@
                             <p>
                                 @foreach (var child in tag.Children)
                                 {
-                                    <a href="javascript:SetSolutionTag(@child.ID)" class="btn-tag">@child.Title</a>
+                                    <a href="javascript:SetSolutionTag(@child.ID)" id="t_@child.ID" class="btn-tag gray label">@child.Title</a>
                                 }
                             </p>
                         }
@@ -30,3 +30,6 @@
         </div><div class="clear"></div>
     </div>
 </div>
+<script>
+    id = @Model.ID;
+</script>

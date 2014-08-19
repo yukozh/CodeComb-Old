@@ -154,6 +154,22 @@ function ClarResponse(id)
     });
 }
 
+function SetSolutionTag(tid)
+{
+    $.post("/Solution/SetTag/" + id, { tid: tid }, function (data) {
+        if (data == "Added")
+        {
+            $("#t_" + i).removeClass("gray");
+            $("#t_" + i).addClass("blue");
+        }
+        else if (data == "Deleted")
+        {
+            $("#t_" + i).removeClass("blue");
+            $("#t_" + i).addClass("gray");
+        }
+    });
+}
+
 $(document).ready(function () {
     $("#btnAddContact").click(function () {
         var uid = $(this).attr("uid");

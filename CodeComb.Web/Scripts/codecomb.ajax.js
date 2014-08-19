@@ -6,13 +6,15 @@ function Load()
 {
     if (lock) return;
     lock = true;
-    $("#iconLoading").show();
+    if ($("#iconLoading").length > 0)
+        $("#iconLoading").show();
 
     LoadRatings();
     LoadTopics();
     LoadReplies();
     LoadContests();
     LoadStatuses();
+    LoadSolutionTags();
 }
 
 function LoadRatings()
@@ -115,6 +117,19 @@ function LoadStatuses() {
             lock = false;
             page++;
             $("#iconLoading").hide();
+        });
+    }
+}
+function LoadSolutionTags()
+{
+    if ($("#lstSolutionTags").length > 0)
+    {
+        $.getJSON("/Solution/GetTags/" + id, {}, function (tags) {
+            for (var i in tags)
+            {
+                $("#t_" + i).removeClass("gray");
+                $("#t_" + i).addClass("blue");
+            }
         });
     }
 }

@@ -1923,3 +1923,84 @@ tr {
 tbody tr:hover {
 	background:#f2faff!important
 }
+
+.label {
+    padding: 3px 5px 3px 5px;
+}
+
+.label-big {
+    padding: 3px 6px 3px 6px;
+}
+
+.blue {
+    background-color: rgba(206, 239, 255, 0.65);
+    background-color: rgb(206, 239, 255)\9;
+   * background-color: rgb(206, 239, 255);
+    _background-color: rgb(206, 239, 255);
+}
+
+    .blue:hover {
+         background-color: rgb(220, 237, 255);
+    }
+
+.gray {
+    background-color: rgba(224, 224, 224,0.65);
+    background-color: rgb(224, 224, 224)\9;
+    *background-color: rgb(224, 224, 224);
+    _background-color: rgb(224, 224, 224);
+}
+    .gray:hover {
+             background-color: rgb(244, 244, 244);
+        }
+
+.red {
+    background-color: rgba(255,215,215,0.65);
+    background-color: rgb(255,215,215)\9;
+    *background-color: rgb(255,215,215);
+    _background-color: rgb(255,215,215);
+}
+    .red:hover {
+        background-color: rgb(255, 235, 235);
+    }
+
+.green {
+    
+    background-color: rgba(204, 255, 202, 0.65);
+    background-color: rgb(204, 255, 202)\9;
+    *background-color: rgb(204, 255, 202);
+    _background-color: rgb(204, 255, 202);
+}
+    .green:hover {
+        background-color: #e2ffe1;
+    }
+
+.orange {
+    background-color: rgba(255, 210, 176,0.65);
+    background-color: rgb(255, 210, 176)\9;
+    *background-color: rgb(255, 210, 176);
+    _background-color: rgb(255, 210, 176);
+}
+    .orange:hover {
+        background-color: rgb(255, 232, 215);
+    }
+
+.purple {
+    background-color: rgba(204, 174, 255,0.65);
+    background-color: rgb(204, 174, 255)\9;
+    *background-color: rgb(204, 174, 255);
+    _background-color: rgb(204, 174, 255);
+}
+    .purple:hover {
+        background-color: rgb(224, 194, 255);
+    }
+
+.black {
+    background-color: rgba(225, 225, 225, 0.65);
+    background-color: #e1e1e1\9;
+    *background-color: #e1e1e1;
+    _background-color: #e1e1e1;
+}
+
+    .black:hover {
+        background-color: #EEE;
+    }
