@@ -175,5 +175,43 @@ namespace CodeComb.Web.Controllers
                 return Content("Deleted");
             }
         }
+
+        [Authorize]
+        public ActionResult Create(int id)
+        {
+            var problem = DbContext.Problems.Find(id);
+            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            if (DateTime.Now < problem.Contest.End && user.Role < Entity.UserRole.Master && !(from m in problem.Contest.Managers select m.ID).Contains(user.ID))
+                return RedirectToAction("Message", "Shared", new { msg = "现在不允许编写解题报告！" });
+            if (problem.Statuses.Where(x => x.ResultAsInt == (int)Entity.JudgeResult.Accepted && x.UserID == user.ID).Count() == 0)
+                return RedirectToAction("Message", "Shared", new { msg = "只有通过了本题才可以编写解题报告！" });
+            return View();
+        }
+
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        [HttpPost]
+        public ActionResult Create(int id, Solution model)
+        {
+            var problem = DbContext.Problems.Find(id);
+            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            if (DateTime.Now < problem.Contest.End && user.Role < Entity.UserRole.Master && !(from m in problem.Contest.Managers select m.ID).Contains(user.ID))
+                return RedirectToAction("Message", "Shared", new { msg = "现在不允许编写解题报告！" });
+            if (problem.Statuses.Where(x => x.ResultAsInt == (int)Entity.JudgeResult.Accepted && x.UserID == user.ID).Count() == 0)
+                return RedirectToAction("Message", "Shared", new { msg = "只有通过了本题才可以编写解题报告！" });
+            var solution = new Solution 
+            { 
+                Content = model.Content,
+                Language = model.Language,
+                Title = model.Title,
+                Code = model.Code,
+                UserID = user.ID,
+                ProblemID = id
+            };
+            DbContext.Solutions.Add(solution);
+            DbContext.SaveChanges();
+            return RedirectToAction("EditTags", "Solution", new { id = solution.ID });
+        }
     }
 }
