@@ -125,10 +125,10 @@ function LoadSolutionTags()
     if ($("#lstSolutionTags").length > 0)
     {
         $.getJSON("/Solution/GetTags/" + id, {}, function (tags) {
-            for (var i in tags)
+            for (var i = 0; i < tags.length;i++)
             {
-                $("#t_" + i).removeClass("gray");
-                $("#t_" + i).addClass("blue");
+                $("#t_" + tags[i]).removeClass("gray");
+                $("#t_" + tags[i]).addClass("orange");
             }
         });
     }

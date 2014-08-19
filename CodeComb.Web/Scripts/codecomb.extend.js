@@ -159,13 +159,13 @@ function SetSolutionTag(tid)
     $.post("/Solution/SetTag/" + id, { tid: tid }, function (data) {
         if (data == "Added")
         {
-            $("#t_" + i).removeClass("gray");
-            $("#t_" + i).addClass("blue");
+            $("#t_" + tid).removeClass("gray");
+            $("#t_" + tid).addClass("orange");
         }
         else if (data == "Deleted")
         {
-            $("#t_" + i).removeClass("blue");
-            $("#t_" + i).addClass("gray");
+            $("#t_" + tid).removeClass("orange");
+            $("#t_" + tid).addClass("gray");
         }
     });
 }

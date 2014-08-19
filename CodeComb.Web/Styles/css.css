@@ -1926,6 +1926,9 @@ tbody tr:hover {
 
 .label {
     padding: 3px 5px 3px 5px;
+    font-size:14px;
+    color:black;
+    text-decoration:none!important;
 }
 
 .label-big {

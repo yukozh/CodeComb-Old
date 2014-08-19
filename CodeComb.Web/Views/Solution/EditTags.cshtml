@@ -1,18 +1,17 @@
 ﻿@model Solution
 @{
-    ViewBag.Title = "编辑标签 - "+Model.Title;
+    ViewBag.Title = "编辑标签 - " + Model.Title + " - " + Model.Problem.Title;
     List<AlgorithmTag> Tags = ViewBag.Tags;
 }
-
 <div class="post-detail-body">
     <div class="cont-wrap">
         <div class="grid_12">
             <div class="post-detail-wrap-outer">
                 <div class="profile-actions">
-                    <a href="/Problem/Status/@Model.ID" class="profile-btn"><img src="/Images/status.png" alt="评测状态" /></a>
+                    <a href="/Solution/@Model.ProblemID" class="profile-btn"><img src="/Images/back.png" alt="返回解题报告列表" /></a>
                 </div>
                 <div class="post-detail-wrap">
-                    <div class="post-title"><h2>编辑标签</h2></div>
+                    <div class="post-title"><h2>编辑标签 - @Model.Title</h2></div>
                     <div class="post-content" id="lstSolutionTags">
                         @foreach (var tag in Tags)
                         { 
@@ -24,6 +23,7 @@
                                 }
                             </p>
                         }
+                        <p>@Html.ActionLink("查看本解题报告", "Show", "Solution", new { id = Model.ID }, new { @class = "button button-def" })</p>
                     </div>
                 </div>
             </div>

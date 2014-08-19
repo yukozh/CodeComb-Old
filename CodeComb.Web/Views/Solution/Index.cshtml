@@ -1,10 +1,9 @@
 ﻿@model IEnumerable<Solution>
 @{
-    CodeComb.Entity.Contest contest = ViewBag.CurrentContest;
     ViewBag.Title = "解题报告";
     var IsMaster = (bool)ViewBag.IsMaster;
     var IsCreator = (bool)ViewBag.IsCreator;
-    var IsAccepted = (bool)ViewBag.IsCreator;
+    var IsAccepted = (bool)ViewBag.IsAccepted;
 }
 
 <div class="post-detail-body">
@@ -12,14 +11,14 @@
         <div class="grid_12">
             <div class="post-detail-wrap-outer">
                 <div class="profile-actions">
-                    <a href="/Problem/@ViewContext.RouteData.Values["id"]" class="profile-btn"><img src="/Images/description.png" alt="返回题目" /></a>
+                    <a href="/Problem/@ViewContext.RouteData.Values["id"]" class="profile-btn"><img src="/Images/back.png" alt="返回题目" /></a>
+                    @if(User.Identity.IsAuthenticated && IsAccepted)
+                    {
+                        <a href="/Solution/Create/@ViewContext.RouteData.Values["id"]" class="profile-btn"><img src="/Images/description.png" alt="编写题解" /></a>
+                    }
                 </div>
                 <div class="post-detail-wrap">
-                    @(User.Identity.IsAuthenticated && IsAccepted)
-                    {
-                        @Html.ActionLink("我要提交解题报告", "Create", "Solution", new { id = ViewContext.RouteData.Values["id"] }, null)
-                    }
-                    <div class="post-title"><h2>解题报告 - @contest.Title</h2></div>
+                    <div class="post-title"><h2>解题报告 - @ViewBag.CurrentContest.Title</h2></div>
                     <div class="post-info"></div>
                     <div class="post-content">
                         <table>

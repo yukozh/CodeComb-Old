@@ -1,6 +1,8 @@
 ﻿@model Solution
 @{
     ViewBag.Title = Model.Title + " - " + Model.Problem.Title;
+    string[] Css = { "green", "orange", "blue", "purple", "red" };
+    var i = 0;
 }
 
 <div class="post-detail-body">
@@ -10,11 +12,11 @@
                 <div class="post-detail-wrap">
                     <div class="post-title"><h2>@Model.Title</h2></div>
                     <div class="post-info">
-                        @Html.Gravatar(Model.User.Gravatar, 180, "post-face") <a href="/User/@Model.UserID">@Html.Nickname(Model.User.Nickname, Model.User.Ratings.Sum(x => x.Credit) + 1500, "post-info")</a> 标签：@ViewBag.Tags)
+                        @Html.Gravatar(Model.User.Gravatar, 180, "post-face") <a href="/User/@Model.UserID">@Html.Nickname(Model.User.Nickname, Model.User.Ratings.Sum(x => x.Credit) + 1500, "post-info")</a> 
                         @if (User.Identity.IsAuthenticated && (((CodeComb.Entity.User)ViewBag.CurrentUser).ID == Model.UserID || ((CodeComb.Entity.User)ViewBag.CurrentUser).Role >= UserRole.Master))
                         {
-                            @Html.ActionLink("编辑", "Edit", "Solution", new { @class = "post-info" });
-                            <a class="post-info" href="javascript:$('#frmDeleteSolution').submit();" id="btnDeleteTopic" class="post-info">删除</a>
+                            @Html.ActionLink("编辑", "Edit", "Solution", new { id = Model.ID }, new { @class = "post-info" });
+                            <a class="post-info" href="javascript:$('#frmDeleteSolution').submit();" id="btnDeleteTopic">删除</a>
                             using (Html.BeginForm("Delete", "Solution", FormMethod.Post, new { id = "frmDeleteSolution", style = "display:none;" }))
                             {
                                 @Html.AntiForgeryToken()
@@ -22,7 +24,24 @@
                             }
                         }
                     </div>
-                    <div class="post-content" id="DisplayArea">@Html.Sanitized(Model.Content)</div>
+                    <div class="post-content">
+                    <p>标签：</p>
+                    <p>
+                        @foreach (SolutionTag tag in ViewBag.Tags)
+                        {
+                            if (tag.AlgorithmTag.FatherID != null)
+                            {
+                                if (tag.AlgorithmTag.Father.Title == tag.AlgorithmTag.Title || tag.AlgorithmTag.Father.Children.Count == 1)
+                                {<a href="javascript:void(0);" class="btn-tag @(Css[i++%5]) label">@tag.AlgorithmTag.Father.Title</a>}
+                                else
+                                {<a href="javascript:void(0);" class="btn-tag @(Css[i++%5]) label">@tag.AlgorithmTag.Father.Title @tag.AlgorithmTag.Title</a>}
+                            }
+                        }
+                    </p>
+                    <p>代码：</p>
+                    <pre>@Model.Code</pre>
+                    <p>解题报告：</p>
+                    @Html.Sanitized(Model.Content)</div>
                 </div>
             </div>
         </div>

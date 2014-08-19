@@ -1,18 +1,19 @@
 ﻿@model Solution
 @{
-    ViewBag.Title = "创建解题报告";
+    ViewBag.Title = "创建解题报告 - " + ViewBag.ProblemTitle;
 }
+<script type="text/javascript" src="~/Scripts/ckeditor/ckeditor.js"></script>
 <div class="post-detail-body">
     <div class="cont-wrap">
         <div class="grid_12">
             <div class="post-detail-wrap-outer">
                 <div class="profile-actions">
-                    <a href="/Problem/@Model.ID" class="profile-btn"><img src="/Images/description.png" alt="返回题目" /></a>
+                    <a href="/Problem/@ViewContext.RouteData.Values["id"]" class="profile-btn"><img src="/Images/description.png" alt="返回题目" /></a>
                 </div>
                 <div class="post-detail-wrap">
-                    <div class="post-title"><h2>创建解题报告</h2></div>
+                    <div class="post-title"><h2>创建解题报告 - @ViewBag.ProblemTitle</h2></div>
                     <div class="post-content">
-                        @using (Html.BeginForm("Create", "Solution", new { id = Model.ID }, FormMethod.Post, null))
+                        @using (Html.BeginForm("Create", "Solution", new { id = ViewContext.RouteData.Values["id"] }, FormMethod.Post, null))
                         {
                             @Html.AntiForgeryToken()
                             <p>标题</p>
