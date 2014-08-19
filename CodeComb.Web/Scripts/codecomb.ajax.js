@@ -48,7 +48,11 @@ function LoadTopics()
             id: id,
             rnd: Math.random()
         }, function (topics) {
+            if (page == 0 && topics.length == 0) {
+                $("#lstTopics").append('<p>该板块无主题</p>');
+            }
             if (topics.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
+           
             for (var i in topics) {
                 $("#lstTopics").append('<div class="post-item forum-post-item ' + (topics[i].Top ? 'forum-post-item-highlight' : '') + '">'
                                                  + '    <div class="post-title"><h3><a href="/Topic/' + topics[i].ID + '">' + topics[i].Title + '</a></h3></div>'
@@ -87,8 +91,13 @@ function LoadContests() {
             format: format,
             rnd: Math.random()
         }, function (contests) {
+            if (page == 0 && contests.length == 0) {
+                $("#lstContests").removeClass("shadow");
+                $("#lstContests").append('<p>暂无比赛</p>');
+            }
             if (contests.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
             for (var i in contests) {
+                $("#lstContests").addClass("shadow");
                 $("#lstContests").append('<div class="post-item post-item-zip">'
                                                  + '    <div class="post-title"><h3><a href="/Contest/' + contests[i].ID + '">' + contests[i].Title + '</a></h3></div>'
                                                  + '    <div class="post-info">' + contests[i].ProblemCount + ' Problem(s), Format: ' + contests[i].Format + ', Duration: ' + contests[i].TimeLength + ' / Start: ' + contests[i].Time + '</div>'
@@ -110,6 +119,9 @@ function LoadStatuses() {
             problem_id: problem_id,
             rnd: Math.random()
         }, function (statuses) {
+            if (page == 0 && statuses.length == 0) {
+                $("#lstStatuses").append('<p>没有符合条件的结果</p>');
+            }
             if (statuses.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
             for (var i = statuses.length - 1; i >= 0; i--) {
                 BuildStatus(statuses[i]);
