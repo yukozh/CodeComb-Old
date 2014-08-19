@@ -4,12 +4,13 @@
     var IsMaster = (bool)ViewBag.IsMaster;
     var IsCreator = (bool)ViewBag.IsCreator;
 }
+<script type="text/javascript" src="~/Scripts/ckeditor/ckeditor.js"></script>
 <div class="post-detail-body">
     <div class="cont-wrap">
         <div class="grid_12">
             <div class="post-detail-wrap-outer">
                 <div class="profile-actions">
-                    <a href="/Contest/Problems/@Model.ID" class="profile-btn"><img src="/Images/back.png" alt="返回比赛" /></a>
+                    <a href="/Contest/Settings/Problems/@Model.ID" class="profile-btn"><img src="/Images/back.png" alt="返回题目列表" /></a>
                     <a href="/Problem/Edit/@Model.ID" class="profile-btn"><img src="/Images/description.png" alt="基本信息管理" /></a>
                     <a href="/Problem/TestCases/@Model.ID" class="profile-btn"><img src="/Images/code.png" alt="测试数据管理" /></a>
                     <a href="/Problem/Special/@Model.ID" class="profile-btn"><img src="/Images/judgers.png" alt="特殊比较器" /></a>
@@ -27,7 +28,7 @@
                             <p>题目名称：@Html.TextBoxFor(x => x.Title, new { @class = "textbox", style = "width:470px" })</p>
                             <p>时间限制：@Html.TextBoxFor(x => x.TimeLimit, new { @class = "textbox" }) ms per test case</p>
                             <p>空间限制：@Html.TextBoxFor(x => x.MemoryLimit, new { @class = "textbox" }) KiB</p>
-                            <p>题目分数：@Html.TextBoxFor(x => x.Credit, new { @class = "textbox" }) CF、TC赛制用来计算动态分数，另题目按分数升序排序</p>
+                            <p>题目分数：@Html.TextBoxFor(x => x.Credit, new { @class = "textbox" }) CF、TC赛制计算动态分数，题目按分数升序排序</p>
                             if (ViewBag.CurrentUser.Role >= CodeComb.Entity.UserRole.Master)
                             { 
                                 <p>能力值：@Html.TextBoxFor(x => x.Difficulty, new { @class = "textbox" }) 计算Rating时使用</p>
