@@ -6,24 +6,29 @@
 <div class="post-body">
     <div class="cont-wrap">
         <div class="grid_9">
-            <h2>Incoming Contests &amp; In progress Contests</h2>
-            @foreach (var item in Model)
-            {
-                <div class="post-item post-item-zip">
-                    <div class="post-title"><h2>@Html.ActionLink(item.Title, "Show", "Contest", new { id = item.ID }, null)</h2></div>
-                    <div class="post-info">
-                        @item.Problems.Count Problems, Format: @item.Format.ToString(), Duration: @Html.ToVagueTimeLength(item.Begin, item.End), 
-                        @Html.ToTimeTip(item.Begin) 开始 (@item.Begin.ToString("yyyy-MM-dd HH:mm:ss"))
-                    </div>
-                    <div class="post-content">
-                        @Html.Sanitized(item.Content)
-                        <p>@Html.ActionLink("查看详情", "Show", "Contest", new { id = item.ID }, null)</p>
-                    </div>
-                </div>
-            }
-
+            <h2>Recent Contests</h2>
+            <div class="shadow">
+                @{
+                    foreach (var item in Model)
+                    {
+                        var css = "contest-item-pending";
+                        var status = "";
+                        if (DateTime.Now >= item.Begin) { css = "contest-item-highlight"; status = "<span style='color:#ff8080'>[Live]</span>"; }
+                        <div class="post-item post-item-zip @css">
+                            <div class="post-title"><h2>@Html.Sanitized(status)@Html.ActionLink(item.Title, "Show", "Contest", new { id = item.ID }, null)</h2></div>
+                            <div class="post-info">
+                                @item.Problems.Count Problems, Format: @item.Format.ToString(), Duration: @Html.ToVagueTimeLength(item.Begin, item.End),
+                                @Html.ToTimeTip(item.Begin) 开始 (@item.Begin.ToString("yyyy-MM-dd HH:mm:ss"))
+                            </div>
+                            <div class="post-content">
+                                @Html.Sanitized(item.Content)
+                                <p>@Html.ActionLink("查看详情", "Show", "Contest", new { id = item.ID }, null)</p>
+                            </div>
+                        </div>
+                    }}
+            </div>
             <h2>Passed Contests</h2>
-            <div id="lstContests"></div>
+            <div id="lstContests" class="shadow"></div>
             <div><div class="loading" id="iconLoading"></div></div>
         </div><div class="grid_3">
             <div class="post-module">

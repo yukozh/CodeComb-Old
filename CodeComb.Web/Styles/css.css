@@ -709,7 +709,7 @@ a, a:visited {
     box-shadow: 0 0 10px rgba(0,0,0,.2);
     background: rgba(255,255,255,.9);
     filter:Alpha(opacity=90); background:#fff;
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=10, Direction=135,Color='#cccccc');
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
 }
 
 .page-header-item {
@@ -846,6 +846,9 @@ body {
 .page-banner {
     background: url(/Images/banner.png) no-repeat center top;
     height: 350px;
+    -webkit-box-shadow: 0 0 15px rgba(0,0,0,.2);
+    box-shadow: 0 0 15px rgba(0,0,0,.2);
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
 }
 
 .banner-text {
@@ -983,9 +986,11 @@ body {
     padding: 20px;
     background: #fff;
     position: relative;
-    border: 5px solid #f2f2f2;
-    -webkit-transition: border-color .2s linear;
-    transition: border-color .2s linear;
+    transition: box-shadow .2s linear;
+    -webkit-transition: box-shadow .2s linear;
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0,.2);
+    box-shadow: 0 0 10px rgba(0,0,0,.2);
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
     margin: 10px;
     *display: inline;
     zoom: 1;
@@ -997,7 +1002,10 @@ body {
     }
 
         .rank-item:hover {
-            border: 5px solid #ededed;
+            transition: box-shadow .2s linear;
+            -webkit-box-shadow: 0 0 15px #ffdf00!important;
+            box-shadow: 0 0 15px #ffdf00!important;
+            filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#ffdf00')!important; 
         }
 
 .rank-cont {
@@ -1242,6 +1250,9 @@ body {
     padding: 20px;
     border-top: 5px solid #ededed;
     margin-bottom: 30px;
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0,.2);
+    box-shadow: 0 0 10px rgba(0,0,0,.2);
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
 }
 
 .post-module-content {
@@ -1384,14 +1395,18 @@ body {
     display: block;
     zoom: 1;
     background: #fff;
-    border: 5px solid #f2f2f2;
-    -webkit-transition: border-color .2s linear;
-    transition: border-color .2s linear;
+    padding: 1px;
+    margin-bottom:15px;
+    transition: box-shadow .2s linear;
+    -webkit-transition: box-shadow .2s linear;
+    -webkit-box-shadow: 0 0 5px rgba(0,0,0,.2);
+    box-shadow: 0 0 5px rgba(0,0,0,.2);
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
 }
 
 .status-item-wrap {
     margin: 20px 220px 25px 100px;
-    height: 70px;
+	height: 70px;
 }
 
 .status-item, .status-item:active, .status-item:hover, .status-item:visited {
@@ -1400,7 +1415,11 @@ body {
 }
 
     .status-item:hover {
-        border: 5px solid #ededed;
+        /*border: 5px solid #ededed;*/
+         transition: box-shadow .2s linear;
+        -webkit-box-shadow: 0 0 15px #ffdf00!important;
+        box-shadow: 0 0 15px #ffdf00!important;
+        filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#ffdf00')!important;
     }
 
 .status-name h2 {
@@ -1891,7 +1910,7 @@ table {
     border:1px solid #e8e8e8;
     /*-webkit-box-shadow: 0 0 10px rgba(0,0,0,.2);
     box-shadow: 0 0 10px rgba(0,0,0,.2);
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=10, Direction=135,Color='#cccccc');*/
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');*/
 }
 
 thead {
@@ -1926,7 +1945,7 @@ tr {
 }
 
 tbody tr:hover {
-	background:#f2faff!important
+	background:#ecf4ff!important
 }
 
 .label {
@@ -2012,3 +2031,23 @@ tbody tr:hover {
     .black:hover {
         background-color: #EEE;
     }
+
+.contest-item-highlight {
+    border: 5px solid #ff8080;
+    border-top: 0;
+    border-bottom: 0;
+    background:#fff0f0;
+}
+
+ .contest-item-pending {
+    border: 5px solid #56a5eb;
+    border-top: 0;
+    border-bottom: 0;
+    background:#ecf4ff;
+}
+
+.shadow {
+        -webkit-box-shadow: 0 0 10px rgba(0,0,0,.2);
+        box-shadow: 0 0 10px rgba(0,0,0,.2);
+        filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
+}
