@@ -185,6 +185,7 @@
     <Compile Include="Controllers\CKEditorController.cs" />
     <Compile Include="Controllers\ContestBaseController.cs" />
     <Compile Include="Controllers\ContestController.cs" />
+    <Compile Include="Controllers\ContestSettingsController.cs" />
     <Compile Include="Controllers\FAQController.cs" />
     <Compile Include="Controllers\ForumController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -557,6 +558,7 @@
     <Content Include="Views\Solution\EditTags.cshtml" />
     <Content Include="Views\Solution\Create.cshtml" />
     <Content Include="Views\Contest\Standings.cshtml" />
+    <Content Include="Views\ContestSettings\General.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
