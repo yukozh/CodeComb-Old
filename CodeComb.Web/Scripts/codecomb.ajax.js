@@ -49,6 +49,7 @@ function LoadTopics()
             rnd: Math.random()
         }, function (topics) {
             if (page == 0 && topics.length == 0) {
+                $("#lstTopics").removeClass('shadow');
                 $("#lstTopics").append('<p>该板块无主题</p>');
             }
             if (topics.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
@@ -120,6 +121,7 @@ function LoadStatuses() {
             rnd: Math.random()
         }, function (statuses) {
             if (page == 0 && statuses.length == 0) {
+                $("#lstStatuses").removeClass('shadow');
                 $("#lstStatuses").append('<p>没有符合条件的结果</p>');
             }
             if (statuses.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
