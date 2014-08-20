@@ -67,7 +67,8 @@
             @Html.AntiForgeryToken()
             <h3>上传打包测试数据</h3>
             <p><input type="file" name="file" accept="application/x-zip-compressed" /></p>
-            <p><input type="submit" value="上传" class="button button-def" /> 支持格式：*.zip, *.tar</p>
+            <p>服务器将自动匹配压缩文档中的.in/.out/.ans文件，支持格式：*.zip, *.tar</p>
+            <p><input type="submit" value="上传" class="button button-def" /></p>
         }
     </div>
 
