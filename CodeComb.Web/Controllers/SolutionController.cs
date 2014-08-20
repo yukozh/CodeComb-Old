@@ -17,31 +17,35 @@ namespace CodeComb.Web.Controllers
             ViewBag.IsCreator = false;
             ViewBag.IsAccepted = false;
             if (!User.Identity.IsAuthenticated) return;
-            var id = requestContext.RouteData.Values["id"] == null ? null : (int?)Convert.ToInt32(requestContext.RouteData.Values["id"]);
-            if (id == null) return;
-            var problem = DbContext.Problems.Find(id);
-            var contest = problem.Contest;
-            var user = (from u in DbContext.Users where u.Username == User.Identity.Name select u).Single();
-            if (problem.Statuses.Where(x => x.UserID == user.ID && x.ResultAsInt == (int)Entity.JudgeResult.Accepted).Count() > 0)
-                ViewBag.IsAccepted = true;
-            if (user.Role >= UserRole.Master)
+            try
             {
-                ViewBag.IsMaster = true;
-                ViewBag.IsCreator = true;
-                ViewBag.IsAccepted = true;
-            }
-            else
-            {
-                var contestmanager = (from cm in contest.Managers where cm.UserID == user.ID select cm).SingleOrDefault();
-                if (contestmanager != null)
+                var id = requestContext.RouteData.Values["id"] == null ? null : (int?)Convert.ToInt32(requestContext.RouteData.Values["id"]);
+                if (id == null) return;
+                var problem = DbContext.Problems.Find(id);
+                var contest = problem.Contest;
+                var user = (from u in DbContext.Users where u.Username == User.Identity.Name select u).Single();
+                if (problem.Statuses.Where(x => x.UserID == user.ID && x.ResultAsInt == (int)Entity.JudgeResult.Accepted).Count() > 0)
+                    ViewBag.IsAccepted = true;
+                if (user.Role >= UserRole.Master)
                 {
                     ViewBag.IsMaster = true;
+                    ViewBag.IsCreator = true;
                     ViewBag.IsAccepted = true;
-                    if (contestmanager.IsCreator)
-                        ViewBag.IsCreator = true;
+                }
+                else
+                {
+                    var contestmanager = (from cm in contest.Managers where cm.UserID == user.ID select cm).SingleOrDefault();
+                    if (contestmanager != null)
+                    {
+                        ViewBag.IsMaster = true;
+                        ViewBag.IsAccepted = true;
+                        if (contestmanager.IsCreator)
+                            ViewBag.IsCreator = true;
+                    }
                 }
             }
-        }
+            catch { }
+        }//id=problem id
 
         //
         // GET: /Solution/
@@ -58,9 +62,9 @@ namespace CodeComb.Web.Controllers
                              orderby s.ID descending
                              select s).ToList();
             return View(solutions);
-        }
+        }//checked
 
-        public ActionResult Show(int id)
+        public ActionResult Show(int id)//checked
         {
             var solution = DbContext.Solutions.Find(id);
             var problem = solution.Problem;
@@ -74,7 +78,7 @@ namespace CodeComb.Web.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int id)//checked
         {
             var solution = DbContext.Solutions.Find(id);
             var problem = solution.Problem;
@@ -90,10 +94,13 @@ namespace CodeComb.Web.Controllers
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
         [HttpPost]
-        public ActionResult Edit(int id, Solution model)
+        public ActionResult Edit(int id, Solution model)//checked
         {
             var solution = DbContext.Solutions.Find(id);
-            if (!ViewBag.IsMaster && solution.UserID != ViewBag.CurrentUser.ID)
+            var contest = solution.Problem.Contest;
+            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            if (user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
+
                 return RedirectToAction("Message", "Shared", new { msg="权限不足！"});
             solution.Language = model.Language;
             solution.Title = model.Title;
@@ -104,19 +111,23 @@ namespace CodeComb.Web.Controllers
         }
 
         [Authorize]
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int id)//checked
         {
             var solution = DbContext.Solutions.Find(id);
-            if (!ViewBag.IsMaster && solution.UserID != ViewBag.CurrentUser.ID)
+            var contest = solution.Problem.Contest;
+            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            if (user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
                 return RedirectToAction("Message", "Shared", new { msg = "权限不足！" });
             return View(solution);
         }
 
         [Authorize]
-        public ActionResult EditTags(int id)
+        public ActionResult EditTags(int id)//checked
         {
             var solution = DbContext.Solutions.Find(id);
-            if (!ViewBag.IsMaster && solution.UserID != ViewBag.CurrentUser.ID)
+            var contest = solution.Problem.Contest;
+            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            if (user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
                 return RedirectToAction("Message", "Shared", new { msg = "权限不足！" });
             ViewBag.Tags = (from at in DbContext.AlgorithmTags
                             where at.FatherID == null
@@ -127,10 +138,12 @@ namespace CodeComb.Web.Controllers
 
         [HttpGet]
         [Authorize]
-        public ActionResult GetTags(int id)
+        public ActionResult GetTags(int id)//checked
         {
             var solution = DbContext.Solutions.Find(id);
-            if (!ViewBag.IsMaster && solution.UserID != ViewBag.CurrentUser.ID)
+            var contest = solution.Problem.Contest;
+            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            if (user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
                 return Json(null, JsonRequestBehavior.AllowGet);
             var tags = (from t in solution.SolutionTags
                         select t.AlgorithmTagID).ToList();
@@ -139,10 +152,12 @@ namespace CodeComb.Web.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult SetTag(int id, int tid)
+        public ActionResult SetTag(int id, int tid)//checked
         {
             var solution = DbContext.Solutions.Find(id);
-            if (!ViewBag.IsMaster && solution.UserID != ViewBag.CurrentUser.ID)
+            var contest = solution.Problem.Contest;
+            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            if (user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
                 return Content("Failed");
             var tag = solution.SolutionTags.Where(x => x.AlgorithmTagID == tid).SingleOrDefault();
             if (tag == null)
@@ -165,7 +180,7 @@ namespace CodeComb.Web.Controllers
         }
 
         [Authorize]
-        public ActionResult Create(int id)
+        public ActionResult Create(int id)//checked
         {
             var problem = DbContext.Problems.Find(id);
             ViewBag.ProblemTitle = problem.Title;
@@ -181,7 +196,7 @@ namespace CodeComb.Web.Controllers
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
         [HttpPost]
-        public ActionResult Create(int id, Solution model)
+        public ActionResult Create(int id, Solution model)//checked
         {
             var problem = DbContext.Problems.Find(id);
             var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;

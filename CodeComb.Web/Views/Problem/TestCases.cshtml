@@ -3,7 +3,7 @@
     ViewBag.Title = "编辑数据 - " + Model.Title;
     var IsMaster = (bool)ViewBag.IsMaster;
     var IsCreator = (bool)ViewBag.IsCreator;
-    string Css = { "green", "blue", "orange", "purple" };
+    string[] Css = { "green", "blue", "orange", "purple" };
 }
 <div class="post-detail-body">
     <div class="cont-wrap">
@@ -22,7 +22,7 @@
                     <div class="post-title"><h2>测试数据 - @Model.Title</h2></div>
                     <div class="post-info"></div>
                     <div class="post-content">
-                        <p><a href="javascript:$.colorbox({ inline: true, width: '380px', href: '#TestCaseUpload'});">上传打包数据</a> <a href="javascript:$.colorbox({ inline: true, width: '380px', href: '#TestCaseTextUpload'});">上传手打数据</a></p>
+                        <p><a href="javascript:$.colorbox({ inline: true, width: 'auto', href: '#TestCaseUpload'});">上传打包数据</a> <a href="javascript:$.colorbox({ inline: true, width: 'auto', href: '#TestCaseTextUpload'});">上传手打数据</a></p>
                         <table>
                             <thead>
                                 <tr>
@@ -36,10 +36,10 @@
                                 @foreach (var item in Model.TestCases.OrderBy(x => x.Type))
                                 { 
                                     <tr>
-                                        <td>@item.Input.Length / 1024 KiB</td>
-                                        <td>@item.Output.Length / 1024 KiB</td>
+                                        <td>@(item.Input.Length / 1024) KiB</td>
+                                        <td>@(item.Output.Length / 1024) KiB</td>
                                         <td><span class="label @Css[(int)item.Type]" >@item.Type</span></td>
-                                        <td><a href="javascript:ShowTestCase(@item.ID)">预览</a> <a href="javascript:$('#ChangeID').val(@item.ID);$('#frmChangeTestCase').submit();">更改类型</a> <a href="javascript:$('#DeleteID').val(@item.ID);$('#frmDeleteTestCase').submit();">删除</a> </td>
+                                        <td><a href="javascript:EditTestCase(@item.ID)">编辑</a> <a href="javascript:$('#ChangeID').val(@item.ID);$('#frmChangeTestCase').submit();">更改类型</a> <a href="javascript:$('#DeleteID').val(@item.ID);$('#frmDeleteTestCase').submit();">删除</a> </td>
                                     </tr>
                                 }
                             </tbody>
@@ -47,7 +47,7 @@
                         @using (Html.BeginForm("DeleteTestCase", "Problem", null, FormMethod.Post, new { id = "frmDeleteTestCase" }))
                         { 
                             @Html.AntiForgeryToken()
-                            <input type="hidden" id="DeleteID" />
+                            <input type="hidden" id="DeleteID" name="id" />
                         }
                         @using (Html.BeginForm("ChangeTestCase", "Problem", null, FormMethod.Post, new { id = "frmChangeTestCase" }))
                         {
@@ -62,12 +62,12 @@
 </div>
 <div style="display:none">
     <div id="TestCaseUpload">
-        @using (Html.BeginForm("TestCaseUpload", "Problem", new { id = Model.ID }, FormMethod.Post, new { id = "frmTestCaseUpload" }))
+        @using (Html.BeginForm("TestCaseUpload", "Problem", new { id = Model.ID }, FormMethod.Post, new { id = "frmTestCaseUpload", enctype = "multipart/form-data" }))
         {
             @Html.AntiForgeryToken()
             <h3>上传打包测试数据</h3>
-            <p><input type="file" accept="application/x-zip-compressed" /></p>
-            <p><input type="submit" value="上传" class="button button-def" /> 注：支持格式：*.zip, *.tar</p>
+            <p><input type="file" name="file" accept="application/x-zip-compressed" /></p>
+            <p><input type="submit" value="上传" class="button button-def" /> 支持格式：*.zip, *.tar</p>
         }
     </div>
 
@@ -75,6 +75,7 @@
         @using (Html.BeginForm("TestCaseTextUpload", "Problem", new { id = Model.ID }, FormMethod.Post, new { id = "frmTestCaseUpload" }))
         {
             @Html.AntiForgeryToken()
+            <h3>上传数据</h3>
             <table style="width:700px">
                 <thead>
                     <tr>
@@ -84,12 +85,35 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><textarea name="Input" style="width:100%;height:220px;"></textarea></td>
-                        <td><textarea name="Output" style="width:100%;height:220px;"></textarea></td>
+                        <td><textarea name="input" style="width:100%;height:220px;"></textarea></td>
+                        <td><textarea name="output" style="width:100%;height:220px;"></textarea></td>
                     </tr>
                 </tbody>
             </table>
-            <input type="submit" value="上传" class="button button-def" />
+            <p><input type="submit" value="上传" class="button button-def" /></p>
+        }
+    </div>
+    <div id="TestCaseTextUpload">
+        @using (Html.BeginForm("TestCaseEdit", "Problem", null, FormMethod.Post, new { id = "frmTestCaseUpload" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" />
+            <h3>编辑数据</h3>
+            <table style="width:700px">
+                <thead>
+                    <tr>
+                        <th style="width:50%">输入</th>
+                        <th style="width:50%">输出</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><textarea name="input" id="txtInput" style="width:100%;height:220px;"></textarea></td>
+                        <td><textarea name="output" id="txtOutput" style="width:100%;height:220px;"></textarea></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><input type="submit" value="提交" class="button button-def" /></p>
         }
     </div>
 </div>
