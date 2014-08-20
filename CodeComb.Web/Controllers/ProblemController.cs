@@ -237,13 +237,18 @@ namespace CodeComb.Web.Controllers
             return RedirectToAction("TestCases", "Problem", new { id = contest.ID });
         }
 
-        public ActionResult TestCaseUpload(int id, HttpPostedFile file)
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult TestCaseUpload(int id)
         {
             var problem = DbContext.Problems.Find(id);
             var contest = problem.Contest;
             var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
             if (user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
                 return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            var file = Request.Files[0];
             var timestamp = Helpers.String.ToTimeStamp(DateTime.Now);
             var filename = timestamp+".zip";
             var dir = Server.MapPath("~") + @"\Temp\";
@@ -280,6 +285,18 @@ namespace CodeComb.Web.Controllers
             DbContext.SaveChanges();
             System.IO.Directory.Delete(dir + timestamp, true);
             return RedirectToAction("TestCases", "Problem", new { id = contest.ID });
+        }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult GetTestCase(int id)
+        { 
+            var testcase = DbContext.TestCases.Find(id);
+            var contest = testcase.Problem.Contest;
+            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            if (user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
+                return Json(null, JsonRequestBehavior.AllowGet);
+            return Json(new Models.View.TestCase(testcase), JsonRequestBehavior.AllowGet);
         }
 	}   
 }

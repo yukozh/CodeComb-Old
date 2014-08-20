@@ -52,7 +52,7 @@
                         @using (Html.BeginForm("ChangeTestCase", "Problem", null, FormMethod.Post, new { id = "frmChangeTestCase" }))
                         {
                             @Html.AntiForgeryToken()
-                            <input type="hidden" id="ChangeID" />
+                            <input type="hidden" id="ChangeID" name="id" />
                         }
                     </div>
                 </div>
@@ -85,19 +85,19 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><textarea name="input" style="width:100%;height:220px;"></textarea></td>
-                        <td><textarea name="output" style="width:100%;height:220px;"></textarea></td>
+                        <td><textarea name="input" style="width: 100%; height: 220px; border: none;"></textarea></td>
+                        <td><textarea name="output" style="width: 100%; height: 220px; border: none;"></textarea></td>
                     </tr>
                 </tbody>
             </table>
             <p><input type="submit" value="上传" class="button button-def" /></p>
         }
     </div>
-    <div id="TestCaseTextUpload">
+    <div id="TestCaseEdit">
         @using (Html.BeginForm("TestCaseEdit", "Problem", null, FormMethod.Post, new { id = "frmTestCaseUpload" }))
         {
             @Html.AntiForgeryToken()
-            <input type="hidden" name="id" />
+            <input type="hidden" id="EditID" name="id" />
             <h3>编辑数据</h3>
             <table style="width:700px">
                 <thead>
@@ -108,8 +108,8 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><textarea name="input" id="txtInput" style="width:100%;height:220px;"></textarea></td>
-                        <td><textarea name="output" id="txtOutput" style="width:100%;height:220px;"></textarea></td>
+                        <td><textarea name="input" id="txtInput" style="width: 100%; height: 220px; border: none;"></textarea></td>
+                        <td><textarea name="output" id="txtOutput" style="width: 100%; height: 220px; border: none;"></textarea></td>
                     </tr>
                 </tbody>
             </table>

@@ -234,6 +234,7 @@
     <Compile Include="Models\View\Status.cs" />
     <Compile Include="Models\View\StatusDetail.cs" />
     <Compile Include="Models\View\StatusSnapshot.cs" />
+    <Compile Include="Models\View\TestCase.cs" />
     <Compile Include="Models\View\Topic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SignalR\CodeCombHub.cs" />

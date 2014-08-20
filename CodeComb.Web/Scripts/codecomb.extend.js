@@ -170,6 +170,16 @@ function SetSolutionTag(tid)
     });
 }
 
+function EditTestCase(id)
+{
+    $.getJSON("/Problem/GetTestCase/" + id, {}, function (testcase) {
+        $("#txtInput").val(testcase.Input);
+        $("#txtOutput").val(testcase.Output);
+        $("#EditID").val(testcase.ID);
+        $.colorbox({ inline: true, width: 'auto', href: '#TestCaseEdit' });
+    });
+}
+
 $(document).ready(function () {
     $("#btnAddContact").click(function () {
         var uid = $(this).attr("uid");
@@ -316,13 +326,13 @@ $(document).ready(function () {
         });
     });
 
-    // 代码高亮插件初始化
-    hljs.initHighlightingOnLoad();
+    //// 代码高亮插件初始化
+    //hljs.initHighlightingOnLoad();
 
-    // 样例数据复制    
-    $('#testcase-copywrap-1').zclip({
-        path: 'ZeroClipboard.swf',
-        copy: $.trim($(this).parent().next().text()),
-        afterCopy: alert('复制成功.');
-    });
+    //// 样例数据复制    
+    //$('#testcase-copywrap-1').zclip({
+    //    path: 'ZeroClipboard.swf',
+    //    copy: $.trim($(this).parent().next().text()),
+    //    afterCopy: alert('复制成功.')
+    //});
 });
