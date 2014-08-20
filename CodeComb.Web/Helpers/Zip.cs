@@ -13,7 +13,7 @@ namespace CodeComb.Web.Helpers
 {
     public static class Zip
     {
-        public static void Zip(string sourceFilePath, string destinationZipFilePath)
+        public static void CompressZip(string sourceFilePath, string destinationZipFilePath)
         {
             if (sourceFilePath[sourceFilePath.Length - 1] != System.IO.Path.DirectorySeparatorChar)
                 sourceFilePath += System.IO.Path.DirectorySeparatorChar;

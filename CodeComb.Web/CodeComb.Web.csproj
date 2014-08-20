@@ -217,6 +217,7 @@
     <Compile Include="Helpers\SMTP.cs" />
     <Compile Include="Helpers\String.cs" />
     <Compile Include="Helpers\Time.cs" />
+    <Compile Include="Helpers\Zip.cs" />
     <Compile Include="Models\View\ChatRecord.cs" />
     <Compile Include="Models\View\Clar.cs" />
     <Compile Include="Models\View\ClarProblem.cs" />
@@ -568,6 +569,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Temp\" />
     <Folder Include="Views\PrivateMessage\" />
     <Folder Include="Views\Test\" />
   </ItemGroup>
