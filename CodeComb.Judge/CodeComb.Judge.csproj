@@ -49,7 +49,9 @@
     <Compile Include="Models\UploadTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Judgers\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CodeComb.Entity\CodeComb.Entity.csproj">
       <Project>{f40f7941-f88a-4ce4-adf3-e5470d280ee8}</Project>

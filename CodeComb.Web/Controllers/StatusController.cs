@@ -214,12 +214,14 @@ namespace CodeComb.Web.Controllers
             {
                 testcase_ids = (from tc in problem.TestCases
                                 where tc.Type != Entity.TestCaseType.Sample
+                                orderby tc.Type ascending
                                 select tc.ID).ToList();
             }
             else if (contest.Format == Entity.ContestFormat.Codeforces)
             {
                 testcase_ids = (from tc in problem.TestCases
                                 where tc.Type == Entity.TestCaseType.Unilateralism
+                                orderby tc.Type ascending
                                 select tc.ID).ToList();
             }
             else
@@ -228,12 +230,14 @@ namespace CodeComb.Web.Controllers
                 {
                     testcase_ids = (from tc in problem.TestCases
                                     where tc.Type == Entity.TestCaseType.Sample
+                                    orderby tc.Type ascending
                                     select tc.ID).ToList();
                 }
                 else
                 {
                     testcase_ids = (from tc in problem.TestCases
                                     where tc.Type != Entity.TestCaseType.Sample
+                                    orderby tc.Type ascending
                                     select tc.ID).ToList();
                 }
             }

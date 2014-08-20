@@ -50,5 +50,5 @@ namespace CodeComb.Entity
             return this.ID;
         }
     }
-    public enum TestCaseType { Sample, Overall, Unilateralism, Custom };
+    public enum TestCaseType { Sample, Unilateralism, Overall, Custom };
 }
