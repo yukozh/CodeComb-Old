@@ -30,7 +30,7 @@
 2、高级接口
 
 七、杂项
-1、/Status/{ID}页、/Solution/Show/{ID}页的代码高亮
+【已完成】1、/Status/{ID}页、/Solution/Show/{ID}页的代码高亮
 2、Logo Hover需特殊处理
 3、电子邮件html模板
 4、/Problem/{ID} 中两种显示模式的样例数据需增加复制按钮，复制当前数据

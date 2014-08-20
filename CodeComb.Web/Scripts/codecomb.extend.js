@@ -315,4 +315,7 @@ $(document).ready(function () {
                 alert(data);
         });
     });
+
+    // 代码高亮插件初始化
+    hljs.initHighlightingOnLoad();
 });

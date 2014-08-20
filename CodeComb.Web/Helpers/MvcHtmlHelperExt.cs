@@ -85,6 +85,14 @@ namespace CodeComb.Web.Helpers
             string[] dic = { "AC", "PE", "WA", "OLE", "TLE", "MLE", "RE", "CE", "SE", "HKD", "RUN", "PND", "HID" };
             var css = dic[(int)Result];
             return new MvcHtmlString(css);
+        
+        }
+
+        public static MvcHtmlString GetLanguageClass<TModel>(this HtmlHelper<TModel> self, Entity.Language Language)
+        {
+            string[] LanguageDisplay = { "c", "cpp", "cpp", "java", "pascal", "python", "python", "ruby", "csharp", "vbnet" };
+            var ret = LanguageDisplay[(int)Language];
+            return new MvcHtmlString(ret);
         }
     }
 }

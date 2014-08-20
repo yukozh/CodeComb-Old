@@ -37,7 +37,7 @@
                     </div>
                     <div class="post-content">
                         <p>代码：</p>
-                        <pre>@Model.Code</pre>
+                        <pre><code class="@Html.GetLanguageClass(Model.Language)">@Model.Code</code></pre>
                         <p>解题报告：</p>
                         @Html.Sanitized(Model.Content)
                     </div>
