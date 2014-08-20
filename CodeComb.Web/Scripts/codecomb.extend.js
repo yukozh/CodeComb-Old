@@ -311,7 +311,8 @@ $(document).ready(function () {
     });
 
     $("#btnSubmitCode").click(function () {
-        $.colorbox({ html: '<h3>评测结果</h3><p>正在等待系统验证及分配评测资源...</p>', width:'700px' });
+        $.colorbox({ html: '<h3>评测结果</h3><p>正在等待系统验证及分配评测资源...</p>', width: '700px' });
+        $("#editor").val(editor.getValue());
         $.post("/Status/Create", $("#frmSubmitCode").serialize(), function (data) {
             if (data == "Problem not existed")
                 $.colorbox({ html: '<h3>评测结果</h3><p>不存在这道题目！</p>', width: '700px' });
@@ -326,8 +327,8 @@ $(document).ready(function () {
         });
     });
 
-    //// 代码高亮插件初始化
-    //hljs.initHighlightingOnLoad();
+    // 代码高亮插件初始化
+    hljs.initHighlightingOnLoad();
 
     //// 样例数据复制    
     //$('#testcase-copywrap-1').zclip({
