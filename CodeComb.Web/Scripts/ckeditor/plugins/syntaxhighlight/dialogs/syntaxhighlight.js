@@ -111,26 +111,14 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 								label : editor.lang.syntaxhighlight.langLbl,
 								'default' : 'java',
 								widths : ['25%','75%'],
-								items : [
-									['Bash (Shell)','bash'],
+								items: [
+                                    ['C++', 'cpp'],
 									['C#','csharp'],
-									['C++','cpp'],
-									['CSS','css'],
-									['Delphi','delphi'],
-									['Diff','diff'],
-									['Groovy','groovy'],
-									['Javascript','jscript'],
+									['Pascal','pascal'],
 									['Java','java'],
-									['Java FX','javafx'],
-									['Perl','perl'],
-									['PHP','php'],
-									['Plain (Text)','plain'],
 									['Python','python'],
 									['Ruby','ruby'],
-									['Scala','scala'],
-									['SQL','sql'],
-									['VB','vb'],
-									['XML/XHTML','xml']
+									['VB.Net','vb']
 								],
 								setup : function(f) {
 									if(f.lang) {
