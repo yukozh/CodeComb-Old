@@ -161,14 +161,17 @@ function BuildStatus(status)
                   + '<div class="status-status">' + status.Result + (status.PointCount > 1 ? ' (' + status.Statistics[0] + '/' + status.PointCount + ')' : "") + '</div>'
                   + '</div><div class="status-points">';
     var per = parseInt(100 / status.PointCount);
-    var _per = 100 - per * status.PointCount;
+    var fill = 100 - per * (status.PointCount);
+    var filled = false;
     for (var i = 0; i < status.Statistics.length; i++)
     {
-        var __per = per;
-        if (i == status.Statistics.length - 1 && _per != 0)
-            __per = _per;
+        var p = per * status.Statistics[i];
+        if (!filled && status.Statistics[i] > 0) {
+            p += fill;
+            filled = true;
+        }
         if (status.Statistics[i] > 0)
-            html += '<div class="status-point-item status-point-' + StatusCss[i] + '" style="width:' + __per * status.Statistics[i] + '%"><div class="status-point-desc">' + StatusDisplay[i] + (status.PointCount > 1 ? ' : ' + status.Statistics[i] : "") + '</div></div>';
+            html += '<div class="status-point-item status-point-' + StatusCss[i] + '" style="width:' + p + '%"><div class="status-point-desc">' + StatusDisplay[i] + (status.PointCount > 1 ? ' : ' + status.Statistics[i] : "") + '</div></div>';
     }
     html += '</div></a>';
     if ($("#s_" + status.ID).length > 0) {
@@ -187,13 +190,17 @@ function BuildStatusDetail(status) {
                   + '<div class="status-status">' + status.Result + (status.PointCount > 1 ? ' (' + status.Statistics[0] + '/' + status.PointCount + ')' : "") + '</div>'
                   + '</div><div class="status-points">';
     var per = parseInt(100 / status.PointCount);
-    var _per = 100 - per * status.PointCount;
-    for (var i = 0; i < status.Statistics.length; i++) {
-        var __per = per;
-        if (i == status.Statistics.length - 1 && _per != 0)
-            __per = _per;
+    var fill = 100 - per * (status.PointCount);
+    var filled = false;
+    for (var i = 0; i < status.Statistics.length; i++)
+    {
+        var p = per * status.Statistics[i];
+        if (!filled && status.Statistics[i] > 0) {
+            p += fill;
+            filled = true;
+        }
         if (status.Statistics[i] > 0)
-            html += '<div class="status-point-item status-point-' + StatusCss[i] + '" style="width:' + __per * status.Statistics[i] + '%"><div class="status-point-desc">' + StatusDisplay[i] + (status.PointCount > 1 ? ' : ' + status.Statistics[i] : "") + '</div></div>';
+            html += '<div class="status-point-item status-point-' + StatusCss[i] + '" style="width:' + p + '%"><div class="status-point-desc">' + StatusDisplay[i] + (status.PointCount > 1 ? ' : ' + status.Statistics[i] : "") + '</div></div>';
     }
     html += '</div></div>';
     if ($("#s_" + status.ID).length > 0) {
