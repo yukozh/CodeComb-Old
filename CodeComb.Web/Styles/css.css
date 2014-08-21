@@ -1149,7 +1149,7 @@ body {
     display: block;
     margin-top: 17px;
 	margin-bottom: 2px;
-	padding: 3px 9px 3px 5px;
+	padding: 3px 6px 3px 6px;
     width: auto;
 	height:16px;
 	background: rgba(0,0,0,0.5);
@@ -1175,7 +1175,7 @@ body {
     border-style: solid;  
     border-color: transparent transparent transparent rgba(0,0,0,0.5);  
     top: 9px;
-    left: 62px;
+    left: 60px;
 }  
 
 .profile-btn-alt:hover {

@@ -333,7 +333,7 @@ $(document).ready(function () {
     // 窄页面左侧说明文字
     $('.profile-btn').mouseenter(function () {
         $('.profile-btn-alt').remove();
-        $(this).parent().append('<a href="javascript:;" class="profile-btn-alt shadow" style="position: absolute; top: ' + ($(this).prevAll().size() * 64) + 'px; left: -72px;">' + $(this).children().attr('alt') + '</a>')
+        $(this).parent().append('<a href="javascript:;" class="profile-btn-alt shadow" style="position: absolute; top: ' + ($(this).prevAll().size() * 64) + 'px; left: -68px;">' + $(this).children().attr('alt') + '</a>')
         //alert($(this).children().attr('alt'));
     });
 });
