@@ -14,16 +14,25 @@ namespace CodeComb.Web.Controllers
         //
         // GET: /User/
         #region 登录登出
-        public ActionResult Login()
+        public ActionResult Login(string ReturnUrl)
         {
             if (User.Identity.IsAuthenticated)
-                return Redirect("/");
+            {
+                if (ReturnUrl != null)
+                {
+                    return Redirect(ReturnUrl);
+                }
+                else
+                {
+                    return Redirect("/");
+                }
+            }
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(Login model)
+        public ActionResult Login(Login model, string ReturnUrl)
         {
             var user = (from u in DbContext.Users
                         where u.Username == model.Username
@@ -43,10 +52,14 @@ namespace CodeComb.Web.Controllers
                 FormsAuthentication.SetAuthCookie(model.Username, model.Remember);
                 user.Online = true;
                 DbContext.SaveChanges();
-                if (Request.UrlReferrer == null)
-                    return Redirect("/");
+                if (ReturnUrl != null)
+                {
+                    return Redirect(ReturnUrl);
+                }
                 else
-                    return Redirect(Request.UrlReferrer.ToString());
+                {
+                    return Redirect("/");
+                }
             }
         }
 

@@ -11,7 +11,7 @@ namespace CodeComb.Web.Controllers
         //
         // GET: /ContestSettings/
         [Authorize]
-        public ActionResult General(int id)//
+        public ActionResult General(int id)
         {
             if (!ViewBag.IsMaster)
                 return RedirectToAction("Message", "Shared", new { msg = "您没有权限对本场比赛进行任何修改！" });
