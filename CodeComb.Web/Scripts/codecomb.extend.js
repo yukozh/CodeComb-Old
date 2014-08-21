@@ -192,11 +192,6 @@ $(document).ready(function () {
         if (e.ctrlKey && e.which == 13)
             PostMessage();
     });
-    //setInterval(function () {
-    //    GetContacts();
-    //    if (CurrentContactID != null)
-    //        GetChatRecords(CurrentContactID);
-    //}, 5000);
 
     //SignalR
     var CodeCombHub = $.connection.codeCombHub;

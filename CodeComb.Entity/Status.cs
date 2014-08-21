@@ -10,7 +10,7 @@ namespace CodeComb.Entity
     [Table("statuses")]
     public class Status
     {
-        public static JudgeResult[] FreeResults = { JudgeResult.CompileError, JudgeResult.SystemError };
+        public static JudgeResult[] FreeResults = { JudgeResult.CompileError, JudgeResult.SystemError, JudgeResult.Pending, JudgeResult.Running, JudgeResult.Accepted };
         [Column("id")]
         public int ID { get; set; }
 
