@@ -1145,6 +1145,23 @@ body {
     
 }
 
+.profile-btn-alt {
+    display: block;
+	margin-bottom: 2px;
+	padding: 15px 15px 15px 15px;
+    width: 96px;
+	height:32px;
+	background: rgba(0,0,0,0.5);
+    filter:Alpha(opacity=50); 
+    *background:#000;
+	color: #fff !important;
+	text-align: center;
+	text-decoration: none;
+	font-size: .9em;
+	-webkit-transition: background-color .2s linear;
+	transition: background-color .2s linear;
+}
+
 .profile-face {
 	margin-right: 30px;
 	width: 150px;
