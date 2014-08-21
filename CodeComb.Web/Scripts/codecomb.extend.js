@@ -329,11 +329,4 @@ $(document).ready(function () {
 
     // 代码高亮插件初始化
     hljs.initHighlightingOnLoad();
-
-    //// 样例数据复制    
-    //$('#testcase-copywrap-1').zclip({
-    //    path: 'ZeroClipboard.swf',
-    //    copy: $.trim($(this).parent().next().text()),
-    //    afterCopy: alert('复制成功.')
-    //});
 });
