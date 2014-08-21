@@ -1152,7 +1152,7 @@ body {
 	padding: 3px 6px 3px 6px;
     width: auto;
 	height:16px;
-	background: rgba(0,0,0,0.5);
+	background: rgba(0,0,0,0.8);
     filter:Alpha(opacity=50); 
     *background:#000;
 	color: #fff !important;
