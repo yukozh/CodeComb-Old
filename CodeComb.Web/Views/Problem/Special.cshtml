@@ -1,0 +1,54 @@
+﻿@model Problem
+@{
+    ViewBag.Title = "特殊比较器 - " + Model.Title;
+    var IsMaster = (bool)ViewBag.IsMaster;
+    var IsCreator = (bool)ViewBag.IsCreator;
+}
+
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="profile-actions">
+                    <a href="/Contest/Settings/Problems/@Model.ID" class="profile-btn"><img src="/Images/back.png" alt="返回题目列表" /></a>
+                    <a href="/Problem/Edit/@Model.ID" class="profile-btn"><img src="/Images/description.png" alt="基本信息管理" /></a>
+                    <a href="/Problem/TestCases/@Model.ID" class="profile-btn"><img src="/Images/code.png" alt="测试数据管理" /></a>
+                    <a href="/Problem/Special/@Model.ID" class="profile-btn"><img src="/Images/judgers.png" alt="特殊比较器" /></a>
+                    <a href="/Problem/Standard/@Model.ID" class="profile-btn"><img src="/Images/judgers.png" alt="标程" /></a>
+                    <a href="/Problem/Range/@Model.ID" class="profile-btn"><img src="/Images/judgers.png" alt="数据范围校验器" /></a>
+                    <a href="/Problem/Solution/@Model.ID" class="profile-btn"><img src="/Images/contests.png" alt="解题报告" /></a>
+                </div>
+                <div class="post-detail-wrap">
+                    <div class="post-title"><h2>特殊比较器 - @Model.Title</h2></div>
+                    <div class="post-info"></div>
+                    <div class="post-content">
+                        @using (Html.BeginForm("Special", "Problem", new { id = Model.ID }, FormMethod.Post, null))
+                        {
+                            @Html.AntiForgeryToken()
+                            <p>@Html.TextArea("special", new { @id = "editor" })</p>
+                            <p>
+                                <select id="lstLanguages" name="language">
+                                    @{
+                                        var i = 0;
+                                        foreach (var name in CodeComb.Entity.CommonEnums.LanguageDisplay)
+                                        {
+                                            if (Model.SpecialJudgeLanguageAsInt == i)
+                                            {
+                                                <option value="@(i++)" selected>@name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@(i++)">@name</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </p>
+                            <p><input type="submit" class="button button-def" value="保存" /></p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>

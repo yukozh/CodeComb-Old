@@ -298,5 +298,77 @@ namespace CodeComb.Web.Controllers
                 return Json(null, JsonRequestBehavior.AllowGet);
             return Json(new Models.View.TestCase(testcase), JsonRequestBehavior.AllowGet);
         }
+
+        [Authorize]
+        public ActionResult Special(int id)
+        {
+            if (!ViewBag.IsMaster)
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            var problem = DbContext.Problems.Find(id);
+            return View(problem);
+        }
+
+        [Authorize]
+        public ActionResult Standard(int id)
+        {
+            if (!ViewBag.IsMaster)
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            var problem = DbContext.Problems.Find(id);
+            return View(problem);
+        }
+
+        [Authorize]
+        public ActionResult Range(int id)
+        {
+            if (!ViewBag.IsMaster)
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            var problem = DbContext.Problems.Find(id);
+            return View(problem);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult Special(int id, string special, int language)
+        {
+            if (!ViewBag.IsMaster)
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            var problem = DbContext.Problems.Find(id);
+            problem.SpecialJudge = special;
+            problem.SpecialJudgeLanguageAsInt = language;
+            DbContext.SaveChanges();
+            return RedirectToAction("Special", "Problem", new { id = id });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult Standard(int id, string standard, int language)
+        {
+            if (!ViewBag.IsMaster)
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            var problem = DbContext.Problems.Find(id);
+            problem.StandardSource = standard;
+            problem.StandardSourceLanguageAsInt = language;
+            DbContext.SaveChanges();
+            return RedirectToAction("Standard", "Problem", new { id = id });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult Range(int id, string range, int language)
+        {
+            if (!ViewBag.IsMaster)
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            var problem = DbContext.Problems.Find(id);
+            problem.RangeChecker = range;
+            problem.RangeCheckerLanguageAsInt = language;
+            DbContext.SaveChanges();
+            return RedirectToAction("Range", "Problem", new { id = id });
+        }
 	}   
 }
