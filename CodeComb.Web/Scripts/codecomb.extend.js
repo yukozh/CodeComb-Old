@@ -336,4 +336,8 @@ $(document).ready(function () {
         $(this).parent().append('<a href="javascript:;" class="profile-btn-alt shadow" style="position: absolute; top: ' + ($(this).prevAll().size() * 64) + 'px; left: -68px;">' + $(this).children().attr('alt') + '</a>')
         //alert($(this).children().attr('alt'));
     });
+
+    $('.profile-btn').mouseleave(function () {
+        $('.profile-btn-alt').remove();
+    });
 });

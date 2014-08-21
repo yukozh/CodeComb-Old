@@ -1173,7 +1173,7 @@ body {
     height: 0px;  
     border-width: 3px 0 3px 4px;  
     border-style: solid;  
-    border-color: transparent transparent transparent rgba(0,0,0,0.5);  
+    border-color: transparent transparent transparent rgba(0,0,0,0.8);
     top: 9px;
     left: 60px;
 }  
