@@ -109,10 +109,10 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 								type : 'select',
 								labelLayout : 'horizontal',
 								label : editor.lang.syntaxhighlight.langLbl,
-								'default' : 'java',
+								'default' : 'cpp',
 								widths : ['25%','75%'],
 								items: [
-                                    ['C++', 'cpp'],
+                                    ['C/C++', 'cpp'],
 									['C#','csharp'],
 									['Pascal','pascal'],
 									['Java','java'],
