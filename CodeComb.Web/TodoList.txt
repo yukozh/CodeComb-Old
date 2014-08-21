@@ -20,7 +20,7 @@
 8、更多（包括比赛完整性检测、重测功能、更新排名缓存等操作）
 
 四、评测机
-1、Judge Interface
+【已完成】1、Judge Interface
 2、Web API
 
 五、比赛模块
