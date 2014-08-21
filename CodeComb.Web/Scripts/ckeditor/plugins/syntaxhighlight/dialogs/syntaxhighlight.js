@@ -65,8 +65,9 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 		}
 		return h
 	};
-	var d=function(g) {
-		var f='brush:'+g.lang+';';
+	var d = function (g) {
+	    // var f = 'brush:' + g.lang + ';';
+	    var f = 'ckeditor-code ' + g.lang;
 		if(g.hideGutter) {
 			f+='gutter:false;'
 		}
@@ -145,7 +146,7 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 					{
 						type : 'textarea',
 						id : 'hl_code',
-						rows : 22,
+						rows : 22,  
 						style : 'width:100%',
 						validate: CKEDITOR.dialog.validate.notEmpty( editor.lang.syntaxhighlight.sourceTextareaEmptyError ),
 						setup : function(f) {
@@ -154,7 +155,7 @@ CKEDITOR.dialog.add( 'syntaxhighlightDialog', function( editor ) {
 							}
 						},
 						commit : function(f) {
-							f.code=this.getValue()
+						    f.code = this.getValue();
 						}
 					}
 				]

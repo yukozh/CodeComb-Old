@@ -134,6 +134,16 @@
                     CKEDITOR.replace('content',{toolbar:'Basic',width:'100%',height:'60px'});
                     $("html,body").animate({scrollTop:$("#NewReply"+(father_id==""?"Out":father_id)).offset().top - 50},300);
                     PostReplyBinding();
+                }).complete(function() { 
+                    // CKEditor高亮
+                    $('.ckeditor-code').each(function () {
+                        $(this).html('<code>' + $(this).html() + '</code>');
+                        $(this).removeClass('ckeditor-code');
+                    });
+
+                    $('pre code').each(function (i, block) {
+                        hljs.highlightBlock(block);
+                    });
                 });
             });
         }

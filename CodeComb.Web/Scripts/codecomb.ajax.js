@@ -76,12 +76,24 @@ function LoadReplies() {
         }, function (replies) {
             if (replies.length < 20) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
             $("#lstReplies").append(replies);
+
+            // CKEditor高亮
+            $('.ckeditor-code').each(function () {
+                $(this).html('<code>' + $(this).html() + '</code>');
+                $(this).removeClass('ckeditor-code');
+            });
+
             PostReplyBinding();
             lock = false;
             page++;
             $("#iconLoading").hide();
             if (window.location.hash != null && $(window.location.hash).length > 0)
                 $('html,body').scrollTop($(window.location.hash).offset().top + 170);
+        }).complete(function () {
+            // CKEditor高亮
+            $('pre code').each(function (i, block) {
+                hljs.highlightBlock(block);
+            });
         });
     }
 }
