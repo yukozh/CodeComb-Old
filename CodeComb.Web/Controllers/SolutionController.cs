@@ -159,10 +159,10 @@ namespace CodeComb.Web.Controllers
             var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
             if (user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
                 return Content("Failed");
-            var tag = solution.SolutionTags.Where(x => x.AlgorithmTagID == tid).SingleOrDefault();
-            if (tag == null)
+            var tags = solution.SolutionTags.Where(x => x.AlgorithmTagID == tid).ToList();
+            if (tags.Count == 0)
             {
-                tag = new SolutionTag
+                var tag = new SolutionTag
                 {
                     AlgorithmTagID = tid,
                     SolutionID = id
@@ -173,7 +173,8 @@ namespace CodeComb.Web.Controllers
             }
             else
             {
-                DbContext.SolutionTags.Remove(tag);
+                foreach(var tag in tags)
+                    DbContext.SolutionTags.Remove(tag);
                 DbContext.SaveChanges();
                 return Content("Deleted");
             }

@@ -80,5 +80,49 @@ namespace CodeComb.Web.Controllers
             var contest = DbContext.Contests.Find(id);
             return View(contest);
         }
+
+        [Authorize]
+        public ActionResult Manager(int id)
+        {
+            if (!ViewBag.IsCreator)
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            ViewBag.ContestFormats = Enum.GetNames(typeof(Entity.ContestFormat));
+            var contest = DbContext.Contests.Find(id);
+            return View(contest);
+        }
+
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public ActionResult AddManager(int id, int user_id)
+        {
+            if (!ViewBag.IsCreator)
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            ViewBag.ContestFormats = Enum.GetNames(typeof(Entity.ContestFormat));
+            DbContext.ContestManagers.Add(new Entity.ContestManager 
+            { 
+                ContestID = id,
+                IsCreator = false,
+                UserID = user_id
+            });
+            DbContext.SaveChanges();
+            return RedirectToAction("Manager", "ContestSettings", new { id = id });
+        }
+
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public ActionResult DeleteManager(int id, int manager_id)
+        {
+            if (!ViewBag.IsCreator)
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            ViewBag.ContestFormats = Enum.GetNames(typeof(Entity.ContestFormat));
+            var manager = DbContext.ContestManagers.Find(manager_id);
+            if (manager.IsCreator)
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            DbContext.ContestManagers.Remove(manager);
+            DbContext.SaveChanges();
+            return RedirectToAction("Manager", "ContestSettings", new { id = id });
+        }
 	}
 }
