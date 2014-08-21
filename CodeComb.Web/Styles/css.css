@@ -2296,3 +2296,46 @@ tbody tr:hover {
   background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
 }
+
+.rank-face {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.rank {
+    table-layout:fixed;
+}
+
+.rank thead tr{
+    height:45px;
+    text-align: center;
+}
+
+.rank tbody tr{
+    height:54px;
+    text-align: center;
+}
+
+.rank td {
+     line-height:22px;
+}
+
+.rank th{
+    text-align: center;
+}
+
+.rank-red {
+    background-color:#f2dede;
+}
+
+.rank-green {
+     background-color:#dff0d8;
+}
+
+.rank-orange {
+    background-color:rgb(255, 233, 201);
+}
