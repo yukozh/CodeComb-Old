@@ -10,6 +10,7 @@ namespace CodeComb.Web.Models.View
         public Standing() { }
         public Standing(Entity.User user, Entity.Contest contest)
         {
+            UserID = user.ID;
             Details = new List<StandingCol>();
             var problems = contest.Problems.OrderBy(x => x.Credit);
             foreach (var problem in problems)
@@ -26,6 +27,7 @@ namespace CodeComb.Web.Models.View
         public string Nickname { get; set; }
         public string Avatar { get; set; }
         public List<StandingCol> Details { get; set; }
+        public int UserID { get; set; }
     }
     public class StandingCol
     {

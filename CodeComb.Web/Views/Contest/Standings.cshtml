@@ -1,4 +1,4 @@
-﻿
+﻿@model CodeComb.Entity.Contest
 @{
     ViewBag.Title = "比赛排名 - ";
 }
@@ -13,14 +13,28 @@
                             <th style="width:35px;">排名</th>
                             <th style="width:40px;">头像</th>
                             <th style="width:120px;">昵称</th>
-                            <th style="width:35px;">AC</th>
-                            <th style="width:80px;">总罚时</th>
-                            <th>A</th>
-                            <th>B</th>
-                            <th>C</th>
+                            @if (Model.Format == ContestFormat.ACM)
+                            { 
+                                <th style="width:35px;">AC</th>
+                                <th style="width:80px;">总罚时</th>
+                            }
+                            else if (Model.Format == ContestFormat.OI || Model.Format == ContestFormat.OPJOI)
+                            { 
+                                <th style="width:45px;">分数</th>
+                                <th style="width:55px;">耗时</th>
+                            }
+                            else if (Model.Format == ContestFormat.Codeforces || Model.Format == ContestFormat.TopCoder)
+                            {
+                                <th style="width:45px;">分数</th>
+                                <th style="width:55px;">Hacks</th>
+                            }
+                            @for (int i = 'A'; i < Model.Problems.Count; i++)
+                            { 
+                                <th>@i</th>
+                            }
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="lstStandings">
                         <tr>
                             <td>1</td>
                             <td><img src="https://www.gravatar.com/avatar/733dbb8048e11b7a9b7a0439f5680170?s=180" class="rank-face" /></td>
@@ -31,30 +45,9 @@
                             <td class="rank-red">(-5)</td>
                             <td class="rank-orange">3:22:01</td>
                         </tr>
-                        <tr>
-                            <td>1</td>
-                            <td><img src="https://www.gravatar.com/avatar/733dbb8048e11b7a9b7a0439f5680170?s=180" class="rank-face" /></td>
-                            <td>Gasai Yuno</td>
-                            <td>2</td>
-                            <td>12:33:01</td>
-                            <td>1:33:01<br />(-1)</td>
-                            <td>(-5)</td>
-                            <td>3:22:01</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td><img src="https://www.gravatar.com/avatar/733dbb8048e11b7a9b7a0439f5680170?s=180" class="rank-face" /></td>
-                            <td>Gasai Yuno</td>
-                            <td>2</td>
-                            <td>12:33:01</td>
-                            <td>1:33:01<br />(-1)</td>
-                            <td>(-5)</td>
-                            <td>3:22:01</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
         </div><div class="clear"></div>
     </div>
 </div>
-<script src="~/Scripts/codecomb.contest.js"></script>

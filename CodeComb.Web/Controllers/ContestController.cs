@@ -231,7 +231,20 @@ namespace CodeComb.Web.Controllers
 
         public ActionResult Standings(int id)
         {
-            return View();
+            var contest = DbContext.Contests.Find(id);
+            if (contest.Format == Entity.ContestFormat.OI && DateTime.Now < contest.End && !ViewBag.IsMaster)
+                return RedirectToAction("Message", "Shared", new { msg = "目前不提供比赛排名显示。" });
+            return View(contest);
+        }
+
+        [HttpGet]
+        public ActionResult GetStandings(int id)
+        {
+            var contest = DbContext.Contests.Find(id);
+            if (contest.Format == Entity.ContestFormat.OI && DateTime.Now < contest.End && !ViewBag.IsMaster)
+                return Json(null, JsonRequestBehavior.AllowGet);
+            var standings = Helpers.Standings.Build(id);
+            return Json(standings, JsonRequestBehavior.AllowGet);
         }
 	}
 }
