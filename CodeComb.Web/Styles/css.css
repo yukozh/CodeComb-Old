@@ -2308,6 +2308,7 @@ tbody tr:hover {
 
 .rank {
     table-layout:fixed;
+    border:none;
 }
 
 .rank thead tr{
@@ -2339,3 +2340,11 @@ tbody tr:hover {
 .rank-orange {
     background-color:rgb(255, 233, 201);
 }
+
+.btn-hack {
+    color:#222;
+}
+
+    .btn-hack a {
+        color:#222;
+    }

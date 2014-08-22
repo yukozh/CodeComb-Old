@@ -243,7 +243,10 @@ function BuildStandings(rank, data)
                   + '<td>' + data.Display2 + '</td>';
     for (var i in data.Details)
     {
-        html += '<td class="' + data.Details[i].Css + '">' + data.Details[i].Display + '</td>';
+        if(data.Details[i].Key1 == 0)
+            html += '<td class="' + data.Details[i].Css + '">' + data.Details[i].Display + '</td>';
+        else
+            html += '<td class="' + data.Details[i].Css + '"><a class="btn-hack" href="javascript:Hack(' + data.Details.StatusID + ')">' + data.Details[i].Display + '</a></td>';
     }
     return "<tr id='u_"+data.UserID+"'>" + html + "</tr>";
 }
@@ -262,17 +265,17 @@ function StandingsUpdate(data)
     if (key2desc) {
         cmp = function (a, b) {
             if (a.Key1 == b.Key1) {
-                return b.Key1 - a.Key1;
+                return b.Key2 - a.Key2;
             }
-            return a.Key1 - b.Key1;
+            return b.Key1 - a.Key1;
         }
     }
     else {
         cmp = function (a, b) {
             if (a.Key1 == b.Key1) {
-                return a.Key1 - b.Key1;
+                return a.Key2 - b.Key2;
             }
-            return a.Key1 - b.Key1;
+            return b.Key1 - a.Key1;
         }
     }
     standings.sort(cmp);
