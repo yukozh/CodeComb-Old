@@ -181,7 +181,7 @@ namespace CodeComb.Web.Controllers
         public ActionResult Settings(int id)
         {
             var user = DbContext.Users.Find(id);
-            if (user.ID != ViewBag.CurrentUser.ID && ViewBag.CurrentUser.Role < Entity.UserRole.Master)
+            if (user.ID != ViewBag.CurrentUser.ID && ViewBag.CurrentUser.Role < Entity.UserRole.Master || ViewBag.CurrentUser.Role == UserRole.Temporary)
                 return RedirectToAction("Message", "Shared", new { msg = "您没有权限这样做！" });
             return View(user);
         }
@@ -192,7 +192,7 @@ namespace CodeComb.Web.Controllers
         public ActionResult SetPassword(int id, string OldPassword, string NewPassword, string RepeatPassword)
         {
             var user = DbContext.Users.Find(id);
-            if (user.ID != ViewBag.CurrentUser.ID && ViewBag.CurrentUser.Role < Entity.UserRole.Master)
+            if (user.ID != ViewBag.CurrentUser.ID && ViewBag.CurrentUser.Role < Entity.UserRole.Master || ViewBag.CurrentUser.Role == UserRole.Temporary)
                 return RedirectToAction("Message", "Shared", new { msg = "您没有权限这样做！" });
             if(Helpers.Security.SHA1(OldPassword) != user.Password && ViewBag.CurrentUser.Role < Entity.UserRole.Master)
                 return RedirectToAction("Message", "Shared", new { msg = "旧密码输入不正确！" });
@@ -209,7 +209,7 @@ namespace CodeComb.Web.Controllers
         public ActionResult SetProfile(int id, string Nickname, string Gravatar, string Motto, int CommonLanguage)
         {
             var user = DbContext.Users.Find(id);
-            if (user.ID != ViewBag.CurrentUser.ID && ViewBag.CurrentUser.Role < Entity.UserRole.Master)
+            if (user.ID != ViewBag.CurrentUser.ID && ViewBag.CurrentUser.Role < Entity.UserRole.Master || ViewBag.CurrentUser.Role == UserRole.Temporary)
                 return RedirectToAction("Message", "Shared", new { msg = "您没有权限这样做！" });
             user.Nickname = Nickname;
             user.Gravatar = Gravatar;
