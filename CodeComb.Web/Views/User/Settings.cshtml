@@ -1,0 +1,61 @@
+﻿@model CodeComb.Entity.User
+@{
+    ViewBag.Title = Model.Nickname + " - 修改用户信息";
+}
+<div class="profile-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="profile-actions">
+                    <a href="#" class="profile-btn"><img src="/Images/profile.png" alt="个人信息" /></a>
+                    <a href="#" id="btnAddContact" uid="@Model.ID" class="profile-btn"><img src="/Images/chat.png" alt="私聊" /></a>
+                    <a href="#" class="profile-btn"><img src="/Images/status.png" alt="记录" /></a>
+                    <a href="#" class="profile-btn"><img src="/Images/forum.png" alt="帖子" /></a>
+                    <a href="#" class="profile-btn"><img src="/Images/settings.png" alt="设置" /></a>
+                </div>
+                <div class="post-detail-wrap">
+                    @using (Html.BeginForm("SetPassword", "User", new { id = Model.ID }, FormMethod.Post, null))
+                    { 
+                        <h3>修改密码</h3>
+                        @Html.AntiForgeryToken()
+                        @if (ViewBag.CurrentUser.Role < CodeComb.Entity.UserRole.Master)
+                        { 
+                            <p><label style="width:100px">旧密码：</label>@Html.Password("OldPassword", "", new { @class = "textbox" })</p>
+                        }
+                        <p><label style="width:100px">新密码：</label>@Html.Password("NewPassword", "", new { @class = "textbox" })</p>
+                        <p><label style="width:100px">密码重复：</label>@Html.Password("RepeatPassword", "", new { @class = "textbox" })</p>
+                        <input type="submit" value="保存" />
+                    }
+                    @using (Html.BeginForm("SetProfile", "User", new { id = Model.ID }, FormMethod.Post, null))
+                    {
+                        <h3>修改资料</h3>
+                        @Html.AntiForgeryToken()
+                        <p><label style="width:100px">昵称：</label>@Html.TextBox("Nickname", "", new { @class = "textbox" })</p>
+                        <p><label style="width:100px">Gravatar：</label>@Html.TextBox("Gravatar", "", new { @class = "textbox" })</p>
+                        <p><label style="width:100px">个性签名：</label>@Html.TextArea("Motto", "", new { @class = "textbox",style="height:120px;width:100%" })</p>
+                        <p>
+                            <label style="width:100px">偏好语言：</label>
+                            <select name="CommonLanguage">
+                                @{
+                                    var i = 0;
+                                    foreach (var name in CodeComb.Entity.CommonEnums.LanguageDisplay)
+                                    {
+                                        if (((CodeComb.Entity.User)ViewBag.CurrentUser).CommonLanguageAsInt == i)
+                                        {
+                                            <option value="@(i++)" selected>@name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@(i++)">@name</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </p>
+                        <input type="submit" value="保存" />
+                    }
+                </div>
+            </div><div class="clear"></div>
+        </div>
+    </div>
+</div>

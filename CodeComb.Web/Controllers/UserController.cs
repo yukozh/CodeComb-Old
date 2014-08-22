@@ -175,5 +175,40 @@ namespace CodeComb.Web.Controllers
             return View(user);
         }
         #endregion
+
+        #region 修改个人资料
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SetPassword(int id, string OldPassword, string NewPassword, string RepeatPassword)
+        {
+            var user = DbContext.Users.Find(id);
+            if (user.ID != ViewBag.CurrentUser.ID && ViewBag.CurrentUser.Role < Entity.UserRole.Master)
+                return RedirectToAction("Message", "Shared", new { msg = "您没有权限这样做！" });
+            if(Helpers.Security.SHA1(OldPassword) != user.Password && ViewBag.CurrentUser.Role < Entity.UserRole.Master)
+                return RedirectToAction("Message", "Shared", new { msg = "旧密码输入不正确！" });
+            if(NewPassword !=RepeatPassword)
+                return RedirectToAction("Message", "Shared", new { msg = "两次密码输入不一致！" });
+            user.Password = Helpers.Security.SHA1(RepeatPassword);
+            DbContext.SaveChanges();
+            return RedirectToAction("Settings", "User", new { id = user.ID });
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SetProfile(int id, string Nickname, string Gravatar, string Motto, int CommonLanguage)
+        {
+            var user = DbContext.Users.Find(id);
+            if (user.ID != ViewBag.CurrentUser.ID && ViewBag.CurrentUser.Role < Entity.UserRole.Master)
+                return RedirectToAction("Message", "Shared", new { msg = "您没有权限这样做！" });
+            user.Nickname = Nickname;
+            user.Gravatar = Gravatar;
+            user.Motto = Motto;
+            user.CommonLanguageAsInt = CommonLanguage;
+            DbContext.SaveChanges();
+            return RedirectToAction("Settings", "User", new { id = user.ID });
+        }
+        #endregion
     }
 }

@@ -573,6 +573,7 @@
     <Content Include="Views\Problem\Standard.cshtml" />
     <Content Include="Views\Problem\Range.cshtml" />
     <Content Include="Views\ContestSettings\Manager.cshtml" />
+    <Content Include="Views\User\Settings.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
