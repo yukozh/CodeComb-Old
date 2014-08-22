@@ -1,6 +1,7 @@
 ﻿var page = 0;
 var id = null;
 var lock = false;
+var standings;
 
 function Load()
 {
@@ -15,6 +16,7 @@ function Load()
     LoadContests();
     LoadStatuses();
     LoadSolutionTags();
+    LoadStandings();
 }
 
 function LoadRatings()
@@ -159,6 +161,16 @@ function LoadSolutionTags()
         });
     }
 }
+function LoadStandings()
+{
+    if ($("#lstStandings").length > 0)
+    {
+        $.getJSON("/Contest/GetStandings/" + id, {}, function (data) {
+            standings = data;
+            StandingsDisplay();
+        });
+    }
+}
 
 var StatusCss = ["ac", "pe", "wa", "ole", "tle", "mle", "rte", "ce", "se", "hacked", "running", "pending","hidden"];
 var StatusDisplay = ["Accepted", "Presentation Error", "Wrong Answer", "Output Limit Exceeded", "Time Limit Exceeded", "Memory Limit Exceeded", "Runtime Error", "Compile Error", "System Error", "Hacked", "Running", "Pending","Hidden"];
@@ -221,6 +233,49 @@ function BuildStatusDetail(status) {
     else {
         $("#lstStatuses").append(html);
     }
+}
+function BuildStandings(rank, data)
+{
+    var html = '<td>' + rank + '</td>'
+                  + '<td><img src="' + data.Gravatar + '" class="rank-face" /></td>'
+                  + '<td><a href="/User/' + standings.UserID + '">' + data.Nickname + '</a></td>'
+                  + '<td>' + data.Display1 + '</td>'
+                  + '<td>' + data.Display2 + '</td>';
+    for (var i in data.Details)
+    {
+        html += '<td class="' + data.Details[i].Css + '">' + data.Details[i].Display + '</td>';
+    }
+    return "<tr id='u_"+data.UserID+"'>" + html + "</tr>";
+}
+function StandingsDisplay()
+{
+    var html = "";
+    for (var i in standings)
+    {
+        html += BuildStandings(parseInt(i) + 1, standings[i]);
+    }
+    $("#lstStandings").html(html);
+}
+function StandingsUpdate(data)
+{
+    var cmp;
+    if (key2desc) {
+        cmp = function (a, b) {
+            if (a.Key1 == b.Key1) {
+                return b.Key1 - a.Key1;
+            }
+            return a.Key1 - b.Key1;
+        }
+    }
+    else {
+        cmp = function (a, b) {
+            if (a.Key1 == b.Key1) {
+                return a.Key1 - b.Key1;
+            }
+            return a.Key1 - b.Key1;
+        }
+    }
+    standings.sort(cmp);
 }
 
 $(document).ready(function () {

@@ -1,6 +1,7 @@
 ﻿@model CodeComb.Entity.Contest
 @{
-    ViewBag.Title = "比赛排名 - ";
+    ViewBag.Title = "比赛排名 - " + Model.Title;
+    ViewBag.BannerTitle = Model.Title;
 }
 
 <div class="contest-body">
@@ -28,26 +29,19 @@
                                 <th style="width:45px;">分数</th>
                                 <th style="width:55px;">Hacks</th>
                             }
-                            @for (int i = 'A'; i < Model.Problems.Count; i++)
+                            @for (char i = 'A'; i < Model.Problems.Count + 'A'; i++)
                             { 
                                 <th>@i</th>
                             }
                         </tr>
                     </thead>
                     <tbody id="lstStandings">
-                        <tr>
-                            <td>1</td>
-                            <td><img src="https://www.gravatar.com/avatar/733dbb8048e11b7a9b7a0439f5680170?s=180" class="rank-face" /></td>
-                            <td>Gasai Yuno</td>
-                            <td>2</td>
-                            <td>12:33:01</td>
-                            <td class="rank-green">1:33:01<br/>(-1)</td>
-                            <td class="rank-red">(-5)</td>
-                            <td class="rank-orange">3:22:01</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
         </div><div class="clear"></div>
     </div>
 </div>
+<script>
+    id = @Model.ID;
+</script>

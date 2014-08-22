@@ -20,14 +20,41 @@ namespace CodeComb.Web.Models.View
             Key1 = Details.Sum(x => x.Key1);
             Key2 = Details.Sum(x => x.Key2);
             Key3 = Details.Sum(x => x.Key3);
+            Gravatar = Helpers.Gravatar.GetAvatarURL(user.Gravatar, 180);
+            Nickname = Helpers.ColorName.GetNicknameHtml(user.Nickname, user.Ratings.Sum(x => x.Credit) + 1500);
+            UserID = user.ID;
+            Display1 = Key1.ToString();
+            switch (contest.Format)
+            { 
+                case Entity.ContestFormat.OI:
+                case Entity.ContestFormat.OPJOI:
+                    Display2 = Key2 + " ms";
+                    break;
+                case Entity.ContestFormat.ACM:
+                    Display2 = new TimeSpan(0, 0, Key2).ToString("c");
+                    break;
+                case Entity.ContestFormat.CodeComb:
+                case Entity.ContestFormat.TopCoder:
+                    if (Key2 == 0 && Key3 == 0)
+                        Display2 = "";
+                    else if (Key2 != 0 && Key3 == 0)
+                        Display2 = "+" + Key2;
+                    else if (Key2 == 0 && Key3 != 0)
+                        Display2 = "-" + Key3;
+                    else
+                        Display2 = "+" + Key2 + " : -" + Key3;
+                    break;
+            }
         }
         public int Key1 { get; set; }
         public int Key2 { get; set; }
         public int Key3 { get; set; }
         public string Nickname { get; set; }
-        public string Avatar { get; set; }
+        public string Gravatar { get; set; }
         public List<StandingCol> Details { get; set; }
         public int UserID { get; set; }
+        public string Display1 { get; set; }
+        public string Display2 { get; set; }
     }
     public class StandingCol
     {
@@ -116,7 +143,7 @@ namespace CodeComb.Web.Models.View
                     {
                         penalty_count = statuses.Where(x => Entity.Status.FreeResults.Contains((Entity.JudgeResult)x.ResultAsInt) && x.Time < status.Time).Count();
                         var penalty_time = (status.Time - status.Problem.Contest.Begin).Add(new TimeSpan(0, 20 * penalty_count, 0));
-                        Display = penalty_time.ToString("hh:mm:ss");
+                        Display = penalty_time.ToString("c");
                         if (penalty_count == 0)
                             Display += "<br/>(-" + penalty_count + ")";
                         StatusID = status.ID;
@@ -175,7 +202,7 @@ namespace CodeComb.Web.Models.View
                         score -= 50 * statuses.Where(x => Entity.Status.FreeResults.Contains((Entity.JudgeResult)x.ResultAsInt)).Count();
                         Key1 = score;
                         Css = "rank-green";
-                        Display = Key1 + "<br/>(" + time.ToString("hh:mm") + ")";
+                        Display = Key1 + "<br/>(" + time.ToString("hh':'mm") + ")";
                     }
                     else
                     {

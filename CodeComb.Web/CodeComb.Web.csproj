@@ -215,6 +215,7 @@
     <Compile Include="Helpers\Regexes.cs" />
     <Compile Include="Helpers\Security.cs" />
     <Compile Include="Helpers\SMTP.cs" />
+    <Compile Include="Helpers\Standings.cs" />
     <Compile Include="Helpers\String.cs" />
     <Compile Include="Helpers\Time.cs" />
     <Compile Include="Helpers\Zip.cs" />
@@ -231,6 +232,7 @@
     <Compile Include="Models\View\Rating.cs" />
     <Compile Include="Models\View\RegisterStep1.cs" />
     <Compile Include="Models\View\RegisterStep2.cs" />
+    <Compile Include="Models\View\Standing.cs" />
     <Compile Include="Models\View\Status.cs" />
     <Compile Include="Models\View\StatusDetail.cs" />
     <Compile Include="Models\View\StatusSnapshot.cs" />
