@@ -178,6 +178,15 @@ namespace CodeComb.Web.Controllers
 
         #region 修改个人资料
         [Authorize]
+        public ActionResult Settings(int id)
+        {
+            var user = DbContext.Users.Find(id);
+            if (user.ID != ViewBag.CurrentUser.ID && ViewBag.CurrentUser.Role < Entity.UserRole.Master)
+                return RedirectToAction("Message", "Shared", new { msg = "您没有权限这样做！" });
+            return View(user);
+        }
+
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult SetPassword(int id, string OldPassword, string NewPassword, string RepeatPassword)
@@ -208,6 +217,20 @@ namespace CodeComb.Web.Controllers
             user.CommonLanguageAsInt = CommonLanguage;
             DbContext.SaveChanges();
             return RedirectToAction("Settings", "User", new { id = user.ID });
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SetRole(int id, int role)
+        {
+            if (ViewBag.CurrentUser.Role < Entity.UserRole.Master)
+                return RedirectToAction("Message", "Shared", new { msg="您无权执行本操作！" });
+            if(role >= (int)UserRole.Master && ViewBag.CurrentUser.Role!=UserRole.Root)
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            var user = DbContext.Users.Find(id);
+            user.RoleAsInt = role;
+            return RedirectToAction("Settings", "User", new { id = id });
         }
         #endregion
     }

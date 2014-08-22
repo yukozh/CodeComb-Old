@@ -2297,7 +2297,7 @@ tbody tr:hover {
   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
 }
 
-.rank-face {
+.rank-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -2348,3 +2348,15 @@ tbody tr:hover {
     .btn-hack a {
         color:#222;
     }
+
+label {
+    min-width:100px;
+    display: inline-block;
+}
+
+select:focus{
+    -webkit-box-shadow: 0 0 10px #ffdf00;
+    box-shadow: 0 0 10px #ffdf00;
+    -webkit-transition: -webkit-box-shadow .1s linear,background .1s linear;
+    transition: box-shadow .1s linear,background .1s linear;
+}

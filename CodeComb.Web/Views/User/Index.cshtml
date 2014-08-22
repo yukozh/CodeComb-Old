@@ -14,11 +14,11 @@
         <div class="grid_12">
             <div class="profile-wrap-outer">
                 <div class="profile-actions">
-                    <a href="#" class="profile-btn"><img src="/Images/profile.png" alt="个人信息" /></a>
-                    <a href="#" id="btnAddContact" uid="@Model.ID" class="profile-btn"><img src="/Images/chat.png" alt="私聊" /></a>
-                    <a href="#" class="profile-btn"><img src="/Images/status.png" alt="记录" /></a>
-                    <a href="#" class="profile-btn"><img src="/Images/forum.png" alt="帖子" /></a>
-                    <a href="#" class="profile-btn"><img src="/Images/settings.png" alt="设置" /></a>
+                    <a href="/User/@Model.ID" class="profile-btn"><img src="/Images/profile.png" alt="个人信息" /></a>
+                    <a href="#" id="btnAddContact" uid="@Model.ID" class="profile-btn"><img src="/Images/chat.png" alt="发送消息" /></a>
+                    <a href="/User/Status/@Model.ID" class="profile-btn"><img src="/Images/status.png" alt="TA的记录" /></a>
+                    <a href="/User/Topic/@Model.ID" class="profile-btn"><img src="/Images/forum.png" alt="TA的帖子" /></a>
+                    <a href="/User/Settings/@Model.ID" class="profile-btn"><img src="/Images/settings.png" alt="修改资料" /></a>
                 </div>
                 <div class="profile-wrap">
                     <div class="profile-top">
