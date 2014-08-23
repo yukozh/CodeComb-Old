@@ -29,9 +29,9 @@
                             if (tag.AlgorithmTag.FatherID != null)
                             {
                                 if (tag.AlgorithmTag.Father.Title == tag.AlgorithmTag.Title || tag.AlgorithmTag.Father.Children.Count == 1)
-                                {<a href="javascript:void(0);" class="post-info @(Css[i++%5]) label">@tag.AlgorithmTag.Father.Title</a>}
+                                {<span class="post-info @(Css[i++%5]) label">@tag.AlgorithmTag.Father.Title</span>}
                                 else
-                                {<a href="javascript:void(0);" class="post-info @(Css[i++%5]) label">@tag.AlgorithmTag.Father.Title @tag.AlgorithmTag.Title</a>}
+                                {<span class="post-info @(Css[i++%5]) label">@tag.AlgorithmTag.Father.Title @tag.AlgorithmTag.Title</span>}
                             }
                         }
                     </div>

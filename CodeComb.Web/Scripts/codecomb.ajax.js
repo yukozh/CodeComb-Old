@@ -206,11 +206,10 @@ function BuildStatus(status)
     }
 }
 function BuildStatusDetail(status) {
-    var html = '<div id=s_' + status.ID + ' class="status-item">'
-                  + '<div class="status-item-wrap">'
+    var html = '<div class="status-item-wrap">'
                   + '<div class="status-face">' + status.Gravatar + '</div>'
                   + '<div class="status-cont"><div class="status-name"><h2><a href="/User/' + status.UserID + '">' + status.Nickname + '</a></h2></div></div>'
-                  + '<div class="status-info"><a href="/Problem/' + status.ProblemID + '">' + status.ProblemTitle + '<a/> @' + status.TimeTip + '</div>'
+                  + '<div class="status-info"><a href="/Problem/' + status.ProblemID + '">' + status.ProblemTitle + '<a/> / ' + status.TimeUsage + 'ms / ' + status.MemoryUsage + 'KiB / '+status.Language+' @' + status.TimeTip + '</div>'
                   + '<div class="status-status">' + status.Result + (status.PointCount > 1 ? ' (' + status.Statistics[0] + '/' + status.PointCount + ')' : "") + '</div>'
                   + '</div><div class="status-points">';
     var per = parseInt(100 / status.PointCount);
@@ -226,7 +225,7 @@ function BuildStatusDetail(status) {
         if (status.Statistics[i] > 0)
             html += '<div class="status-point-item status-point-' + StatusCss[i] + '" style="width:' + p + '%"><div class="status-point-desc">' + StatusDisplay[i] + (status.PointCount > 1 ? ' : ' + status.Statistics[i] : "") + '</div></div>';
     }
-    html += '</div></div>';
+    html += '</div>';
     if ($("#s_" + status.ID).length > 0) {
         $("#s_" + status.ID).html(html);
     }

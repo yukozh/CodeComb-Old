@@ -49,6 +49,13 @@ namespace CodeComb.Web
             );
 
             routes.MapRoute(
+                name: "UserStatus",
+                url: "User/Status/{uid}",
+                defaults: new { controller = "Status", action = "Index" },
+                constraints: new { uid = @"\d+" }
+            );
+
+            routes.MapRoute(
                 name: "Status",
                 url: "Status/{id}",
                 defaults: new { controller = "Status", action = "Show" },

@@ -451,7 +451,7 @@ a img {
 
 body {
     font-size: 18px;
-    color: #222;
+    color: #AAA;
 }
 
 body, button, input, select, textarea {
@@ -468,7 +468,7 @@ h1, h2, h3, h4, h5, h6 {
     font-family: Exo,"Microsoft YaHei UI" ,"Microsoft YaHei",sans-serif;
     font-weight: 100;
     margin: 0 0 20px;
-    color: #1b1b1b;
+    color: #fff;
     line-height: 1.5em;
 }
 
@@ -499,20 +499,20 @@ h6 {
 
 blockquote {
     margin: 20px 0;
-    border-left: 10px solid #e6e6e6;
+    border-left: 10px solid #555;
     padding: 5px 10px;
     font-size: .9em;
     zoom: 1;
 }
 
     blockquote.pending {
-        border-left-color: rgb(107, 175, 255);
+        border-left-color: rgb(55, 110, 107);
     }
     blockquote.inprogress {
-        border-left-color: #ff8080;
+        border-left-color: rgb(110, 55, 55);
     }
     blockquote.testcase {
-        border-left-color: rgb(226, 239, 250);
+        border-left-color: #AAA;
     }
 li ol, li ul {
     margin: 0;
@@ -550,9 +550,13 @@ del {
 pre {
     margin: 1.5em 0;
     overflow: auto;
-    border: 1px solid #e8e8e8;
-    background: #fafafa;
+    border: 1px solid #555;
+    background: rgb(16,16,16);
     padding: 10px;
+}
+
+code {
+    background: rgb(16,16,16)!important;
 }
 
 code, pre, tt {
@@ -609,22 +613,25 @@ a, a:visited {
     line-height: 26px;
     outline: 0;
     padding: 4px;
-    border: 1px solid #ccc;
+    border: 1px solid rgb(40,40,40);
     -webkit-transition: border-color .2s linear,background .2s linear;
     transition: border-color .2s linear,background .2s linear;
-    background: #f2f2f2;
+    background: rgb(44,44,44);
+    color:#AAA;
 }
 
     .textbox:hover {
-        border-color: #b8b8b8;
-        background: #fcfcfc;
+        border-color: #888;
+        background: rgb(50,50,50);
     }
 
     .textbox:focus {
-        border-color: #ffdf00;
-        background: #fcfcfc;
+        border-color: #888;
+        background: background: rgb(50,50,50);
         -webkit-box-shadow: 0 0 10px #ffdf00;
         box-shadow: 0 0 10px #ffdf00;
+        -webkit-transition:  box-shadow .2s linear,background .2s linear;
+        transition:  box-shadow .2s linear,background .2s linear;
     }
 
 .button {
@@ -642,14 +649,15 @@ a, a:visited {
     padding: 4px 25px;
     line-height: 28px;
     border: none;
-    background: #ebebeb;
+    background: rgb(44,44,44);
     margin: 0 2px;
+    color:#fff;
     -webkit-transition: background-color .2s linear,-webkit-box-shadow .2s linear;
     transition: background-color .2s linear,box-shadow .2s linear;
 }
 
     .button:hover {
-        background: #d8d8d8;
+        background: #555;
     }
 
     .button:focus {
@@ -659,7 +667,7 @@ a, a:visited {
     }
 
     .button:active {
-        background: #c5c5c5;
+        background: #555;
     }
 
 .button-big {
@@ -669,16 +677,16 @@ a, a:visited {
 }
 
 .button-def {
-    background: #ff6a6a;
+    background: rgb(90, 30, 30);
     color: #fff;
 }
 
     .button-def:hover {
-        background: #ff3434;
+        background: rgb(126, 42, 42);
     }
 
     .button-def:active {
-        background: #fd0000;
+        background: rgb(126, 42, 42);
     }
 
 .form-line {
@@ -705,10 +713,10 @@ a, a:visited {
 }
 
 .page-header-fixed {
-    -webkit-box-shadow: 0 0 10px rgba(0,0,0,.2);
-    box-shadow: 0 0 10px rgba(0,0,0,.2);
-    background: rgba(255,255,255,.9);
-    filter:Alpha(opacity=90); background:#fff;
+    -webkit-box-shadow: 0 0 10px rgb(0,0,0);
+    box-shadow: 0 0 10px rgb(0,0,0);
+    background: rgba(0,0,0,.9);
+    filter:Alpha(opacity=90); background:#000;
     filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
 }
 
@@ -729,7 +737,7 @@ a.page-header-item, a.page-header-item:active, a.page-header-item:visited {
     }
 
 .page-header-fixed a.page-header-item, .page-header-fixed a.page-header-item:active, .page-header-fixed a.page-header-item:visited {
-    color: #444;
+    color: #fff;
 }
 
     .page-header-fixed a.page-header-item-hover, .page-header-fixed a.page-header-item:hover {
@@ -831,7 +839,7 @@ a.page-header-item, a.page-header-item:active, a.page-header-item:visited {
 }
 
 body {
-    background: #f2f2f2;
+    background-image:url(/Images/bg.dark.jpg);
 }
 
 .loading {
@@ -844,15 +852,12 @@ body {
 }
 
 .page-banner {
-    background: url(/Images/banner.png) no-repeat center top;
+    background: url(/Images/banner-dark.png) no-repeat center top;
     height: 350px;
-    -webkit-box-shadow: 0 0 15px rgba(0,0,0,.2);
-    box-shadow: 0 0 15px rgba(0,0,0,.2);
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
 }
 
 .banner-text {
-    padding-top: 200px;
+    padding-top: 160px;
 }
 
     .banner-text h1, .banner-text h2, .banner-text h3, .banner-text h4 {
@@ -871,16 +876,17 @@ body {
     position: absolute;
     left: 100px;
     top: 0;
-    background: #fff;
+    background: #000;
     -webkit-box-shadow: 0 0 10px rgba(0,0,0,.3);
     box-shadow: 0 0 10px rgba(0,0,0,.3);
     padding: 10px;
     font-size: .9em;
-    
+    color:white;
 }
 
     .login-form label {
         margin-right: 10px;
+        color:white;
     }
 
 .lte6 .login-form {
@@ -984,12 +990,12 @@ body {
     text-align: left;
     display: inline-block;
     padding: 20px;
-    background: #fff;
+    background: rgb(37, 37, 37);
     position: relative;
     transition: box-shadow .2s linear;
     -webkit-transition: box-shadow .2s linear;
-    -webkit-box-shadow: 0 0 10px rgba(0,0,0,.2);
-    box-shadow: 0 0 10px rgba(0,0,0,.2);
+    -webkit-box-shadow: 0 0 10px rgb(0,0,0);
+    box-shadow: 0 0 10px rgb(0,0,0);
     filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
     margin: 10px;
     *display: inline;
@@ -1032,7 +1038,7 @@ body {
     right: 10px;
     bottom: 10px;
     font-size: 3em;
-    color: #e6e6e6;
+    color: rgb(59,59,33);
     z-index: 0;
 }
 
@@ -1097,10 +1103,10 @@ body {
 	margin: 0 auto;
 	padding: 10px;
 	width: 70%;
-    background: #f2f2f2;
-	background: rgba(255,255,255,0.5);
-    *background: #f2f2f2;
-    _background: #f2f2f2;
+    background: #353535;
+	background: rgba(53, 53, 53, 0.5);
+    *background: #353535;
+    _background: #353535;
     
 }
 
@@ -1108,7 +1114,7 @@ body {
 	position: relative;
 	z-index: 2;
 	min-height: 500px;
-	background: #fff;
+	background: rgb(37,37,37);
 	zoom: 1;
 }
 
@@ -1189,7 +1195,7 @@ body {
 
 .profile-top {
 	padding: 30px;
-	background: #f2f2f2;
+	background: rgb(44,44,44);
 }
 
 .profile-top-right {
@@ -1202,6 +1208,7 @@ body {
 
 .profile-content {
 	padding: 30px;
+    color:#AAA;
 }
 
 .profile-item {
@@ -1213,7 +1220,7 @@ body {
 }
 
 .post-item {
-    background: #fff;
+    background: rgb(37,37,37);
     padding: 20px;
     margin-bottom: 20px;
 }
@@ -1241,7 +1248,7 @@ body {
 }
 
 .post-title a, .post-title a:active, .post-title a:visited {
-    color: #222;
+    color: #AAA;
     -webkit-transition: color .2s linear;
     transition: color .2s linear;
 }
@@ -1258,13 +1265,13 @@ body {
 }
 
 .post-info a, a:visited {
-    color: #119eea;
+    color: #52b5fe;
     text-decoration: none;
 }
 
 .post-content {
     margin: 20px 0 0 20px;
-    color: #434343;
+    color: #AAA;
 }
 
 .post-comment {
@@ -1283,13 +1290,13 @@ body {
 }
 
 .post-module {
-    background: #fff;
     padding: 20px;
-    border-top: 5px solid #ededed;
+    border-top: 5px solid rgb(55,84,110);
     margin-bottom: 30px;
-    -webkit-box-shadow: 0 0 10px rgba(0,0,0,.2);
-    box-shadow: 0 0 10px rgba(0,0,0,.2);
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
+    background-color:rgb(37,37,37);
+    -webkit-box-shadow: 0 0 10px rgb(0,0,0);
+    box-shadow: 0 0 10px rgb(0,0,0);
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#000');
 }
 
 .post-module-content {
@@ -1304,11 +1311,11 @@ body {
 }
 
     .post-cate-item a, .post-cate-item a:active, .post-cate-item a:visited {
-        color: #646464;
+        color: #52b5fe;
     }
 
         .post-cate-item a:hover {
-            color: #222;
+            color: #fff;
         }
 
 .post-detail-body {
@@ -1320,15 +1327,17 @@ body {
     width: 70%;
     margin: 0 auto;
     padding: 10px;
-    background: #ffffff;
-    background: rgba(255,255,255,.5);
+    background: #353535;
+	background: rgba(53, 53, 53, 0.5);
+    *background: #353535;
+    _background: #353535;
     
 }
 
 .post-detail-wrap {
     position: relative;
     z-index: 2;
-    background: #fff;
+    background: rgb(37,37,37);
     padding: 50px;
 }
 
@@ -1369,7 +1378,7 @@ body {
     line-height: 70px;
     height: 70px;
     font-size: 2em;
-    color: #dadada;
+    color: rgb(85,85,54);
 }
 
 .forum-post-item-highlight .forum-post-replies {
@@ -1431,14 +1440,15 @@ body {
     position: relative;
     display: block;
     zoom: 1;
-    background: #fff;
+    background: rgb(37, 37, 37);
     padding: 1px;
     margin-bottom:15px;
     transition: box-shadow .2s linear;
     -webkit-transition: box-shadow .2s linear;
-    -webkit-box-shadow: 0 0 5px rgba(0,0,0,.2);
-    box-shadow: 0 0 5px rgba(0,0,0,.2);
+    -webkit-box-shadow: 0 0 7px rgb(0,0,0);
+    box-shadow: 0 0 7px rgb(0,0,0);
     filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
+    color:#AAA!important;
 }
 
 .status-item-wrap {
@@ -1447,7 +1457,6 @@ body {
 }
 
 .status-item, .status-item:active, .status-item:hover, .status-item:visited {
-    color: #222;
     text-decoration: none;
 }
 
@@ -1517,7 +1526,7 @@ body {
 }
 
 .contest-main {
-    background: #fff;
+    background-color:rgb(37,37,37);
     padding: 20px;
 }
 
@@ -1940,18 +1949,18 @@ a.status-bg-nul, a.status-bg-nul:active, a.status-bg-nul:hover, a.status-bg-nul:
 }
 
 table {
-    background:#FFF;
+    background:rgb(44,44,44);
 	width:100%;
 	line-height:28px;
 	font-size:12px;
-    border:1px solid #e8e8e8;
-    /*-webkit-box-shadow: 0 0 10px rgba(0,0,0,.2);
-    box-shadow: 0 0 10px rgba(0,0,0,.2);
+    border:1px solid rgb(58,58,58);
+    /*-webkit-box-shadow: 0 0 10px rgb(0,0,0);
+    box-shadow: 0 0 10px rgb(0,0,0);
     filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');*/
 }
 
 thead {
-    background-color:#1f67d3;
+    background-color:rgb(31,76,143);
 }
 
 th {
@@ -1973,7 +1982,7 @@ td {
 }
 
 tr {
-    border-bottom:1px solid #e8e8e8;
+    border-bottom:1px solid rgb(58,58,58);
 	transition:background-color .1s linear;
 	-webkit-transition:background-color .1s linear;
 	-moz-transition:background-color .1s linear;
@@ -1982,13 +1991,14 @@ tr {
 }
 
 tbody tr:hover {
-	background:#ecf4ff!important
+	background:rgb(85,85,54)!important
 }
 
 .label {
     padding: 3px 5px 3px 5px;
     font-size:14px;
-    color:black!important;
+    color: #FFF;
+    text-shadow: 1px 1px 0 #000;
     text-decoration:none!important;
 }
 
@@ -1997,96 +2007,51 @@ tbody tr:hover {
 }
 
 .blue {
-    background-color: rgba(206, 239, 255, 0.65);
-    background-color: rgb(206, 239, 255)\9;
-   * background-color: rgb(206, 239, 255);
-    _background-color: rgb(206, 239, 255);
+    background-color: #565561;
 }
-
-    .blue:hover {
-         background-color: rgb(220, 237, 255);
-    }
 
 .gray {
-    background-color: rgba(224, 224, 224,0.65);
-    background-color: rgb(224, 224, 224)\9;
-    *background-color: rgb(224, 224, 224);
-    _background-color: rgb(224, 224, 224);
 }
-    .gray:hover {
-             background-color: rgb(244, 244, 244);
-        }
 
 .red {
-    background-color: rgba(255,215,215,0.65);
-    background-color: rgb(255,215,215)\9;
-    *background-color: rgb(255,215,215);
-    _background-color: rgb(255,215,215);
+    background-color:#525b62; 
 }
-    .red:hover {
-        background-color: rgb(255, 235, 235);
-    }
 
 .green {
     
-    background-color: rgba(204, 255, 202, 0.65);
-    background-color: rgb(204, 255, 202)\9;
-    *background-color: rgb(204, 255, 202);
-    _background-color: rgb(204, 255, 202);
+    background-color: #546050;
 }
-    .green:hover {
-        background-color: #e2ffe1;
-    }
 
 .orange {
-    background-color: rgba(255, 210, 176,0.65);
-    background-color: rgb(255, 210, 176)\9;
-    *background-color: rgb(255, 210, 176);
-    _background-color: rgb(255, 210, 176);
+    background-color: #655151;
 }
-    .orange:hover {
-        background-color: rgb(255, 232, 215);
-    }
 
 .purple {
-    background-color: rgba(204, 174, 255,0.65);
-    background-color: rgb(204, 174, 255)\9;
-    *background-color: rgb(204, 174, 255);
-    _background-color: rgb(204, 174, 255);
+    background-color: #655959;
 }
-    .purple:hover {
-        background-color: rgb(224, 194, 255);
-    }
 
 .black {
-    background-color: rgba(225, 225, 225, 0.65);
-    background-color: #e1e1e1\9;
-    *background-color: #e1e1e1;
-    _background-color: #e1e1e1;
+    background-color: black;
 }
 
-    .black:hover {
-        background-color: #EEE;
-    }
-
 .contest-item-highlight {
-    border: 5px solid #ff8080;
+    border: 5px solid rgb(110, 55, 55);
     border-top: 0;
     border-bottom: 0;
-    background:#fff0f0;
+    background:rgb(37, 37, 37);
 }
 
  .contest-item-pending {
-    border: 5px solid #56a5eb;
+    border: 5px solid rgb(55, 107, 110);
     border-top: 0;
     border-bottom: 0;
     background:#ecf4ff;
 }
 
 .shadow {
-        -webkit-box-shadow: 0 0 10px rgba(0,0,0,.2);
-        box-shadow: 0 0 10px rgba(0,0,0,.2);
-        filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
+        -webkit-box-shadow: 0 0 10px rgb(0,0,0);
+        box-shadow: 0 0 10px rgb(0,0,0);
+        filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#000');
 }
 
 @-webkit-keyframes progress-bar-stripes {
@@ -2330,15 +2295,15 @@ tbody tr:hover {
 }
 
 .rank-red {
-    background-color:#f2dede;
+    background-color:rgb(110, 55, 55);
 }
 
 .rank-green {
-     background-color:#dff0d8;
+     background-color:rgb(77, 110, 55);
 }
 
 .rank-orange {
-    background-color:rgb(255, 233, 201);
+    background-color:rgb(110, 85, 55);
 }
 
 .btn-hack {
@@ -2372,9 +2337,9 @@ input[type="file"] {
 }
 
 select {
-  width: 220px;
-  background-color: #ffffff;
-  border: 1px solid #cccccc;
+  background-color: rgb(44,44,44);
+  border: none;
+  color:#AAA;
 }
 
 select[multiple],
@@ -2386,7 +2351,62 @@ select:focus,
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
-  outline: thin dotted #333;
+  outline: thin dotted #555;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
+  border: 1px solid #555;
+  background-color: rgb(50,50,50);
+  color:#AAA;
 }
+
+    select:hover {
+        background-color: rgb(50,50,50);
+    }
+
+#txtMessageContent {
+    background: rgb(44,44,44);
+    border:none;
+    padding:2px;
+    color:#AAA;
+}
+
+#ChatRecords {
+    border: 1px solid #555!important;
+}
+
+#txtMessageContent:hover {
+    background: rgb(50,50,50);
+}
+
+#txtMessageContent:focus {
+    background: rgb(50,50,50);
+}
+
+
+.CodeMirror {
+	text-shadow:none!important;
+}
+.CodeMirror-gutter {
+	background:#333!important;
+}
+.CodeMirror pre.CodeMirror-cursor {
+	border-color:#FFF!important;
+}
+div.CodeMirror-selected {
+	background:#444!important;
+}
+.cm-s-neat span.cm-variable {
+	color:#EEE!important;
+}
+
+#cboxTopLeft{width:25px; height:25px; background:url(/Images/border1-dark.png) no-repeat 0 0!important;}
+#cboxTopCenter{height:25px; background:url(/Images/border1-dark.png) repeat-x 0 -50px!important;}
+#cboxTopRight{width:25px; height:25px; background:url(/Images/border1-dark.png) no-repeat -25px 0!important;}
+#cboxBottomLeft{width:25px; height:25px; background:url(/Images/border1-dark.png) no-repeat 0 -25px!important;}
+#cboxBottomCenter{height:25px; background:url(/Images/border1-dark.png) repeat-x 0 -75px!important;}
+#cboxBottomRight{width:25px; height:25px; background:url(/Images/border1-dark.png) no-repeat -25px -25px!important;}
+#cboxMiddleLeft{width:25px; background:url(/Images/border2-dark.png) repeat-y 0 0!important;}
+#cboxMiddleRight{width:25px; background:url(/Images/border2-dark.png) repeat-y -25px 0!important;}
+#cboxContent{background-image:url(/Images/alphacolorbox-dark.png)!important;}
+.cboxIframe{background-image:url(/Images/alphacolorbox-dark.png)!important;}
+

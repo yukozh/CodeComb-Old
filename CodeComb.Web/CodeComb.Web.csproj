@@ -518,6 +518,7 @@
     <Content Include="Scripts\_references.js" />
     <Content Include="Styles\codemirror.css" />
     <Content Include="Styles\colorbox.css" />
+    <Content Include="Styles\css-dark.css" />
     <Content Include="Styles\css-ie.css" />
     <Content Include="Styles\css.css" />
     <Content Include="TodoList.txt" />

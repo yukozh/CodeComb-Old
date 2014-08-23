@@ -99,6 +99,11 @@ namespace CodeComb.Web.Controllers
             if (!ViewBag.IsCreator)
                 return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
             ViewBag.ContestFormats = Enum.GetNames(typeof(Entity.ContestFormat));
+            var existed = (from cm in DbContext.ContestManagers
+                           where cm.UserID == user_id
+                           select cm).Count() > 0;
+            if(existed)
+                return RedirectToAction("Message", "Shared", new { msg = "这个用户已经是管理员了！" });
             DbContext.ContestManagers.Add(new Entity.ContestManager 
             { 
                 ContestID = id,

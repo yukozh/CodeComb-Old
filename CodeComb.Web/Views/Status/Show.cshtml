@@ -10,11 +10,6 @@
                     <div class="status-detail-wrap">
                         <h2>Status - @Model.ID</h2>
                         <div class="status-item" id="s_@Model.ID"></div>
-                        <blockquote>
-                            <p>Time usage: <span id="TimeUsage"></span>ms</p>
-                            <p>Memory usage: <span id="MemoryUsage"></span>KiB</p>
-                            <p>Language: <span id="Language"></span></p>
-                        </blockquote>
                         <div class="status-content" id="lstDetails">
                         </div>
                         @if (ViewBag.Showable)
@@ -32,9 +27,6 @@
 </div>
 <script>
     $.getJSON("/Status/GetStatus/@Model.ID", {}, function (status) {
-        $("#Language").html(status.Language);
-        $("#MemoryUsage").html(status.MemoryUsage);
-        $("#TimeUsage").html(status.TimeUsage);
         BuildStatusDetail(status);
         GetDetails();
     });

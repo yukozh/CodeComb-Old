@@ -41,6 +41,7 @@
     var nickname, result, contest_id, problem_id;
     contest_id = @(ViewContext.RouteData.Values["id"]?? "null");
     problem_id = @(ViewContext.RouteData.Values["pid"]?? "null");
+    user_id = @(ViewContext.RouteData.Values["uid"]?? "null");
     $("#btnFilter").click(function () {
         nickname = $("#txtNickname").val();
         problem_id = parseInt($("#txtProblemID").val());

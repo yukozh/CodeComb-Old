@@ -14,7 +14,14 @@
     <!--[if lt IE 9]>
     <link href="/Styles/css-ie.css" rel="stylesheet" type="text/css" />
     <![endif]-->
+    @if (DateTime.Now >= DateTime.Now.Date.AddHours(12) || DateTime.Now < DateTime.Now.Date.AddHours(5))
+    {
+    <link href="~/Styles/css-dark.css" rel="stylesheet" type="text/css" />
+    }
+    else
+    { 
     <link href="~/Styles/css.css" rel="stylesheet" type="text/css" />
+    }
     <link href="~/Styles/colorbox.css" rel="stylesheet" type="text/css" />
     <link href="~/Styles/codemirror.css" rel="stylesheet" type="text/css" />
     <link href="~/Styles/github.css" rel="stylesheet" type="text/css" />
@@ -83,7 +90,7 @@
                     }
                     else
                     {
-                        <a href="/User/Center" class="float-left page-header-item"><div class="page-header-item-text">@Html.Gravatar((string)ViewBag.CurrentUser.Email, 180, "page-header-face") @ViewBag.CurrentUser.Nickname</div><div class="page-header-item-bg"></div></a>
+                        <a href="/User/@ViewBag.CurrentUser.ID" class="float-left page-header-item"><div class="page-header-item-text">@Html.Gravatar((string)ViewBag.CurrentUser.Email, 180, "page-header-face") @ViewBag.CurrentUser.Nickname</div><div class="page-header-item-bg"></div></a>
                         <a href="javascript:$('#frmLogout').submit();" class="float-left page-header-item"><div class="page-header-item-text">登出</div><div class="page-header-item-bg"></div></a>
                         using (Html.BeginForm("Logout", "User", FormMethod.Post, new { id = "frmLogout", style = "display:none;" }))
                         {

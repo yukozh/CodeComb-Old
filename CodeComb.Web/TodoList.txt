@@ -1,8 +1,8 @@
 ﻿<Web部分>
 一、用户中心
-1、/User/Center应指向/User/{我的ID}
-2、/User/Settings/{ID} 可以设置用户的基本资料，其中可以修改偏好语言、密码、Gravatar、昵称。需要判断是否为Master以上级别，如果是Master以上级别或者是CurrentUser则可编辑
-3、/User/Status/{ID} 查询某个用户的评测状态
+【已完成】1、/User/Center应指向/User/{我的ID}
+【已完成】2、/User/Settings/{ID} 可以设置用户的基本资料，其中可以修改偏好语言、密码、Gravatar、昵称。需要判断是否为Master以上级别，如果是Master以上级别或者是CurrentUser则可编辑
+【已完成】3、/User/Status/{ID} 查询某个用户的评测状态
 4、/User/Solution/{ID} 查看该用户提交的题解
 
 二、评测机

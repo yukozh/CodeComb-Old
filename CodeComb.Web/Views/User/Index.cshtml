@@ -108,7 +108,7 @@
                                 <tbody>
                                     @foreach (var item in Model.Ratings.OrderByDescending(x => x.Time))
                                     {
-                                        <tr style="line-height:50px;height:50px;background-color:@(item.Credit < 0 ? "#f2dede" : "#dff0d8")">
+                                        <tr style="line-height:50px;height:50px;" class="@(item.Credit < 0 ? "rank-red" : "rank-green")">
                                             <td>@item.Time.ToString("yyyy-MM-dd HH:mm")</td>
                                             <td>@item.Contest.Title</td>
                                             <td>@(item.Credit < 0 ? item.Credit.ToString() : "+" + item.Credit)</td>
