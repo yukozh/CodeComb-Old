@@ -11,9 +11,10 @@ namespace CodeComb.Web.Helpers
     {
         public static string GetColor(int Ratings)
         {
-            if (Ratings < 1500) return "inherit";
-            if (Ratings < 1700) return "green";
-            if (Ratings < 2000) return "DodgerBlue ";
+            if (Ratings < 1000) return "inherit";
+            if (Ratings < 1500) return "green";
+            if (Ratings < 1700) return "DodgerBlue";
+            if (Ratings < 2000) return "purple ";
             if (Ratings < 2400) return "orange";
             return "red";
         }

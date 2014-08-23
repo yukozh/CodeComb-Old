@@ -2399,6 +2399,18 @@ div.CodeMirror-selected {
 	color:#EEE!important;
 }
 
+.cm-keyword {
+    color:rgb(156,220,254)!important;
+}
+
+.cm-meta {
+    color:rgb(215,186,125)!important;
+}
+
+.cm-number {
+    color:rgb(181,206,168)!important;
+}
+
 #cboxTopLeft{width:25px; height:25px; background:url(/Images/border1-dark.png) no-repeat 0 0!important;}
 #cboxTopCenter{height:25px; background:url(/Images/border1-dark.png) repeat-x 0 -50px!important;}
 #cboxTopRight{width:25px; height:25px; background:url(/Images/border1-dark.png) no-repeat -25px 0!important;}
