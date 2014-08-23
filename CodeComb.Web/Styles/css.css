@@ -2372,7 +2372,6 @@ input[type="file"] {
 }
 
 select {
-  width: 220px;
   background-color: #ffffff;
   border: 1px solid #cccccc;
 }
@@ -2389,4 +2388,24 @@ input[type="checkbox"]:focus {
   outline: thin dotted #333;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
+}
+
+.problem-pager {
+    border: 10px solid #c0e0d4;
+    border-top: 0;
+    border-bottom: 0;
+    height:45px;
+    background-color:#fff;
+    margin-bottom:20px;
+    padding:10px;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.flag-red {
+    color:#ff8080;
+}
+
+.flag-green {
+    color:green;
 }

@@ -2410,3 +2410,22 @@ div.CodeMirror-selected {
 #cboxContent{background-image:url(/Images/alphacolorbox-dark.png)!important;}
 .cboxIframe{background-image:url(/Images/alphacolorbox-dark.png)!important;}
 
+.problem-pager {
+    border: 10px solid #ffc926;
+    border-top: 0;
+    border-bottom: 0;
+    background:rgb(37, 37, 37);
+    height:45px;
+    margin-bottom:20px;
+    padding:10px;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.flag-red {
+    color:red;
+}
+
+.flag-green {
+    color:green;
+}

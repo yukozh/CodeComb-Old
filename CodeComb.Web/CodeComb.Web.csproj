@@ -229,6 +229,8 @@
     <Compile Include="Models\View\Login.cs" />
     <Compile Include="Models\View\Post.cs" />
     <Compile Include="Models\View\ProblemInContest.cs" />
+    <Compile Include="Models\View\ProblemInList.cs" />
+    <Compile Include="Models\View\ProblemPager.cs" />
     <Compile Include="Models\View\Rating.cs" />
     <Compile Include="Models\View\RegisterStep1.cs" />
     <Compile Include="Models\View\RegisterStep2.cs" />
@@ -575,6 +577,7 @@
     <Content Include="Views\Problem\Range.cshtml" />
     <Content Include="Views\ContestSettings\Manager.cshtml" />
     <Content Include="Views\User\Settings.cshtml" />
+    <Content Include="Views\Problem\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -17,6 +17,7 @@ function Load()
     LoadStatuses();
     LoadSolutionTags();
     LoadStandings();
+    LoadProblems();
 }
 
 function LoadRatings()
@@ -171,6 +172,31 @@ function LoadStandings()
         });
     }
 }
+function LoadProblems()
+{
+    if ($("#lstProblems").length > 0) {
+        $.getJSON("/Problem/GetProblems", {
+            page: page,
+            morethan: morethan,
+            lessthan: lessthan,
+            title: title,
+            tags: tags
+        }, function (problems) {
+            if (problems.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
+            for (var i in problems) {
+                $("#lstProblems").append('<tr><td style="text-align:center" class="' + problems[i].FlagCss + '">' + problems[i].Flag + '</td>'
+                                                 + '<td><a href="/Problem/' + problems[i].ID + '">P' + problems[i].ID + ' ' + problems[i].Title + '</a></td>'
+                                                 + '<td style="text-align:center">' + problems[i].AC + '</td>'
+                                                 + '<td style="text-align:center">' + problems[i].Submit + '</td>'
+                                                 + '<td style="text-align:center">' + problems[i].Difficulty + '</td>'
+                                                 + '</td>');
+            }
+            lock = false;
+            page++;
+            $("#iconLoading").hide();
+        });
+    }
+}
 
 var StatusCss = ["ac", "pe", "wa", "ole", "tle", "mle", "rte", "ce", "se", "hacked", "running", "pending","hidden"];
 var StatusDisplay = ["Accepted", "Presentation Error", "Wrong Answer", "Output Limit Exceeded", "Time Limit Exceeded", "Memory Limit Exceeded", "Runtime Error", "Compile Error", "System Error", "Hacked", "Running", "Pending","Hidden"];
@@ -279,8 +305,48 @@ function StandingsUpdate(data)
     }
     standings.sort(cmp);
 }
+function SetTag(id) {
+    if (tags.indexOf(id + ",") >= 0) {
+        tags = tags.replace(id + ",", "");
+        $("#tag_" + id).removeClass("orange");
+    }
+    else {
+        tags += id + ",";
+        $("#tag_" + id).addClass("orange");
+    }
+    morethan = null;
+    lessthan = null;
+    page = 0;
+    lock = false;
+    $("#txtProblemTitle").val("");
+    $("#lstProblems").html("");
+    Load();
+}
+function Jump(a, b) {
+    morethan = a;
+    lessthan = b;
+    page = 0;
+    lock = false;
+    title = "";
+    tags = "";
+    $(".ProblemTag").removeClass("orange");
+    $("#txtProblemTitle").val("");
+    $("#lstProblems").html("");
+    Load();
+}
 
 $(document).ready(function () {
+    $("#btnProblemSearch").click(function () {
+        title = $("#txtProblemTitle").val();
+        morethan = null;
+        lessthan = null;
+        page = 0;
+        lock = false;
+        tags = "";
+        $(".ProblemTag").removeClass("orange");
+        $("#lstProblems").html("");
+        Load();
+    });
     $("#iconLoading").hide();
     Load();
     $(window).scroll(function () {

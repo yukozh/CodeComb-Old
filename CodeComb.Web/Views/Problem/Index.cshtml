@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewBag.Title = "题目列表";
+    ViewBag.BannerTitle = "题目列表";
+}
+
+<div class="contest-body">
+    <div class="cont-wrap">
+    <div class="grid_12">
+        <div class="problem-pager shadow">
+            <p>快速翻页：
+                @{
+                    var pages = (List<CodeComb.Web.Models.View.ProblemPager>)ViewBag.Pager;
+                    var i = 0;
+                    foreach (var item in pages)
+                    {
+                        if (++i == pages.Count)
+                        {
+                        <a href="javascript:Jump(@item.MoreThan, @item.LessThan)">@item.Display</a>
+                        }
+                        else
+                        { 
+                        <a href="javascript:Jump(@item.MoreThan, @item.LessThan)">@item.Display</a> @("~")
+                        }
+                    }
+                }
+            </p>
+        </div>
+    </div>
+        <div class="grid_9 shadow">
+            <table style="font-weight: 400;border:none;">
+                <thead>
+                    <tr>
+                        <th width="130" style="text-align:center">Flag</th>
+                        <th>标题</th>
+                        <th style="text-align:center" width="70">通过</th>
+                        <th style="text-align:center" width="70">提交</th>
+                        <th style="text-align:center" width="70">难度</th>
+                    </tr>
+                </thead>
+                <tbody id="lstProblems">
+                </tbody>
+            </table>
+            <div><div class="loading" id="iconLoading"></div></div>
+        </div>
+    </div><div class="grid_3">
+        <div class="post-module">
+            <h3>检索</h3>
+            <p><input type="text" class="textbox" placeholder="题目名称" id="txtProblemTitle" /></p>
+            <p><input type="button" class="button button-def" value="筛选" id="btnProblemSearch" /></p>
+            @foreach (AlgorithmTag tag in ViewBag.Tags)
+            { 
+                <h3>@tag.Title</h3>
+                foreach (AlgorithmTag child in tag.Children)
+                { 
+                    <a href="javascript:SetTag(@child.ID)" class="ProblemTag label" id="tag_@child.ID">@child.Title</a>
+                }
+            }
+        </div>
+    </div><div class="clear"></div>
+</div>
+<script>
+    var morethan, lessthan, title, tags = "";
+</script>

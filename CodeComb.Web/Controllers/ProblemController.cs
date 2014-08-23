@@ -44,6 +44,19 @@ namespace CodeComb.Web.Controllers
         // GET: /Problem/
         public ActionResult Index()
         {
+            var problem_count = (from p in DbContext.Problems
+                                 select p).Count();
+            var page_count = (int)Math.Ceiling(problem_count / 100.0);
+            var pager = new List<Models.View.ProblemPager>();
+            for (int i = 1; i <= page_count; i++)
+            {
+                pager.Add(new Models.View.ProblemPager(i));
+            }
+            ViewBag.Pager = pager;
+            var tags = (from at in DbContext.AlgorithmTags
+                        where at.FatherID == null
+                        select at).ToList();
+            ViewBag.Tags = tags;
             return View();
         }
 
@@ -369,6 +382,42 @@ namespace CodeComb.Web.Controllers
             problem.RangeCheckerLanguageAsInt = language;
             DbContext.SaveChanges();
             return RedirectToAction("Range", "Problem", new { id = id });
+        }
+
+        [HttpGet]
+        public ActionResult GetProblems(int page, string tags, string title, int? morethan, int? lessthan)
+        {
+            tags = tags.Trim(',');
+            if (title == null) title = "";
+            var tag_ids = new List<int>();
+            if (!string.IsNullOrEmpty(tags))
+            {
+                foreach (var tag in tags.Split(','))
+                {
+                    tag_ids.Add(Convert.ToInt32(tag));
+                }
+            }
+            var now = DateTime.Now;
+            IEnumerable<Entity.Problem> _problems = (from p in DbContext.Problems
+                             where p.Title.Contains(title)
+                             && DateTime.Now >= p.Contest.End
+                             select p);
+            if (tag_ids.Count > 0)
+            {
+                var __problems = (from p in DbContext.SolutionTags
+                                where tag_ids.Contains(p.AlgorithmTagID)
+                                select p.Solution.ProblemID).ToList();
+                _problems = (from p in _problems
+                             where __problems.Contains(p.ID)
+                             select p);
+            }
+            if (morethan != null && lessthan != null)
+                _problems = _problems.Where(x => x.ID >= morethan && x.ID <= lessthan);
+            _problems = _problems.OrderBy(x => x.ID).Skip(100 * page).Take(100).ToList();
+            List<Models.View.ProblemInList> problems = new List<Models.View.ProblemInList>();
+            foreach (var problem in _problems)
+                problems.Add(new Models.View.ProblemInList(problem, ViewBag.CurrentUser));
+            return Json(problems, JsonRequestBehavior.AllowGet);
         }
 	}   
 }
