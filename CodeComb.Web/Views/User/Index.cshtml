@@ -23,7 +23,7 @@
                 <div class="profile-wrap">
                     <div class="profile-top">
                         <div class="float-left">@Html.Gravatar(Model.Gravatar, 180, "profile-face")</div>
-                        <div class="profile-top-right"><div class="profile-name"><h1>@Html.Nickname(Model.Nickname, Model.Ratings.Sum(x => x.Credit) + 1500)</h1></div><div class="profile-signature">@Model.Motto</div><div class="clear"></div></div>
+                        <div class="profile-top-right"><div class="profile-name"><h1>@Html.Nickname(Model.Nickname, Model.Ratings.Sum(x => x.Credit) + 1500) @(Model.Role >= UserRole.Master?"("+Model.Role.ToString()+")":"")</h1></div><div class="profile-signature">@Model.Motto</div><div class="clear"></div></div>
                     </div><div class="profile-content">
                         <div class="profile-item">
                             <div><h2>Rating @(Model.Ratings.Sum(x=>x.Credit)+1500)</h2></div>

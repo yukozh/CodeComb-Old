@@ -20,7 +20,7 @@ namespace CodeComb.Web.Controllers
         public ActionResult GetRatings(int page)
         {
             var users = (from u in DbContext.Users
-                         //where u.Ratings.Count() > 0
+                         where u.Ratings.Count() > 0
                          orderby u.Ratings.Sum(x => x.Credit) descending
                          select u).Skip(12 * page).Take(12).ToList();
             List<Rating> ratings = new List<Rating>();
