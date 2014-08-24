@@ -15,7 +15,7 @@
                     @if (contest.Format != ContestFormat.OI && DateTime.Now >= contest.Begin || IsMaster)
                     {
                         <a href="/Contest/Standings/@contest.ID" class="profile-btn"><img src="/Images/standings.png" alt="比赛排名" /></a>
-                        <a href="/Contest/Statistics/@contest.ID" class="profile-btn"><img src="/Images/statistics.png" alt="比赛统计" /></a>
+                        <a href="/Contest/Statistics/@contest.ID" class="profile-btn"><img src="/Images/statistics.png" alt="数据统计" /></a>
 
                     }
                     @if (DateTime.Now >= contest.Begin)
