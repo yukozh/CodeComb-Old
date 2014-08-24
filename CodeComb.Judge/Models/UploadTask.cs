@@ -10,8 +10,9 @@ namespace CodeComb.Judge.Models
     {
         public string Token { get; set; }
         public int ID { get; set; }
-        public FileType Type { get; set; }
-        public string Data { get; set; }
+        public string Input { get; set; }
+        public string Output { get; set; }
+        public bool HasOutput { get; set; }
+        public string Hash { get; set; }
     }
-    public enum FileType { Input, Output };
 }

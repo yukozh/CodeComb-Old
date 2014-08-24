@@ -12,8 +12,7 @@ namespace CodeComb.Judge.Models
         public int ID { get; set; }
         public string Code { get; set; }
         public Entity.Language CodeLanguage { get; set; }
-        public int InputID { get; set; }
-        public string OutputID { get; set; }
+        public int DataID { get; set; }
         public string SpecialJudgeCode { get; set; }
         public Entity.Language SpecialJudgeCodeLanguage { get; set; }
     }
