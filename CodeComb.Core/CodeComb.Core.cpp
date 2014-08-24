@@ -28,19 +28,7 @@ DWORD ExitCode = 0;
 int TimeUsed = -1;
 int PagedUsed = -1;
 int WorkingSetUsed = -1;
-/*
-argv[1]: filename and arguments.
-argv[2]: input file path.
-argv[3]: output file path.
-argv[4]: errput file path.
-argv[5]: time limit(ms).
-argv[6]: memory limit(KB).
-argv[7]: high priority run time(ms).
-argv[8]: APIHook dll path.
-argv[9]: XML create path.
-*/
-
-CString CommondLine, InputFilePath, OutputFilePath, ErrorFilePath, APIHookPath;
+wstring CommondLine, InputFilePath, OutputFilePath, ErrorFilePath, APIHookPath;
 
 int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 {
@@ -92,17 +80,17 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 			ZeroMemory(&ProcessInfo, sizeof(ProcessInfo));
 			if (InputFilePath != L"")
 			{
-				HANDLE InputFile = CreateFile(argv[2], GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, &saAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+				HANDLE InputFile = CreateFile(InputFilePath.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, &saAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 				StartupInfo.hStdInput = InputFile;
 			}
 			if (OutputFilePath != L"")
 			{
-				HANDLE OutputFile = CreateFile(argv[3], GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, &saAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+				HANDLE OutputFile = CreateFile(OutputFilePath.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, &saAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 				StartupInfo.hStdOutput = OutputFile;
 			}
 			if (ErrorFilePath != L"")
 			{
-				HANDLE ErrputFile = CreateFile(argv[4], GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, &saAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+				HANDLE ErrputFile = CreateFile(ErrorFilePath.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, &saAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 				StartupInfo.hStdError = ErrputFile;
 			}
 			StartupInfo.dwFlags |= STARTF_USESTDHANDLES;
@@ -122,9 +110,9 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 			sizeof(TOKEN_MANDATORY_LABEL)+sizeof(pIntegritySid));
 			CreateProcessAsUser(hNewToken, NULL, argv[1], NULL, NULL, FALSE, 0, NULL, NULL, (LPSTARTUPINFOW)(&StartupInfo), &ProcessInfo);
 			*/
-			CreateProcess(NULL, argv[1], NULL, NULL, TRUE, CREATE_SUSPENDED, NULL, NULL, (LPSTARTUPINFOW)(&StartupInfo), &ProcessInfo);
-			if (CString(argv[8]) != CString("NULL"))
-				LoadRemoteDLL(ProcessInfo.dwProcessId, argv[8]);
+			CreateProcess(NULL, (LPWSTR)CommondLine.c_str(), NULL, NULL, TRUE, CREATE_SUSPENDED, NULL, NULL, (LPSTARTUPINFOW)(&StartupInfo), &ProcessInfo);
+			if (CString(APIHookPath.c_str()) != CString("NULL"))
+				LoadRemoteDLL(ProcessInfo.dwProcessId, (LPWSTR)APIHookPath.c_str());
 			LPTHREAD_PARAM pData;
 			pData = (LPTHREAD_PARAM)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(THREAD_PARAM));
 			pData->ProcessHandle = ProcessInfo.hProcess;
