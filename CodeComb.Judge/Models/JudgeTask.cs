@@ -15,5 +15,7 @@ namespace CodeComb.Judge.Models
         public int DataID { get; set; }
         public string SpecialJudgeCode { get; set; }
         public Entity.Language SpecialJudgeCodeLanguage { get; set; }
+        public int TimeLimit { get; set; }
+        public int MemoryLimit { get; set; }
     }
 }

@@ -52,6 +52,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -72,9 +73,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CodeComb.Entity\CodeComb.Entity.csproj">
+      <Project>{f40f7941-f88a-4ce4-adf3-e5470d280ee8}</Project>
+      <Name>CodeComb.Entity</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CodeComb.Judge\CodeComb.Judge.csproj">
       <Project>{d41692bb-5e4f-4c1d-ac40-b530d8e17bef}</Project>
       <Name>CodeComb.Judge</Name>

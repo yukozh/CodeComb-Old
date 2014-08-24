@@ -46,6 +46,7 @@
     <Compile Include="Models\JudgeFeedback.cs" />
     <Compile Include="Models\JudgeTask.cs" />
     <Compile Include="Models\ProcessFeedback.cs" />
+    <Compile Include="Models\Result.cs" />
     <Compile Include="Models\UploadTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -67,18 +67,30 @@ namespace CodeComb.Service
             //准备输入数据
             File.Copy(JudgeService.DataPath + @"\" + jt.DataID + @"\input.txt", JudgeService.TempPath + @"\" + jt.ID + @"\input.txt", true);
 
+            int ExitCode;
+            JudgeFeedback jfb;
             //运行选手程序
-
+            if (!Run(jt.ID, (int)jt.CodeLanguage, jt.TimeLimit, jt.MemoryLimit, Mode.Main, out ExitCode, out jfb))
+                return;
 
             //准备输出数据
             File.Copy(JudgeService.DataPath + @"\" + jt.DataID + @"\output.txt", JudgeService.TempPath + @"\" + jt.ID + @"\output.txt", true);
 
-            
+            if (!string.IsNullOrEmpty(jt.SpecialJudgeCode))
+            {
+                if (!Run(jt.ID, (int)jt.SpecialJudgeCodeLanguage, jt.TimeLimit, jt.MemoryLimit, Mode.Spj, out ExitCode, out jfb))
+                    return;
+            }
+            else
+            {
+                if (!Run(jt.ID, (int)Entity.Language.Cxx, jt.TimeLimit, jt.MemoryLimit, Mode.Spj, out ExitCode, out jfb))
+                    return;
+            }
 
-            Run();
-            //运行成功
-            Validate();
+            //校验结果
+            Validate(jt.ID, ExitCode, jfb);
         }
+
         public static bool Compile(int id, int language_id, string code, Mode Mode)
         {
             JudgeFeedback jfb = new JudgeFeedback()
@@ -97,6 +109,7 @@ namespace CodeComb.Service
             p.StartInfo.RedirectStandardError = true;
             p.StartInfo.RedirectStandardOutput = true;
             p.StartInfo.UseShellExecute = false;
+            p.StartInfo.WorkingDirectory = JudgeService.TempPath + @"\" + id;
             p.Start();
             p.StandardInput.WriteLine(CompileArgs[language_id].Replace("{Name}", Mode.ToString()));
             p.StandardInput.WriteLine("");
@@ -166,14 +179,82 @@ namespace CodeComb.Service
             }
         }
 
-        public static bool Run(int id, int language_id, Mode Mode)
-        { 
-            
+        public static bool Run(int id, int language_id,int time,int memory, Mode Mode, out int ExitCode, out JudgeFeedback JudgeFeedBack)
+        {
+            JudgeFeedback jfb = new JudgeFeedback()
+            {
+                ID = id,
+                MemoryUsage = 0,
+                TimeUsage = 0,
+                Success = false
+            };
+            Process p = new Process();
+            p.StartInfo.FileName = JudgeService.LibPath + @"\CodeComb.Core.exe";
+            p.StartInfo.CreateNoWindow = true;
+            p.StartInfo.RedirectStandardInput = true;
+            p.StartInfo.RedirectStandardError = true;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.WorkingDirectory = JudgeService.TempPath + @"\" + id;
+            p.Start();
+            p.StandardInput.WriteLine(CompileArgs[language_id].Replace("{Name}", Mode.ToString()));
+            p.StandardInput.WriteLine("");
+            p.StandardInput.WriteLine(Mode.ToString() + ".out");
+            p.StandardInput.WriteLine("");
+            p.StandardInput.WriteLine("");
+            p.StandardInput.WriteLine(time);
+            p.StandardInput.WriteLine(memory);
+            p.StandardInput.WriteLine(1000);
+            p.StandardInput.Close();
+            p.WaitForExit();
+            var ResultAsString = p.StandardOutput.ReadToEnd();
+            JavaScriptSerializer jss = new JavaScriptSerializer();
+            var Result = jss.Deserialize<Result>(ResultAsString);
+            jfb.TimeUsage = Result.TimeUsage;
+            if ((Entity.Language)language_id == Entity.Language.Java)
+                jfb.MemoryUsage = Result.WorkingSet;
+            else jfb.MemoryUsage = Result.PagedSize;
+            ExitCode = Result.ExitCode;
+            if (!(Result.ExitCode == 0 || Result.ExitCode == 1 && (Entity.Language)language_id == Entity.Language.C || Mode== JudgeHelper.Mode.Spj && Result.ExitCode >=0 && Result.ExitCode <= 3 || Mode == JudgeHelper.Mode.Range && Result.ExitCode >=-1 && Result.ExitCode <=0))
+            {
+                jfb.Result = Entity.JudgeResult.RuntimeError;
+                if (Mode != JudgeHelper.Mode.Main)
+                    jfb.Result = Entity.JudgeResult.SystemError;
+                jfb.Hint = String.Format(GetModeName(Mode) + "运行时崩溃");
+                Feedback(jfb);
+                JudgeFeedBack = jfb;
+                return false;
+            }
+            if (jfb.TimeUsage > time)
+            {
+                jfb.Result = Entity.JudgeResult.TimeLimitExceeded;
+                if(Mode != JudgeHelper.Mode.Main)
+                    jfb.Result = Entity.JudgeResult.SystemError;
+                jfb.Hint = String.Format(GetModeName(Mode) + "用时 {0}ms，超出了题目规定时间{1}ms", jfb.TimeUsage, time);
+                Feedback(jfb);
+                JudgeFeedBack = jfb;
+                return false;
+            }
+            if (jfb.MemoryUsage > memory)
+            {
+                jfb.Result = Entity.JudgeResult.MemoryLimitExceeded;
+                if (Mode != JudgeHelper.Mode.Main)
+                    jfb.Result = Entity.JudgeResult.SystemError;
+                jfb.Hint = String.Format(GetModeName(Mode) + "使用空间 {0}KiB，超出了题目规定空间{1}KiB", jfb.MemoryUsage, memory);
+                Feedback(jfb);
+                JudgeFeedBack = jfb;
+                return false;
+            }
+            if (Mode == JudgeHelper.Mode.Spj)
+                jfb.Hint = File.ReadAllText(JudgeService.TempPath + @"\" + id + @"\Spj.out");
+            JudgeFeedBack = jfb;
+            return true;
         }
 
-        public static void Validate()
-        { 
-        
+        public static void Validate(int id, int ExitCode, JudgeFeedback jfb)
+        {
+            jfb.Result = (Entity.JudgeResult)ExitCode;
+            Feedback(jfb);
         }
 
         private static string GetFileHash(int ID)
@@ -206,10 +287,6 @@ namespace CodeComb.Service
             }
         }
 
-        /// <summary>
-        /// 下载测试数据
-        /// </summary>
-        /// <param name="ID"></param>
         public static void DownloadFile(int ID)
         {
             var task = JudgeService.hubJudge.Invoke<UploadTask>("GetTestCase", 1);
@@ -226,5 +303,17 @@ namespace CodeComb.Service
         }
 
         public enum Mode {Main, Spj, Range, Std};
+
+        public static string GetModeName(Mode mode)
+        {
+            switch (mode)
+            {
+                case Mode.Main: return "选手程序";
+                case Mode.Range: return "范围校验器";
+                case Mode.Spj: return "特殊比较器";
+                case Mode.Std: return "标程";
+                default: return "";
+            }
+        }
     }
 }
