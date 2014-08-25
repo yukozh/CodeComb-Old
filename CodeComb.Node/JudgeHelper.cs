@@ -28,7 +28,7 @@ namespace CodeComb.Node
         };
         public static string[] CompileArgs = 
         { 
-            "g++ -O2 -o {Name}.exe -DONLINE_JUDGE -lm --static --std=c99 {Name}.c", 
+            "gcc -O2 -o {Name}.exe -DONLINE_JUDGE -lm --static --std=c99 {Name}.c", 
             "g++ -O2 -o {Name}.exe -DONLINE_JUDGE -lm --static --std=c++98 {Name}.cpp", 
             "g++ -O2 -o {Name}.exe -DONLINE_JUDGE -lm --static --std=c++11 {Name}.cpp", 
             "javac {Name}.java", 
@@ -82,7 +82,7 @@ namespace CodeComb.Node
             }
             else
             {
-                File.Copy(Program.LibPath + @"\CodeComb.Spj.exe", Program.TempPath + @"\" + jt.ID + @"\Spj.exe", true);
+                File.Copy(Program.LibPath + @"\CodeComb.Validator.exe", Program.TempPath + @"\" + jt.ID + @"\Spj.exe", true);
             }
 
             //准备输入数据
@@ -219,7 +219,7 @@ namespace CodeComb.Node
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.WorkingDirectory = Program.TempPath + @"\" + id;
             p.Start();
-            p.StandardInput.WriteLine(CompileArgs[language_id].Replace("{Name}", Mode.ToString()));
+            p.StandardInput.WriteLine(ExcuteArgs[language_id].Replace("{Name}", Mode.ToString()));
             p.StandardInput.WriteLine("");
             p.StandardInput.WriteLine(Mode.ToString() + ".out");
             p.StandardInput.WriteLine("");
