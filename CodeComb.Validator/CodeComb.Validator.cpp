@@ -43,10 +43,13 @@ char* SkipBlank(char* p);
 //Functions for Judge()
 int Judge();
 
-int _tmain(int argc, char* argv[], char* envp[])
+int main(int argc, char* argv[], char* envp[])
 {
 	if (argc != 4)
+	{
+		cerr << "Missing arguments." << endl;
 		return -1;
+	}
 	SECURITY_ATTRIBUTES sa;
 	ZeroMemory(&sa, sizeof(sa));
 	sa.nLength = sizeof(SECURITY_ATTRIBUTES);
@@ -71,30 +74,27 @@ int WA()
 	char *StdPtrT = max(StdData, StdPtr - 10), *OutPtrT = max(OutData, OutPtr - 10);
 	int i;
 	bool flag = false;
-	cout << "Cena+ Local Judge Result" << endl;
-	cout << "========================" << endl;
-	cout << "Line: " << CountLine << "" << endl;
-	cout << "Answer:" << endl;
+	wcout << "<p>第<span style='color:red'>" << CountLine << "</span>行与答案输出不匹配</p>" << endl;
+	wcout << "<p>答案输出：</p><pre>" << endl;
 	if (StdPtrT != StdData)
-		cout << "...";
+		wcout << "...";
 	for (; StdPtrT != StdPtr; ++StdPtrT)
-		cout << *StdPtrT;
+		wcout << *StdPtrT;
 	for (i = 0; i < 10 && *StdPtrT != '\0'; ++i, ++StdPtrT)
-		cout << *StdPtrT;
+		wcout << *StdPtrT;
 	if (*StdPtrT != '\0')
-		cout << "...";
-	cout << endl;
-	cout << "========================" << endl;
-	cout << "Yours: " << endl;
+		wcout << "...";
+	wcout << "</pre>" << endl;
+	wcout << "<p>选手输出:</p><pre> " << endl;
 	if (OutPtrT != OutData)
-		cout << "...";
+		wcout << "...";
 	for (; OutPtrT != OutPtr; ++OutPtrT)
-		cout << *OutPtrT;
+		wcout << *OutPtrT;
 	for (i = 0; i < 10 && *OutPtrT != '\0'; ++i, ++OutPtrT)
-		cout << *OutPtrT;
+		wcout << *OutPtrT;
 	if (*OutPtrT != '\0')
-		cout << "...";
-	cout << endl;
+		wcout << "...";
+	wcout << "</pre>" << endl;
 	return WA_CODE;
 }
 

@@ -29,7 +29,7 @@ namespace CodeComb.Web.SignalR
                 return null;
             var upload = (from tc in DbContext.TestCases
                           where tc.ID == ID
-                          let hasoutput = tc.Output.Length == 0 ? true : false
+                          let hasoutput = tc.Output.Length == 0 ? false : true
                           select new UploadTask
                           {
                               ID = ID,

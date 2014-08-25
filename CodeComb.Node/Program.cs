@@ -14,10 +14,11 @@ namespace CodeComb.Node
     {
         public static HubConnection HubConnection;
         public static IHubProxy hubJudge;
-        public static string Username, Password, TempPath, DataPath, LibPath;
+        public static string Username, Password, TempPath, DataPath, LibPath, Host;
         static Program()
         {
-            HubConnection = new HubConnection(ConfigurationManager.AppSettings["Host"]);
+            Host = ConfigurationManager.AppSettings["Host"];
+            HubConnection = new HubConnection(Host);
             hubJudge = HubConnection.CreateHubProxy("judgeHub");
             Username = ConfigurationManager.AppSettings["Username"];
             Password = ConfigurationManager.AppSettings["Password"];
@@ -25,29 +26,58 @@ namespace CodeComb.Node
             DataPath = ConfigurationManager.AppSettings["DataPath"];
             LibPath = ConfigurationManager.AppSettings["LibPath"];
         }
+        static void KeepAlive()
+         {
+             while (true)
+             {
+                 System.Threading.Thread.Sleep(0);
+             }
+         }
         static void Main(string[] args)
         {
+            Console.WriteLine(@"
+   *****               **                 *****                       **     
+ *******               **               *******                       **     
+ **    *               **               **    *                       **     
+**         ****    *** **    ****      **         ****   ** *** ***   ** *** 
+**        ******   ******   ******     **        ******  ***********  *******
+**       **   **  **   **  **   **     **       **   **  **  ***  **  **   **
+**       **   **  **   **  *******     **       **   **  **  ***  **  **   **
+***    * **   **  **   **  **          ***    * **   **  **  ***  **  **   **
+ ******* ******   *******  ******       ******* ******   **  ***  **  ****** 
+   *****  ****     *** **   *****         *****  ****    **  ***  **  ** *** 
+
+
+
+Code Comb Node");
+            Console.WriteLine("Host: {0}", Host);
+            Console.WriteLine("User: {0}", Username);
+
             hubJudge.On<JudgeTask>("Judge", jt =>
             {
-                JudgeHelper.Judge(jt);
+                System.Threading.Thread thread = new System.Threading.Thread(() => 
+                {
+                    JudgeHelper.Judge(jt);
+                });
+                thread.Start();
             });
-            hubJudge.On<JudgeTask>("onMessage", msg =>
+            hubJudge.On<string>("onMessage", msg =>
             {
-                Console.WriteLine(msg);
+                Console.WriteLine("{0} {1}", DateTime.Now.ToString("HH:mm:ss"), msg);
             });
+            HubConnection.TraceLevel = TraceLevels.All;
+            HubConnection.TraceWriter = Console.Out;
             HubConnection.Start().Wait();
-            HubConnection.Reconnected += HubConnection_Reconnected;
+            HubConnection.ConnectionSlow += HubConnection_ConnectionSlow;
             hubJudge.Invoke("Auth", Username, Password).Wait();
-            string cmd;
-            while (true)
-            {
-                cmd = Console.ReadLine();
-            }
+            System.Threading.Thread t = new System.Threading.Thread(KeepAlive);
+            t.Start();
         }
 
-        static void HubConnection_Reconnected()
+        static void HubConnection_ConnectionSlow()
         {
-            hubJudge.Invoke("Auth", Username, Password).Wait();
+            Console.WriteLine("{0} Connection slow", DateTime.Now.ToString("HH:mm:ss"));
+            HubConnection.Start();
         }
     }
 }

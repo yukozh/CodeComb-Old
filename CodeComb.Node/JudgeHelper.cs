@@ -52,22 +52,33 @@ namespace CodeComb.Node
             "{Name}.exe", 
             "{Name}.exe" 
         };
+        public const string SpjArgs = " output.txt Main.out input.txt";
+        public static void CheckPath(int id)
+        {
+            if (!Directory.Exists(Program.TempPath + @"\" + id + @"\"))
+                Directory.CreateDirectory(Program.TempPath + @"\" + id + @"\");
+        }
 
         public static void MakeCodeFile(int id, string code, int language_id, Mode mode)
         {
-            File.WriteAllText(Program.TempPath + @"\" + id + @"\" + FileNames[language_id].Replace("{Name}", mode.ToString()), code);
+            if (!File.Exists(Program.TempPath + @"\" + id + @"\" + FileNames[language_id].Replace("{Name}", mode.ToString())))
+                File.WriteAllText(Program.TempPath + @"\" + id + @"\" + FileNames[language_id].Replace("{Name}", mode.ToString()), code);
         }
 
         public static void Judge(JudgeTask jt)
         {
-            if (!Directory.Exists(Program.TempPath + @"\" + jt.ID))
-                Directory.CreateDirectory(Program.TempPath + @"\" + jt.ID);
+            CheckPath(jt.ID);
+
+            if (!FileExisted(jt.DataID))
+            {
+                DownloadFile(jt.DataID);
+            }
 
             //
             MakeCodeFile(jt.ID, jt.Code, (int)jt.CodeLanguage, Mode.Main);
 
             //编译选手程序
-            if (!Compile(jt.ID, (int)jt.CodeLanguage, jt.Code, Mode.Main))
+            if (!Compile(jt.ID, (int)jt.CodeLanguage, Mode.Main))
                 return;
 
             MakeCodeFile(jt.ID, jt.SpecialJudgeCode, (int)jt.SpecialJudgeCodeLanguage, Mode.Main);
@@ -75,7 +86,7 @@ namespace CodeComb.Node
             //编译SPJ
             if (!string.IsNullOrEmpty(jt.SpecialJudgeCode))
             {
-                if (!Compile(jt.ID, (int)jt.SpecialJudgeCodeLanguage, jt.SpecialJudgeCode, Mode.Spj))
+                if (!Compile(jt.ID, (int)jt.SpecialJudgeCodeLanguage, Mode.Spj))
                 {
                     return;
                 }
@@ -88,7 +99,7 @@ namespace CodeComb.Node
             //准备输入数据
             File.Copy(Program.DataPath + @"\" + jt.DataID + @"\input.txt", Program.TempPath + @"\" + jt.ID + @"\input.txt", true);
 
-            int ExitCode;
+            long ExitCode;
             JudgeFeedback jfb;
             //运行选手程序
             if (!Run(jt.ID, (int)jt.CodeLanguage, jt.TimeLimit, jt.MemoryLimit, Mode.Main, out ExitCode, out jfb))
@@ -112,7 +123,7 @@ namespace CodeComb.Node
             Validate(jt.ID, ExitCode, jfb);
         }
 
-        public static bool Compile(int id, int language_id, string code, Mode Mode)
+        public static bool Compile(int id, int language_id, Mode Mode)
         {
             JudgeFeedback jfb = new JudgeFeedback()
             {
@@ -200,9 +211,8 @@ namespace CodeComb.Node
             }
         }
 
-        public static bool Run(int id, int language_id,int time,int memory, Mode Mode, out int ExitCode, out JudgeFeedback JudgeFeedBack)
+        public static bool Run(int id, int language_id,int time,int memory, Mode Mode, out long ExitCode, out JudgeFeedback JudgeFeedBack)
         {
-            Directory.Delete(Program.TempPath + @"\" + id, true);
             JudgeFeedback jfb = new JudgeFeedback()
             {
                 ID = id,
@@ -219,8 +229,14 @@ namespace CodeComb.Node
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.WorkingDirectory = Program.TempPath + @"\" + id;
             p.Start();
-            p.StandardInput.WriteLine(ExcuteArgs[language_id].Replace("{Name}", Mode.ToString()));
-            p.StandardInput.WriteLine("");
+            if (Mode == JudgeHelper.Mode.Spj)
+                p.StandardInput.WriteLine(ExcuteArgs[language_id].Replace("{Name}", Mode.ToString()) + SpjArgs);
+            else
+                p.StandardInput.WriteLine(ExcuteArgs[language_id].Replace("{Name}", Mode.ToString()));
+            if(Mode == JudgeHelper.Mode.Main || Mode == JudgeHelper.Mode.Range || Mode == JudgeHelper.Mode.Std)
+                p.StandardInput.WriteLine("input.txt");
+            else if (Mode == JudgeHelper.Mode.Spj)
+                p.StandardInput.WriteLine("");
             p.StandardInput.WriteLine(Mode.ToString() + ".out");
             p.StandardInput.WriteLine("");
             p.StandardInput.WriteLine("");
@@ -232,10 +248,13 @@ namespace CodeComb.Node
             var ResultAsString = p.StandardOutput.ReadToEnd();
             JavaScriptSerializer jss = new JavaScriptSerializer();
             var Result = jss.Deserialize<Result>(ResultAsString);
-            jfb.TimeUsage = Result.TimeUsage;
-            if ((Entity.Language)language_id == Entity.Language.Java)
-                jfb.MemoryUsage = Result.WorkingSet;
-            else jfb.MemoryUsage = Result.PagedSize;
+            if (Mode == JudgeHelper.Mode.Main)
+            { 
+                jfb.TimeUsage = Result.TimeUsage;
+                if ((Entity.Language)language_id == Entity.Language.Java)
+                    jfb.MemoryUsage = Result.WorkingSet;
+                else jfb.MemoryUsage = Result.PagedSize;
+            }
             ExitCode = Result.ExitCode;
             if (!(Result.ExitCode == 0 || Result.ExitCode == 1 && (Entity.Language)language_id == Entity.Language.C || Mode== JudgeHelper.Mode.Spj && Result.ExitCode >=0 && Result.ExitCode <= 3 || Mode == JudgeHelper.Mode.Range && Result.ExitCode >=-1 && Result.ExitCode <=0))
             {
@@ -247,7 +266,7 @@ namespace CodeComb.Node
                 JudgeFeedBack = jfb;
                 return false;
             }
-            if (jfb.TimeUsage > time)
+            if (Result.TimeUsage > time )
             {
                 jfb.Result = Entity.JudgeResult.TimeLimitExceeded;
                 if(Mode != JudgeHelper.Mode.Main)
@@ -257,7 +276,7 @@ namespace CodeComb.Node
                 JudgeFeedBack = jfb;
                 return false;
             }
-            if (jfb.MemoryUsage > memory)
+            if (jfb.MemoryUsage > memory && Mode == JudgeHelper.Mode.Main)
             {
                 jfb.Result = Entity.JudgeResult.MemoryLimitExceeded;
                 if (Mode != JudgeHelper.Mode.Main)
@@ -273,7 +292,7 @@ namespace CodeComb.Node
             return true;
         }
 
-        public static void Validate(int id, int ExitCode, JudgeFeedback jfb)
+        public static void Validate(int id, long ExitCode, JudgeFeedback jfb)
         {
             jfb.Result = (Entity.JudgeResult)ExitCode;
             Feedback(jfb);
@@ -314,6 +333,8 @@ namespace CodeComb.Node
             var task = Program.hubJudge.Invoke<UploadTask>("GetTestCase", ID);
             task.Wait();
             var result = task.Result;
+            if (!Directory.Exists(Program.DataPath + "\\" + result.ID))
+                Directory.CreateDirectory(Program.DataPath + "\\" + result.ID);
             File.WriteAllText(Program.DataPath + "\\" + result.ID + "\\input.txt", result.Input);
             if (result.HasOutput)
                 File.WriteAllText(Program.DataPath + "\\" + result.ID + "\\output.txt", result.Output);

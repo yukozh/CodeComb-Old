@@ -11,6 +11,6 @@ namespace CodeComb.Judge.Models
         public int TimeUsage { get; set; }
         public int PagedSize { get; set; }
         public int WorkingSet { get; set; }
-        public int ExitCode { get; set; }
+        public long ExitCode { get; set; }
     }
 }
