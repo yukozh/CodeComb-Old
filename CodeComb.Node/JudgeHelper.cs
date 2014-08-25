@@ -9,12 +9,23 @@ using System.Web.Security;
 using System.Diagnostics;
 using CodeComb.Judge.Models;
 
-
-namespace CodeComb.Service
+namespace CodeComb.Node
 {
     public static class JudgeHelper
     {
         public const int CompileTimeLimit = 4000;
+        public static string[] FileNames = 
+        { 
+            "{Name}.c",
+            "{Name}.cpp",
+            "{Name}.cpp",
+            "{Name}.java",
+            "{Name}.py",
+            "{Name}.py",
+            "{Name}.rb",
+            "{Name}.cs",
+            "{Name}.vb"
+        };
         public static string[] CompileArgs = 
         { 
             "g++ -O2 -o {Name}.exe -DONLINE_JUDGE -lm --static --std=c99 {Name}.c", 
@@ -42,14 +53,24 @@ namespace CodeComb.Service
             "{Name}.exe" 
         };
 
+        public static void MakeCodeFile(int id, string code, int language_id, Mode mode)
+        {
+            File.WriteAllText(Program.TempPath + @"\" + id + @"\" + FileNames[language_id].Replace("{Name}", mode.ToString()), code);
+        }
+
         public static void Judge(JudgeTask jt)
         {
-            if (!Directory.Exists(JudgeService.TempPath + @"\" + jt.ID))
-                Directory.CreateDirectory(JudgeService.TempPath + @"\" + jt.ID);
+            if (!Directory.Exists(Program.TempPath + @"\" + jt.ID))
+                Directory.CreateDirectory(Program.TempPath + @"\" + jt.ID);
+
+            //
+            MakeCodeFile(jt.ID, jt.Code, (int)jt.CodeLanguage, Mode.Main);
 
             //编译选手程序
             if (!Compile(jt.ID, (int)jt.CodeLanguage, jt.Code, Mode.Main))
                 return;
+
+            MakeCodeFile(jt.ID, jt.SpecialJudgeCode, (int)jt.SpecialJudgeCodeLanguage, Mode.Main);
 
             //编译SPJ
             if (!string.IsNullOrEmpty(jt.SpecialJudgeCode))
@@ -61,11 +82,11 @@ namespace CodeComb.Service
             }
             else
             {
-                File.Copy(JudgeService.LibPath + @"\CodeComb.Spj.exe", JudgeService.TempPath + @"\" + jt.ID + @"\Spj.exe", true);
+                File.Copy(Program.LibPath + @"\CodeComb.Spj.exe", Program.TempPath + @"\" + jt.ID + @"\Spj.exe", true);
             }
 
             //准备输入数据
-            File.Copy(JudgeService.DataPath + @"\" + jt.DataID + @"\input.txt", JudgeService.TempPath + @"\" + jt.ID + @"\input.txt", true);
+            File.Copy(Program.DataPath + @"\" + jt.DataID + @"\input.txt", Program.TempPath + @"\" + jt.ID + @"\input.txt", true);
 
             int ExitCode;
             JudgeFeedback jfb;
@@ -74,7 +95,7 @@ namespace CodeComb.Service
                 return;
 
             //准备输出数据
-            File.Copy(JudgeService.DataPath + @"\" + jt.DataID + @"\output.txt", JudgeService.TempPath + @"\" + jt.ID + @"\output.txt", true);
+            File.Copy(Program.DataPath + @"\" + jt.DataID + @"\output.txt", Program.TempPath + @"\" + jt.ID + @"\output.txt", true);
 
             if (!string.IsNullOrEmpty(jt.SpecialJudgeCode))
             {
@@ -103,13 +124,13 @@ namespace CodeComb.Service
             };
             if(CompileArgs[language_id] == "") return true;
             Process p = new Process();
-            p.StartInfo.FileName = JudgeService.LibPath + @"\CodeComb.Core.exe";
+            p.StartInfo.FileName = Program.LibPath + @"\CodeComb.Core.exe";
             p.StartInfo.CreateNoWindow = true;
             p.StartInfo.RedirectStandardInput = true;
             p.StartInfo.RedirectStandardError = true;
             p.StartInfo.RedirectStandardOutput = true;
             p.StartInfo.UseShellExecute = false;
-            p.StartInfo.WorkingDirectory = JudgeService.TempPath + @"\" + id;
+            p.StartInfo.WorkingDirectory = Program.TempPath + @"\" + id;
             p.Start();
             p.StandardInput.WriteLine(CompileArgs[language_id].Replace("{Name}", Mode.ToString()));
             p.StandardInput.WriteLine("");
@@ -152,7 +173,7 @@ namespace CodeComb.Service
             {
                 if (Result.ExitCode != 0)
                 {
-                    jfb.Hint = File.ReadAllText(JudgeService.TempPath + @"\" + jfb.ID + @"\compile.out") + File.ReadAllText(JudgeService.TempPath + @"\" + jfb.ID + @"\compile.err");
+                    jfb.Hint = File.ReadAllText(Program.TempPath + @"\" + jfb.ID + @"\compile.out") + File.ReadAllText(Program.TempPath + @"\" + jfb.ID + @"\compile.err");
                     if (Mode == JudgeHelper.Mode.Range)
                     {
                         jfb.Hint = "数据范围校验器编译失败\n" + jfb.Hint;
@@ -181,6 +202,7 @@ namespace CodeComb.Service
 
         public static bool Run(int id, int language_id,int time,int memory, Mode Mode, out int ExitCode, out JudgeFeedback JudgeFeedBack)
         {
+            Directory.Delete(Program.TempPath + @"\" + id, true);
             JudgeFeedback jfb = new JudgeFeedback()
             {
                 ID = id,
@@ -189,13 +211,13 @@ namespace CodeComb.Service
                 Success = false
             };
             Process p = new Process();
-            p.StartInfo.FileName = JudgeService.LibPath + @"\CodeComb.Core.exe";
+            p.StartInfo.FileName = Program.LibPath + @"\CodeComb.Core.exe";
             p.StartInfo.CreateNoWindow = true;
             p.StartInfo.RedirectStandardInput = true;
             p.StartInfo.RedirectStandardError = true;
             p.StartInfo.RedirectStandardOutput = true;
             p.StartInfo.UseShellExecute = false;
-            p.StartInfo.WorkingDirectory = JudgeService.TempPath + @"\" + id;
+            p.StartInfo.WorkingDirectory = Program.TempPath + @"\" + id;
             p.Start();
             p.StandardInput.WriteLine(CompileArgs[language_id].Replace("{Name}", Mode.ToString()));
             p.StandardInput.WriteLine("");
@@ -246,7 +268,7 @@ namespace CodeComb.Service
                 return false;
             }
             if (Mode == JudgeHelper.Mode.Spj)
-                jfb.Hint = File.ReadAllText(JudgeService.TempPath + @"\" + id + @"\Spj.out");
+                jfb.Hint = File.ReadAllText(Program.TempPath + @"\" + id + @"\Spj.out");
             JudgeFeedBack = jfb;
             return true;
         }
@@ -259,7 +281,7 @@ namespace CodeComb.Service
 
         private static string GetFileHash(int ID)
         {
-            var task = JudgeService.hubJudge.Invoke<string>("GetTestCaseHash", ID);
+            var task = Program.hubJudge.Invoke<string>("GetTestCaseHash", ID);
             task.Wait();
             var result = task.Result;
             return result;
@@ -272,10 +294,10 @@ namespace CodeComb.Service
 
         public static bool FileExisted(int ID)
         {
-            if (File.Exists(JudgeService.DataPath + "\\" + ID + "\\input.txt") && File.Exists(JudgeService.DataPath + "\\" + ID + "\\output.txt"))
+            if (File.Exists(Program.DataPath + "\\" + ID + "\\input.txt") && File.Exists(Program.DataPath + "\\" + ID + "\\output.txt"))
             {
                 var hash_server = GetFileHash(ID);
-                var hash_local = SHA1(File.ReadAllText(JudgeService.DataPath + "\\" + ID + "\\input.txt"));
+                var hash_local = SHA1(File.ReadAllText(Program.DataPath + "\\" + ID + "\\input.txt"));
                 if (hash_local == hash_server)
                     return true;
                 else
@@ -289,17 +311,17 @@ namespace CodeComb.Service
 
         public static void DownloadFile(int ID)
         {
-            var task = JudgeService.hubJudge.Invoke<UploadTask>("GetTestCase", 1);
+            var task = Program.hubJudge.Invoke<UploadTask>("GetTestCase", ID);
             task.Wait();
             var result = task.Result;
-            File.WriteAllText(JudgeService.DataPath + "\\" + result.ID + "\\input.txt", result.Input);
+            File.WriteAllText(Program.DataPath + "\\" + result.ID + "\\input.txt", result.Input);
             if (result.HasOutput)
-                File.WriteAllText(JudgeService.DataPath + "\\" + result.ID + "\\output.txt", result.Output);
+                File.WriteAllText(Program.DataPath + "\\" + result.ID + "\\output.txt", result.Output);
         }
 
         public static void Feedback(JudgeFeedback jfb)
         {
-            JudgeService.hubJudge.Invoke("JudgeFeedBack", jfb);
+            Program.hubJudge.Invoke("JudgeFeedBack", jfb);
         }
 
         public enum Mode {Main, Spj, Range, Std};

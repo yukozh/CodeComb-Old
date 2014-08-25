@@ -254,6 +254,17 @@ namespace CodeComb.Web.Controllers
                 });
             }
             DbContext.SaveChanges();
+            foreach (var jt in status.JudgeTasks)
+            {
+                try
+                {
+                    var group = SignalR.JudgeHub.Online[Helpers.String.RandomInt(0, SignalR.JudgeHub.Online.Count - 1)].Username;
+                    SignalR.JudgeHub.context.Clients.Group(group).Judge(new Judge.Models.JudgeTask(jt));
+                    jt.Result = Entity.JudgeResult.Running;
+                    DbContext.SaveChanges();
+                }
+                catch { }
+            }
             SignalR.CodeCombHub.context.Clients.All.onStatusCreated(new Models.View.Status(status));//推送新状态
             return Content(status.ID.ToString());
         }

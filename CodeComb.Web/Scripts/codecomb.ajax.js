@@ -203,8 +203,7 @@ var StatusDisplay = ["Accepted", "Presentation Error", "Wrong Answer", "Output L
 
 function BuildStatus(status)
 {
-    var html = '<a id=s_' + status.ID + ' class="status-item" href="/Status/' + status.ID + '">'
-                  + '<div class="status-item-wrap">'
+    var html = '<div class="status-item-wrap">'
                   + '<div class="status-face">' + status.Gravatar + '</div>'
                   + '<div class="status-cont"><div class="status-name"><h2>' + status.Nickname + '</h2></div></div>'
                   + '<div class="status-info">' + status.ProblemTitle + ' @' + status.TimeTip + '</div>'
@@ -223,12 +222,12 @@ function BuildStatus(status)
         if (status.Statistics[i] > 0)
             html += '<div class="status-point-item status-point-' + StatusCss[i] + '" style="width:' + p + '%"><div class="status-point-desc">' + StatusDisplay[i] + (status.PointCount > 1 ? ' : ' + status.Statistics[i] : "") + '</div></div>';
     }
-    html += '</div></a>';
+    html += '</div>';
     if ($("#s_" + status.ID).length > 0) {
         $("#s_" + status.ID).html(html);
     }
     else {
-        $("#lstStatuses").prepend(html);
+        $("#lstStatuses").prepend('<a id=s_' + status.ID + ' class="status-item" href="/Status/' + status.ID + '">' + html + '</a>');
     }
 }
 function BuildStatusDetail(status) {

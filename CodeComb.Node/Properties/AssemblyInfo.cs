@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的常规信息通过以下
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("CodeComb.Service")]
+[assembly: AssemblyTitle("CodeComb.Node")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CodeComb.Service")]
+[assembly: AssemblyProduct("CodeComb.Node")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
-[assembly: Guid("5821a463-a120-48a0-b357-e689b46fef33")]
+[assembly: Guid("b41cbab2-94b5-4670-bcf4-b163a9189ce9")]
 
 // 程序集的版本信息由下面四个值组成: 
 //

@@ -241,6 +241,7 @@
     <Compile Include="Models\View\TestCase.cs" />
     <Compile Include="Models\View\Topic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SignalR\Client.cs" />
     <Compile Include="SignalR\CodeCombHub.cs" />
     <Compile Include="SignalR\JudgeHub.cs" />
     <Compile Include="Startup.cs" />
@@ -593,6 +594,10 @@
     <ProjectReference Include="..\CodeComb.Entity\CodeComb.Entity.csproj">
       <Project>{f40f7941-f88a-4ce4-adf3-e5470d280ee8}</Project>
       <Name>CodeComb.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CodeComb.Judge\CodeComb.Judge.csproj">
+      <Project>{d41692bb-5e4f-4c1d-ac40-b530d8e17bef}</Project>
+      <Name>CodeComb.Judge</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

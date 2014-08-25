@@ -1,49 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Linq;
-using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 using CodeComb.Judge.Models;
 using Microsoft.AspNet.SignalR.Client;
+using System.Configuration;
 
-namespace CodeComb.Service
+namespace CodeComb.Node
 {
-    partial class JudgeService : ServiceBase
+    static class Program
     {
         public static HubConnection HubConnection;
         public static IHubProxy hubJudge;
         public static string Username, Password, TempPath, DataPath, LibPath;
-
-        public JudgeService()
+        static Program()
         {
-            InitializeComponent();
             HubConnection = new HubConnection(ConfigurationManager.AppSettings["Host"]);
-            hubJudge = HubConnection.CreateHubProxy("Judge");
+            hubJudge = HubConnection.CreateHubProxy("judgeHub");
             Username = ConfigurationManager.AppSettings["Username"];
             Password = ConfigurationManager.AppSettings["Password"];
             TempPath = ConfigurationManager.AppSettings["TempPath"];
             DataPath = ConfigurationManager.AppSettings["DataPath"];
             LibPath = ConfigurationManager.AppSettings["LibPath"];
         }
-
-        protected override void OnStart(string[] args)
+        static void Main(string[] args)
         {
-            hubJudge.On<JudgeTask>("Judge", jt => 
-            { 
-                
+            hubJudge.On<JudgeTask>("Judge", jt =>
+            {
+                JudgeHelper.Judge(jt);
+            });
+            hubJudge.On<JudgeTask>("onMessage", msg =>
+            {
+                Console.WriteLine(msg);
             });
             HubConnection.Start().Wait();
+            HubConnection.Reconnected += HubConnection_Reconnected;
             hubJudge.Invoke("Auth", Username, Password).Wait();
+            string cmd;
+            while (true)
+            {
+                cmd = Console.ReadLine();
+            }
         }
 
-        protected override void OnStop()
+        static void HubConnection_Reconnected()
         {
-            // TODO:  在此处添加代码以执行停止服务所需的关闭操作。
+            hubJudge.Invoke("Auth", Username, Password).Wait();
         }
     }
 }
