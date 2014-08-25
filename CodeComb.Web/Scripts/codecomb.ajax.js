@@ -140,7 +140,7 @@ function LoadStatuses() {
                 $("#lstStatuses").append('<p>没有符合条件的结果</p>');
             }
             if (statuses.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
-            for (var i = statuses.length - 1; i >= 0; i--) {
+            for (var i in statuses) {
                 BuildStatus(statuses[i]);
             }
             lock = false;
@@ -201,8 +201,7 @@ function LoadProblems()
 var StatusCss = ["ac", "pe", "wa", "ole", "tle", "mle", "rte", "ce", "se", "hacked", "running", "pending","hidden"];
 var StatusDisplay = ["Accepted", "Presentation Error", "Wrong Answer", "Output Limit Exceeded", "Time Limit Exceeded", "Memory Limit Exceeded", "Runtime Error", "Compile Error", "System Error", "Hacked", "Running", "Pending","Hidden"];
 
-function BuildStatus(status)
-{
+function BuildStatus(status) {
     var html = '<div class="status-item-wrap">'
                   + '<div class="status-face">' + status.Gravatar + '</div>'
                   + '<div class="status-cont"><div class="status-name"><h2>' + status.Nickname + '</h2></div></div>'
@@ -212,8 +211,61 @@ function BuildStatus(status)
     var per = parseInt(100 / status.PointCount);
     var fill = 100 - per * (status.PointCount);
     var filled = false;
-    for (var i = 0; i < status.Statistics.length; i++)
-    {
+    for (var i = 0; i < status.Statistics.length; i++) {
+        var p = per * status.Statistics[i];
+        if (!filled && status.Statistics[i] > 0) {
+            p += fill;
+            filled = true;
+        }
+        if (status.Statistics[i] > 0)
+            html += '<div class="status-point-item status-point-' + StatusCss[i] + '" style="width:' + p + '%"><div class="status-point-desc">' + StatusDisplay[i] + (status.PointCount > 1 ? ' : ' + status.Statistics[i] : "") + '</div></div>';
+    }
+    html += '</div>';
+    if ($("#s_" + status.ID).length > 0) {
+        $("#s_" + status.ID).html(html);
+    }
+    else {
+        $("#lstStatuses").append('<a id=s_' + status.ID + ' class="status-item" href="/Status/' + status.ID + '">' + html + '</a>');
+    }
+}
+function BuildStatus(status) {
+    var html = '<div class="status-item-wrap">'
+                  + '<div class="status-face">' + status.Gravatar + '</div>'
+                  + '<div class="status-cont"><div class="status-name"><h2>' + status.Nickname + '</h2></div></div>'
+                  + '<div class="status-info">' + status.ProblemTitle + ' @' + status.TimeTip + '</div>'
+                  + '<div class="status-status">' + status.Result + (status.PointCount > 1 ? ' (' + status.Statistics[0] + '/' + status.PointCount + ')' : "") + '</div>'
+                  + '</div><div class="status-points">';
+    var per = parseInt(100 / status.PointCount);
+    var fill = 100 - per * (status.PointCount);
+    var filled = false;
+    for (var i = 0; i < status.Statistics.length; i++) {
+        var p = per * status.Statistics[i];
+        if (!filled && status.Statistics[i] > 0) {
+            p += fill;
+            filled = true;
+        }
+        if (status.Statistics[i] > 0)
+            html += '<div class="status-point-item status-point-' + StatusCss[i] + '" style="width:' + p + '%"><div class="status-point-desc">' + StatusDisplay[i] + (status.PointCount > 1 ? ' : ' + status.Statistics[i] : "") + '</div></div>';
+    }
+    html += '</div>';
+    if ($("#s_" + status.ID).length > 0) {
+        $("#s_" + status.ID).html(html);
+    }
+    else {
+        $("#lstStatuses").append('<a id=s_' + status.ID + ' class="status-item" href="/Status/' + status.ID + '">' + html + '</a>');
+    }
+}
+function BuildNewStatus(status) {
+    var html = '<div class="status-item-wrap">'
+                  + '<div class="status-face">' + status.Gravatar + '</div>'
+                  + '<div class="status-cont"><div class="status-name"><h2>' + status.Nickname + '</h2></div></div>'
+                  + '<div class="status-info">' + status.ProblemTitle + ' @' + status.TimeTip + '</div>'
+                  + '<div class="status-status">' + status.Result + (status.PointCount > 1 ? ' (' + status.Statistics[0] + '/' + status.PointCount + ')' : "") + '</div>'
+                  + '</div><div class="status-points">';
+    var per = parseInt(100 / status.PointCount);
+    var fill = 100 - per * (status.PointCount);
+    var filled = false;
+    for (var i = 0; i < status.Statistics.length; i++) {
         var p = per * status.Statistics[i];
         if (!filled && status.Statistics[i] > 0) {
             p += fill;

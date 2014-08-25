@@ -83,7 +83,7 @@ namespace CodeComb.Web.SignalR
                 jt.Status.ResultAsInt = jt.Status.JudgeTasks.Max(x => x.ResultAsInt);
                 DbContext.SaveChanges();
             }
-            SignalR.CodeCombHub.context.Clients.All.onStatusCreated(new Models.View.Status(jt.Status));//推送新状态
+            SignalR.CodeCombHub.context.Clients.All.onStatusChanged(new Models.View.Status(jt.Status));//推送新状态
         }
     }
 }

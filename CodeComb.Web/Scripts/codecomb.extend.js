@@ -1,6 +1,7 @@
 ﻿var IsPMOpened = false;
 var editor;
 var CurrentContactID = null;
+var RealTimeStatusID = null;
 
 function GetContacts()
 {
@@ -180,6 +181,23 @@ function EditTestCase(id)
     });
 }
 
+function GetDetails(id) {
+    $.getJSON("/Status/GetStatusDetails/"+id, {}, function (details) {
+        var html = "";
+        for (var i in details) {
+            html += '<h3><a href="javascript:void(0)" class="btnDetail" did="' + details[i].ID + '">#' + details[i].ID + ': <span class="status-text-' + StatusCss[details[i].Result] + '">' + StatusDisplay[details[i].Result] + '</span> (' + details[i].TimeUsage + 'ms, ' + details[i].MemoryUsage + 'KiB)</a></h3>';
+            html += '<div class="status-detail-main" style="display:none" id="d_' + details[i].ID + '"><blockquote>';
+            html += details[i].Hint;
+            html += '</blockquote></div></div>';
+        }
+        $("#lstDetails").html(html);
+        $(".btnDetail").unbind().click(function () {
+            var did = $(this).attr("did");
+            $("#d_" + did).toggle();
+        });
+    });
+}
+
 $(document).ready(function () {
     $("#btnAddContact").click(function () {
         var uid = $(this).attr("uid");
@@ -206,8 +224,27 @@ $(document).ready(function () {
                 BuildStatusDetail(status);
                 $("#MemoryUsage").html(status.MemoryUsage);
                 $("#TimeUsage").html(status.TimeUsage);
-                GetDetails();
+                GetDetails(status.ID);
             }
+        }
+        if (RealTimeStatusID != null)
+        {
+            if (RealTimeStatusID != status.ID) return;
+            var html_detail = "";
+            $.getJSON("/Status/GetStatusDetails/" + status.ID, {}, function (details) {
+                for (var i in details) {
+                    html_detail += '<p><a href="javascript:void(0)" class="btnDetail" did="' + details[i].ID + '">#' + details[i].ID + ': <span class="status-text-' + StatusCss[details[i].Result] + '">' + StatusDisplay[details[i].Result] + '</span> (' + details[i].TimeUsage + 'ms, ' + details[i].MemoryUsage + 'KiB)</a></p>';
+                    html_detail += '<div class="status-detail-main" style="display:none" id="d_' + details[i].ID + '"><blockquote>';
+                    html_detail += details[i].Hint;
+                    html_detail += '</blockquote></div></div>';
+                }
+                $.colorbox({ html: '<h3>评测结果</h3><p><span class=status-text-' + StatusCss[status.ResultAsInt] + '>' + status.Result + '</span> Time=' + status.TimeUsage + 'ms, Memory=' + status.MemoryUsage + 'KiB</p><div class="status-content" id="lstDetails">' + html_detail + '</div>', width: '700px' });
+                $(".btnDetail").unbind().click(function () {
+                    var did = $(this).attr("did");
+                    $("#d_" + did).toggle();
+                    $.colorbox.resize('Height:auto');
+                });
+            });
         }
     };
     CodeCombHub.client.onStatusCreated = function (status) {
@@ -216,7 +253,7 @@ $(document).ready(function () {
             if (contest_id != null && status.ContestID != contest_id) return;
             if (nickname != null && status._Nickname.indexOf(nickname) < 0) return;
             if (problem_id != null && problem_id != 0 && status.ProblemID != problem_id) return;
-            BuildStatus(status);
+            BuildNewStatus(status);
         }
     };
     CodeCombHub.client.onMessageReceived = function (msg) {
@@ -318,7 +355,7 @@ $(document).ready(function () {
             else if (data == "Wrong phase")
                 $.colorbox({ html: '<h3>评测结果</h3><p>本阶段不允许提交！</p>', width: '700px' });
             else
-                alert(data);
+                RealTimeStatusID = parseInt(data);
         });
     });
 

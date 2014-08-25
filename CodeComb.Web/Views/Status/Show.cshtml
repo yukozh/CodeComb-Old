@@ -28,24 +28,6 @@
 <script>
     $.getJSON("/Status/GetStatus/@Model.ID", {}, function (status) {
         BuildStatusDetail(status);
-        GetDetails();
+        GetDetails(status.ID);
     });
-    function GetDetails()
-    {
-        $.getJSON("/Status/GetStatusDetails/@Model.ID", {}, function (details) {
-            var html = "";
-            for (var i in details)
-            {
-                html += '<h3><a href="javascript:void(0)" class="btnDetail" did="' + details[i].ID + '">#' + details[i].ID + ': <span class="status-text-' + StatusCss[details[i].Result] + '">' + StatusDisplay[details[i].Result] + '</span> (' + details[i].TimeUsage + 'ms, ' + details[i].MemoryUsage + 'KiB)</a></h3>';
-                html += '<div class="status-detail-main" style="display:none" id="d_' + details[i].ID + '"><blockquote>';
-                html += details[i].Hint;
-                html += '</blockquote></div></div>';
-            }
-            $("#lstDetails").html(html);
-            $(".btnDetail").unbind().click(function () {
-                var did = $(this).attr("did");
-                $("#d_" + did).toggle();
-            });
-        });
-    }
 </script>

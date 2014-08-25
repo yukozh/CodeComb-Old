@@ -17,21 +17,23 @@ namespace CodeComb.Web.Models.View
             foreach (var item in _statistics)
                 statistics[item.Key] = item.Value;
             var _result = "";
-            if (status.Result == Entity.JudgeResult.Pending)
-                _result = "Pending";
-            else if (status.Result == Entity.JudgeResult.Running)
-                _result = "Running";
-            else if (status.Result == Entity.JudgeResult.Accepted)
-                _result = "Accepted";
-            else if (status.Result == Entity.JudgeResult.Hidden)
-                _result = "Hidden";
-            else
-                _result = "Not Accepted";
+            Result = status.Result.ToString();
+            //if (status.Result == Entity.JudgeResult.Pending)
+            //    _result = "Pending";
+            //else if (status.Result == Entity.JudgeResult.Running)
+            //    _result = "Running";
+            //else if (status.Result == Entity.JudgeResult.Accepted)
+            //    _result = "Accepted";
+            //else if (status.Result == Entity.JudgeResult.Hidden)
+            //    _result = "Hidden";
+            //else
+            //    _result = "Not Accepted";
             ID = status.ID;
             _Nickname = status.User.Nickname;
             Nickname = Helpers.ColorName.GetNicknameHtml(status.User.Nickname, status.User.Ratings.Sum(x => x.Credit) + 1500);
             TimeTip = Helpers.Time.ToTimeTip(status.Time);
-            Result = _result;
+            Result = Entity.CommonEnums.JudgeResultDisplay[status.ResultAsInt];
+            ResultAsInt = status.ResultAsInt;
             PointCount = status.JudgeTasks.Count;
             ProblemTitle = status.Problem.Title;
             ProblemID = status.ProblemID;
@@ -45,6 +47,7 @@ namespace CodeComb.Web.Models.View
         }
         public int ID { get; set; }
         public string Result { get; set; }
+        public int ResultAsInt { get; set; }
         public int PointCount { get; set; }
         public int ProblemID { get; set; }
         public int ContestID { get; set; }

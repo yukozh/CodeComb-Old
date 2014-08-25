@@ -74,27 +74,27 @@ int WA()
 	char *StdPtrT = max(StdData, StdPtr - 10), *OutPtrT = max(OutData, OutPtr - 10);
 	int i;
 	bool flag = false;
-	wcout << "<p>第<span style='color:red'>" << CountLine << "</span>行与答案输出不匹配</p>" << endl;
-	wcout << "<p>答案输出：</p><pre>" << endl;
+	cout << "<p>第<span style='color:red'>" << CountLine << "</span>行与答案输出不匹配</p>" << endl;
+	cout << "<p>答案输出：</p><pre>";
 	if (StdPtrT != StdData)
-		wcout << "...";
+		cout << "...";
 	for (; StdPtrT != StdPtr; ++StdPtrT)
-		wcout << *StdPtrT;
+		cout << *StdPtrT;
 	for (i = 0; i < 10 && *StdPtrT != '\0'; ++i, ++StdPtrT)
-		wcout << *StdPtrT;
+		cout << *StdPtrT;
 	if (*StdPtrT != '\0')
-		wcout << "...";
-	wcout << "</pre>" << endl;
-	wcout << "<p>选手输出:</p><pre> " << endl;
+		cout << "...";
+	cout << "</pre>" << endl;
+	cout << "<p>选手输出：</p><pre>";
 	if (OutPtrT != OutData)
-		wcout << "...";
+		cout << "...";
 	for (; OutPtrT != OutPtr; ++OutPtrT)
-		wcout << *OutPtrT;
+		cout << *OutPtrT;
 	for (i = 0; i < 10 && *OutPtrT != '\0'; ++i, ++OutPtrT)
-		wcout << *OutPtrT;
+		cout << *OutPtrT;
 	if (*OutPtrT != '\0')
-		wcout << "...";
-	wcout << "</pre>" << endl;
+		cout << "...";
+	cout << "</pre>" << endl;
 	return WA_CODE;
 }
 

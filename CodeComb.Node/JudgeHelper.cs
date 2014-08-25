@@ -100,9 +100,16 @@ namespace CodeComb.Node
             File.Copy(Program.DataPath + @"\" + jt.DataID + @"\input.txt", Program.TempPath + @"\" + jt.ID + @"\input.txt", true);
 
             long ExitCode;
-            JudgeFeedback jfb;
+            JudgeFeedback jfb = new JudgeFeedback()
+            {
+                ID = jt.ID,
+                MemoryUsage = 0,
+                TimeUsage = 0,
+                Success = false
+            };
+
             //运行选手程序
-            if (!Run(jt.ID, (int)jt.CodeLanguage, jt.TimeLimit, jt.MemoryLimit, Mode.Main, out ExitCode, out jfb))
+            if (!Run(jt.ID, (int)jt.CodeLanguage, jt.TimeLimit, jt.MemoryLimit, Mode.Main, out ExitCode, ref jfb))
                 return;
 
             //准备输出数据
@@ -110,12 +117,12 @@ namespace CodeComb.Node
 
             if (!string.IsNullOrEmpty(jt.SpecialJudgeCode))
             {
-                if (!Run(jt.ID, (int)jt.SpecialJudgeCodeLanguage, jt.TimeLimit, jt.MemoryLimit, Mode.Spj, out ExitCode, out jfb))
+                if (!Run(jt.ID, (int)jt.SpecialJudgeCodeLanguage, jt.TimeLimit, jt.MemoryLimit, Mode.Spj, out ExitCode, ref jfb))
                     return;
             }
             else
             {
-                if (!Run(jt.ID, (int)Entity.Language.Cxx, jt.TimeLimit, jt.MemoryLimit, Mode.Spj, out ExitCode, out jfb))
+                if (!Run(jt.ID, (int)Entity.Language.Cxx, jt.TimeLimit, jt.MemoryLimit, Mode.Spj, out ExitCode, ref jfb))
                     return;
             }
 
@@ -204,6 +211,7 @@ namespace CodeComb.Node
                     {
                         jfb.Hint = "选手程序编译失败\n" + jfb.Hint;
                     }
+                    jfb.Hint = System.Web.HttpUtility.HtmlEncode(jfb.Hint);
                     Feedback(jfb);
                     return false;
                 }
@@ -211,15 +219,8 @@ namespace CodeComb.Node
             }
         }
 
-        public static bool Run(int id, int language_id,int time,int memory, Mode Mode, out long ExitCode, out JudgeFeedback JudgeFeedBack)
+        public static bool Run(int id, int language_id,int time,int memory, Mode Mode, out long ExitCode, ref JudgeFeedback JudgeFeedBack)
         {
-            JudgeFeedback jfb = new JudgeFeedback()
-            {
-                ID = id,
-                MemoryUsage = 0,
-                TimeUsage = 0,
-                Success = false
-            };
             Process p = new Process();
             p.StartInfo.FileName = Program.LibPath + @"\CodeComb.Core.exe";
             p.StartInfo.CreateNoWindow = true;
@@ -248,47 +249,47 @@ namespace CodeComb.Node
             var ResultAsString = p.StandardOutput.ReadToEnd();
             JavaScriptSerializer jss = new JavaScriptSerializer();
             var Result = jss.Deserialize<Result>(ResultAsString);
+            var TimeUsage = 0;
+            var MemoryUsage = 0;
+            TimeUsage = Result.TimeUsage;
+            if ((Entity.Language)language_id == Entity.Language.Java)
+                MemoryUsage = Result.WorkingSet;
+            else MemoryUsage = Result.PagedSize;
             if (Mode == JudgeHelper.Mode.Main)
-            { 
-                jfb.TimeUsage = Result.TimeUsage;
-                if ((Entity.Language)language_id == Entity.Language.Java)
-                    jfb.MemoryUsage = Result.WorkingSet;
-                else jfb.MemoryUsage = Result.PagedSize;
+            {
+                JudgeFeedBack.TimeUsage = TimeUsage;
+                JudgeFeedBack.MemoryUsage = MemoryUsage;
             }
             ExitCode = Result.ExitCode;
             if (!(Result.ExitCode == 0 || Result.ExitCode == 1 && (Entity.Language)language_id == Entity.Language.C || Mode== JudgeHelper.Mode.Spj && Result.ExitCode >=0 && Result.ExitCode <= 3 || Mode == JudgeHelper.Mode.Range && Result.ExitCode >=-1 && Result.ExitCode <=0))
             {
-                jfb.Result = Entity.JudgeResult.RuntimeError;
+                JudgeFeedBack.Result = Entity.JudgeResult.RuntimeError;
                 if (Mode != JudgeHelper.Mode.Main)
-                    jfb.Result = Entity.JudgeResult.SystemError;
-                jfb.Hint = String.Format(GetModeName(Mode) + "运行时崩溃");
-                Feedback(jfb);
-                JudgeFeedBack = jfb;
+                    JudgeFeedBack.Result = Entity.JudgeResult.SystemError;
+                JudgeFeedBack.Hint = String.Format(GetModeName(Mode) + "运行时崩溃");
+                Feedback(JudgeFeedBack);
                 return false;
             }
-            if (Result.TimeUsage > time )
+            if (TimeUsage > time )
             {
-                jfb.Result = Entity.JudgeResult.TimeLimitExceeded;
+                JudgeFeedBack.Result = Entity.JudgeResult.TimeLimitExceeded;
                 if(Mode != JudgeHelper.Mode.Main)
-                    jfb.Result = Entity.JudgeResult.SystemError;
-                jfb.Hint = String.Format(GetModeName(Mode) + "用时 {0}ms，超出了题目规定时间{1}ms", jfb.TimeUsage, time);
-                Feedback(jfb);
-                JudgeFeedBack = jfb;
+                    JudgeFeedBack.Result = Entity.JudgeResult.SystemError;
+                JudgeFeedBack.Hint = String.Format(GetModeName(Mode) + "用时 {0}ms，超出了题目规定时间{1}ms", TimeUsage, time);
+                Feedback(JudgeFeedBack);
                 return false;
             }
-            if (jfb.MemoryUsage > memory && Mode == JudgeHelper.Mode.Main)
+            if (MemoryUsage > memory && Mode == JudgeHelper.Mode.Main)
             {
-                jfb.Result = Entity.JudgeResult.MemoryLimitExceeded;
+                JudgeFeedBack.Result = Entity.JudgeResult.MemoryLimitExceeded;
                 if (Mode != JudgeHelper.Mode.Main)
-                    jfb.Result = Entity.JudgeResult.SystemError;
-                jfb.Hint = String.Format(GetModeName(Mode) + "使用空间 {0}KiB，超出了题目规定空间{1}KiB", jfb.MemoryUsage, memory);
-                Feedback(jfb);
-                JudgeFeedBack = jfb;
+                    JudgeFeedBack.Result = Entity.JudgeResult.SystemError;
+                JudgeFeedBack.Hint = String.Format(GetModeName(Mode) + "使用空间 {0}KiB，超出了题目规定空间{1}KiB", MemoryUsage, memory);
+                Feedback(JudgeFeedBack);
                 return false;
             }
             if (Mode == JudgeHelper.Mode.Spj)
-                jfb.Hint = File.ReadAllText(Program.TempPath + @"\" + id + @"\Spj.out");
-            JudgeFeedBack = jfb;
+                JudgeFeedBack.Hint = File.ReadAllText(Program.TempPath + @"\" + id + @"\Spj.out", Encoding.GetEncoding(936));
             return true;
         }
 
