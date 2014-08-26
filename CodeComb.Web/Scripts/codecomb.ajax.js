@@ -95,7 +95,9 @@ function LoadReplies() {
         }).complete(function () {
             // CKEditor高亮
             $('pre code').each(function (i, block) {
-                hljs.highlightBlock(block);
+                if (navigator.userAgent.indexOf("MSIE") == -1) {
+                    hljs.highlightBlock(block);
+                }
             });
         });
     }

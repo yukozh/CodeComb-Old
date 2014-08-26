@@ -385,7 +385,9 @@ $(document).ready(function () {
     });
 
     // 代码高亮插件初始化
-    hljs.initHighlightingOnLoad();
+    if (navigator.userAgent.indexOf("MSIE") == -1) {
+        hljs.initHighlightingOnLoad();
+    }
 
     // 窄页面左侧说明文字
     $('.profile-btn').mouseenter(function () {
