@@ -19,10 +19,15 @@
                                 <th style="width:35px;">AC</th>
                                 <th style="width:80px;">总罚时</th>
                             }
-                            else if (Model.Format == ContestFormat.OI || Model.Format == ContestFormat.OPJOI)
+                            else if (Model.Format == ContestFormat.OI)
                             {
                                 <th style="width:45px;">分数</th>
                                 <th style="width:55px;">耗时</th>
+                            }
+                            else if (Model.Format == ContestFormat.OPJOI)
+                            {
+                                <th style="width:45px;">分数</th>
+                                <th style="width:55px;">次数</th>
                             }
                             else if (Model.Format == ContestFormat.Codeforces || Model.Format == ContestFormat.TopCoder)
                             {

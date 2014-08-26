@@ -15,10 +15,67 @@ CWinApp theApp;
 
 using namespace std;
 
+void KillProcessTree(DWORD dwProcessID)
+{
+	PROCESSENTRY32 info;
+	info.dwSize = sizeof(PROCESSENTRY32);
+	//结束进程句柄
+	HANDLE hProcess = NULL;
+	DWORD dwParentPID = 0;
+	DWORD dwChildPID = 0;
+	HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, dwProcessID);
+	if (hProcessSnap == INVALID_HANDLE_VALUE)
+	{
+		return;
+	}
+	// 遍历进程快照，轮流显示每个进程的信息
+	BOOL bMore = Process32First(hProcessSnap, &info);
+
+
+	while (bMore != FALSE)
+	{
+		// 如果找个父进程句柄是需要关闭的ID，就已经完成查找
+		if (dwProcessID == info.th32ParentProcessID)
+		{
+			dwParentPID = info.th32ParentProcessID;
+			dwChildPID = info.th32ProcessID;
+			break;
+		}
+		// 如果找到dwProcessID进程，就只保存父线程ID
+		if (dwProcessID == info.th32ProcessID)
+		{
+			dwParentPID = info.th32ProcessID;
+		}
+		bMore = Process32Next(hProcessSnap, &info);
+	}
+	if (dwChildPID)
+	{
+		// 如果有子线程先结束子线程
+		hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, dwChildPID);
+		if (NULL == hProcess)
+		{
+			return;
+		}
+		TerminateProcess(hProcess, 0);
+		CloseHandle(hProcess);
+	}
+	if (dwParentPID)
+	{
+		hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, dwParentPID);
+		if (NULL == hProcess)
+		{
+			return;
+		}
+		TerminateProcess(hProcess, 0);
+		CloseHandle(hProcessSnap);
+	}
+}
+
 typedef struct _THREAD_PARAM
 {
 	HANDLE ProcessHandle;
 	int TimeLimit;
+	DWORD ProcessID;
 } THREAD_PARAM, *LPTHREAD_PARAM;
 
 int TimeLimit;
@@ -122,6 +179,7 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 			pData = (LPTHREAD_PARAM)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(THREAD_PARAM));
 			pData->ProcessHandle = ProcessInfo.hProcess;
 			pData->TimeLimit = TimeLimit;
+			pData->ProcessID = ProcessInfo.dwProcessId;
 			TimeLimitValidator = CreateThread(
 				NULL,
 				0,
@@ -190,11 +248,13 @@ DWORD WINAPI TimeLimitValidatorThreadProc(LPVOID lpParam)
 		}
 		if (TimeUsed > pData->TimeLimit)
 		{
+			KillProcessTree(pData->ProcessID);
 			TerminateProcess(pData->ProcessHandle, NULL);
 			return 1;
 		}
 		if (PhysicalTime > pData->TimeLimit * 2)
 		{
+			KillProcessTree(pData->ProcessID);
 			TerminateProcess(pData->ProcessHandle, NULL);
 			return 2;
 		}

@@ -27,8 +27,10 @@ namespace CodeComb.Web.Models.View
             switch (contest.Format)
             { 
                 case Entity.ContestFormat.OI:
-                case Entity.ContestFormat.OPJOI:
                     Display2 = Key2 + " ms";
+                    break;
+                case Entity.ContestFormat.OPJOI:
+                    Display2 = Key2.ToString();
                     break;
                 case Entity.ContestFormat.ACM:
                     Display2 = new TimeSpan(0, 0, Key2).ToString("c");
@@ -94,7 +96,7 @@ namespace CodeComb.Web.Models.View
             }
             #endregion
             #region OPJOI赛制逻辑
-            else if (contest.Format == Entity.ContestFormat.OI)
+            else if (contest.Format == Entity.ContestFormat.OPJOI)
             {
                 var status = statuses.LastOrDefault();
                 if (status == null)
@@ -107,7 +109,7 @@ namespace CodeComb.Web.Models.View
                 {
                     StatusID = status.ID;
                     var score = status.JudgeTasks.Where(x => x.ResultAsInt == (int)Entity.JudgeResult.Accepted).Count() * 100 / status.JudgeTasks.Count;
-                    Display = score.ToString() + "<br/>(" + statuses.Count + ")";
+                    Display = score.ToString() + "(" + statuses.Count + ")";
                     if (score == 0)
                         Css = "rank-red";
                     else if (score != 100)

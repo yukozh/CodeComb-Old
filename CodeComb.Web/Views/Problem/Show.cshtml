@@ -70,7 +70,7 @@
 {
     <div class="post-module module-contest-problems">
         <p><a href="javascript:void(0)" id="btnLoadCodeEditBox">提交评测</a></p>
-        @if (User.Identity.IsAuthenticated)
+        @if (User.Identity.IsAuthenticated && Model.Contest.Format == ContestFormat.Codeforces)
         {
             if (ViewBag.IsLocked)
             { 
