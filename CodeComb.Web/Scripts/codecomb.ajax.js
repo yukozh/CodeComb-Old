@@ -324,7 +324,7 @@ function BuildStandings(rank, data)
         if(data.Details[i].Key1 == 0 || !allowhack)
             html += '<td class="' + data.Details[i].Css + '">' + data.Details[i].Display + '</td>';
         else
-            html += '<td class="' + data.Details[i].Css + '"><a class="btn-hack" href="javascript:Hack(' + data.Details.StatusID + ')">' + data.Details[i].Display + '</a></td>';
+            html += '<td class="' + data.Details[i].Css + '"><a class="btn-hack" href="javascript:Hack(' + data.Details[i].StatusID + ')">' + data.Details[i].Display + '</a></td>';
     }
     return "<tr id='u_"+data.UserID+"'>" + html + "</tr>";
 }

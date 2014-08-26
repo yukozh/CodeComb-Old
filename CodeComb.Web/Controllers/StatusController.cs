@@ -268,5 +268,134 @@ namespace CodeComb.Web.Controllers
             SignalR.CodeCombHub.context.Clients.All.onStatusCreated(new Models.View.Status(status));//推送新状态
             return Content(status.ID.ToString());
         }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult GetCode(int ID)
+        {
+            var user = (Entity.User)ViewBag.CurrentUser;
+            var status = DbContext.Statuses.Find(ID);
+            var contest = status.Problem.Contest;
+            var problem = status.Problem;
+            var ret = new Models.View.HackCode();
+            if (contest.Format != Entity.ContestFormat.Codeforces && contest.Format != Entity.ContestFormat.TopCoder)
+            {
+                ret.Available = false;
+                ret.Error = "这场比赛不允许Hack";
+                return Json (ret, JsonRequestBehavior.AllowGet);
+            }
+            if (contest.Format == Entity.ContestFormat.Codeforces)
+            {
+                var locked = (from l in DbContext.Locks
+                              where l.ProblemID == problem.ID
+                              && l.UserID == user.ID
+                              select l).Count();
+                if (locked == 0)
+                {
+                    ret.Available = false;
+                    ret.Error = "您只有锁定该题之后才可进行Hack";
+                    return Json(ret, JsonRequestBehavior.AllowGet);
+                }
+                ret.Available = true;
+                ret.Error = "";
+                ret.Code = HttpUtility.HtmlEncode(status.Code);
+                return Json(ret, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                if (DateTime.Now < contest.RestEnd || DateTime.Now > contest.End)
+                {
+                    ret.Available = false;
+                    ret.Error = "现在不允许Hack";
+                    return Json(ret, JsonRequestBehavior.AllowGet);
+                }
+                ret.Available = true;
+                ret.Error = "";
+                ret.Code = status.Code;
+                return Json(ret, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateInput(false)]
+        public ActionResult Hack(int id, string data, string data_maker, int? data_maker_language)
+        {
+            var Available = false;
+            #region 判断是否允许hack
+            var user = (Entity.User)ViewBag.CurrentUser;
+            var status = DbContext.Statuses.Find(id);
+            var contest = status.Problem.Contest;
+            var problem = status.Problem;
+            var ret = new Models.View.HackCode();
+            if (contest.Format != Entity.ContestFormat.Codeforces && contest.Format != Entity.ContestFormat.TopCoder)
+            {
+                Available = false;
+            }
+            if (contest.Format == Entity.ContestFormat.Codeforces)
+            {
+                var locked = (from l in DbContext.Locks
+                              where l.ProblemID == problem.ID
+                              && l.UserID == user.ID
+                              select l).Count();
+                if (locked == 0)
+                {
+                    Available = false;
+                }
+                else
+                {
+                    Available = true;
+                }
+            }
+            else
+            {
+                if (DateTime.Now < contest.RestEnd || DateTime.Now > contest.End)
+                {
+                    Available = false;
+                }
+                else { 
+                Available = true;
+                }
+            }
+            #endregion
+            if (Available)
+            {
+                var hack = new Entity.Hack 
+                { 
+                    HackerID = ViewBag.CurrentUser.ID,
+                    DefenderID = status.User.ID,
+                    Result = Entity.HackResult.Pending,
+                    StatusID = status.ID,
+                    DataMakerCode = "",
+                    DataMakerLanguage = Entity.Language.C,
+                    Time = DateTime.Now,
+                    Hint = ""
+                };
+                if (data_maker_language == null)
+                {
+                    hack.InputData = data;
+                }
+                else
+                {
+                    hack.DataMakerCode = data_maker;
+                    hack.DataMakerLanguageAsInt = data_maker_language.Value;
+                }
+                DbContext.Hacks.Add(hack);
+                DbContext.SaveChanges();
+                try
+                {
+                    var group = SignalR.JudgeHub.Online[Helpers.String.RandomInt(0, SignalR.JudgeHub.Online.Count - 1)].Username;
+                    SignalR.JudgeHub.context.Clients.Group(group).Hack(new Judge.Models.HackTask(hack));
+                    hack.Result = Entity.HackResult.Running;
+                    DbContext.SaveChanges();
+                }
+                catch { }
+                return Content(hack.ID.ToString());
+            }
+            else
+            {
+                return Content("err");
+            }
+        }
 	}
 }

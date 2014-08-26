@@ -3,6 +3,8 @@ var IsPMOpened = false;
 var editor;
 var CurrentContactID = null;
 var RealTimeStatusID = null;
+var status_id = null;
+var hack_id = null;
 
 function GetContacts()
 {
@@ -201,7 +203,7 @@ function GetDetails(id) {
 
 function HackResultDisplay(hack)
 {
-    var html = '<table><tr><td style="text-align:center"><p><img src="' + hack.HackerGravatar + '" class="hack-avatar"></p><p>进攻方: <a href-"/User/' + hack.HackerID + '">' + hack.HackerName + '</a></p></td><td style="text-align:center"><h2>VS</h2>';
+    var html = '<h3>评测结果</h3><table><tr><td style="text-align:center"><p><img src="' + hack.HackerGravatar + '" class="hack-avatar"></p><p>进攻方: <a href-"/User/' + hack.HackerID + '">' + hack.HackerName + '</a></p></td><td style="text-align:center"><h2>VS</h2>';
     html += '<h3 class="' + hack.Css + '">' + hack.Result + '</h3>';
     html += '<p>记录号: ' + hack.StatusID + '</p>';
     html += '<p>题目: <a href="/Problem/' + hack.ProblemID + '">' + hack.ProblemTitle + '</a></p>';
@@ -304,7 +306,7 @@ $(document).ready(function () {
         HackResultDisplay(hack);
     }
     CodeCombHub.client.onHackFinished = function (hack) {
-        HackResultDisplay(hack);
+        if (hack_id == hack.ID) HackResultDisplay(hack);
     }
     $.connection.hub.start();
 

@@ -79,6 +79,19 @@ namespace CodeComb.Web.Controllers
                     s.Result = JudgeResult.Hidden;
                 }
             }
+            if (contest.Format == ContestFormat.Codeforces)
+            {
+                ViewBag.IsLocked = false;
+                if (User.Identity.IsAuthenticated)
+                {
+                    var locked = (from l in DbContext.Locks
+                                  where l.ProblemID == problem.ID
+                                  && l.UserID == user.ID
+                                  select l).Count();
+                    if(locked > 0)
+                        ViewBag.IsLocked = true;
+                }
+            }
             ViewBag.Statuses = statuses;
             return View(problem);
         }
@@ -419,6 +432,34 @@ namespace CodeComb.Web.Controllers
             foreach (var problem in _problems)
                 problems.Add(new Models.View.ProblemInList(problem, ViewBag.CurrentUser));
             return Json(problems, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public ActionResult Lock(int id)
+        {
+            var problem = DbContext.Problems.Find(id);
+            var contest = problem.Contest;
+            var user = (Entity.User)ViewBag.CurrentUser;
+            if (contest.Format != ContestFormat.Codeforces)
+                return Content("只有Codeforces比赛可以锁定题目！");
+            var ac_count = problem.GetContestStatuses().Where(x => x.UserID == user.ID && x.ResultAsInt == (int)Entity.JudgeResult.Accepted).Count();
+            if (ac_count == 0)
+                return Content("您必须先通过该题才能进行锁定。");
+            var locked = (from l in DbContext.Locks
+                          where l.ProblemID == problem.ID
+                          && l.UserID == user.ID
+                          select l).Count();
+            if (locked > 0)
+                return Content("该题已经被锁定！");
+            DbContext.Locks.Add(new Lock { 
+                ProblemID = problem.ID,
+                Time = DateTime.Now,
+                UserID = user.ID
+            });
+            DbContext.SaveChanges();
+            return Content("您已成功锁定" + HttpUtility.HtmlEncode(problem.Title) + "!");
         }
 	}   
 }

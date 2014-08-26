@@ -222,6 +222,7 @@
     <Compile Include="Models\View\ChatRecord.cs" />
     <Compile Include="Models\View\Clar.cs" />
     <Compile Include="Models\View\ClarProblem.cs" />
+    <Compile Include="Models\View\Code.cs" />
     <Compile Include="Models\View\Contact.cs" />
     <Compile Include="Models\View\Contest.cs" />
     <Compile Include="Models\View\HackResult.cs" />

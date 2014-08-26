@@ -33,7 +33,7 @@ namespace CodeComb.Web.Models.View
                 case Entity.ContestFormat.ACM:
                     Display2 = new TimeSpan(0, 0, Key2).ToString("c");
                     break;
-                case Entity.ContestFormat.CodeComb:
+                case Entity.ContestFormat.Codeforces:
                 case Entity.ContestFormat.TopCoder:
                     if (Key2 == 0 && Key3 == 0)
                         Display2 = "";
@@ -168,7 +168,7 @@ namespace CodeComb.Web.Models.View
                 var hack_failed = (from h in db.Hacks
                                    where h.Status.ProblemID == problem.ID
                                    && h.HackerID == user.ID
-                                   && h.ResultAsInt == (int)Entity.HackResult.Success
+                                   && h.ResultAsInt == (int)Entity.HackResult.Failure
                                    select h).Count();
                 Key2 = hack_success;
                 Key3 = hack_failed;

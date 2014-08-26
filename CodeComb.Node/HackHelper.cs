@@ -55,7 +55,7 @@ namespace CodeComb.Node
             "{Name}.exe",
             "{Name}.exe"
         };
-        public const string SpjArgs = " output.txt Main.out input.txt";
+        public const string SpjArgs = " Std.out Main.out input.txt";
         public static void CheckPath(int id)
         {
             if (!Directory.Exists(Program.TempPath + @"\h" + id + @"\"))
@@ -108,14 +108,14 @@ namespace CodeComb.Node
 
             //编译并运行数据范围校验器
             File.WriteAllText(Program.TempPath + @"\h" + ht.HackID + @"\" + FileNames[(int)ht.RangeValidatorCodeLanguage].Replace("{Name}", Mode.Range.ToString()), ht.RangeValidatorCode);
-            if (!Compile(ht.HackID, (int)ht.SpecialJudgeCodeLanguage, Mode.Std, ref hfb))
+            if (!Compile(ht.HackID, (int)ht.RangeValidatorCodeLanguage, Mode.Range, ref hfb))
                 return;
-            if (!Run(ht.HackID, (int)ht.StandardCodeLanguage, ht.TimeLimit, ht.MemoryLimit, Mode.Std, out ExitCode, ref hfb))
+            if (!Run(ht.HackID, (int)ht.RangeValidatorCodeLanguage, ht.TimeLimit, ht.MemoryLimit, Mode.Range, out ExitCode, ref hfb))
                 return;
 
             //编译并运行标程
             File.WriteAllText(Program.TempPath + @"\h" + ht.HackID + @"\" + FileNames[(int)ht.StandardCodeLanguage].Replace("{Name}", Mode.Std.ToString()), ht.StandardCode);
-            if (!Compile(ht.HackID, (int)ht.SpecialJudgeCodeLanguage, Mode.Std, ref hfb))
+            if (!Compile(ht.HackID, (int)ht.StandardCodeLanguage, Mode.Std, ref hfb))
                 return;
             if (!Run(ht.HackID, (int)ht.StandardCodeLanguage, ht.TimeLimit, ht.MemoryLimit, Mode.Std, out ExitCode, ref hfb))
                 return;
@@ -127,12 +127,10 @@ namespace CodeComb.Node
             if (!Compile(ht.HackID, (int)ht.CodeLanguage, Mode.Main, ref hfb))
                 return;
 
-            MakeCodeFile(ht.HackID, ht.SpecialJudgeCode, (int)ht.SpecialJudgeCodeLanguage, Mode.Main);
-
             //编译SPJ
             if (!string.IsNullOrEmpty(ht.SpecialJudgeCode))
             {
-                File.WriteAllText(Program.TempPath + @"\h" + ht.HackID + @"\" + FileNames[(int)ht.SpecialJudgeCodeLanguage].Replace("{Name}", Mode.Std.ToString()), ht.SpecialJudgeCode);
+                File.WriteAllText(Program.TempPath + @"\h" + ht.HackID + @"\" + FileNames[(int)ht.SpecialJudgeCodeLanguage].Replace("{Name}", Mode.Spj.ToString()), ht.SpecialJudgeCode);
                 if (!Compile(ht.HackID, (int)ht.SpecialJudgeCodeLanguage, Mode.Spj, ref hfb))
                 {
                     return;
@@ -157,10 +155,6 @@ namespace CodeComb.Node
                 if (!Run(ht.HackID, (int)Entity.Language.Cxx, ht.TimeLimit, ht.MemoryLimit, Mode.Spj, out ExitCode, ref hfb))
                     return;
             }
-
-            //编译并运行校验器
-            if (!Run(ht.HackID, (int)ht.StandardCodeLanguage, ht.TimeLimit, ht.MemoryLimit, Mode.Std, out ExitCode, ref hfb))
-                return;
 
             //校验结果
             if (ExitCode != 0)

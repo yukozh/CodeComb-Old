@@ -8,6 +8,25 @@ namespace CodeComb.Judge.Models
 {
     public class HackTask
     {
+        public HackTask() { }
+        public HackTask(Entity.Hack hack) 
+        {
+            HackID = hack.ID;
+            StatusID = hack.StatusID;
+            Code = hack.Status.Code;
+            CodeLanguage = hack.Status.Language;
+            SpecialJudgeCode = hack.Status.Problem.SpecialJudge;
+            SpecialJudgeCodeLanguage = hack.Status.Problem.SpecialJudgeLanguage;
+            RangeValidatorCode = hack.Status.Problem.RangeChecker;
+            RangeValidatorCodeLanguage = hack.Status.Problem.RangeCheckerLanguage;
+            StandardCode = hack.Status.Problem.StandardSource;
+            StandardCodeLanguage = hack.Status.Problem.StandardSourceLanguage;
+            DataMakerCode = hack.DataMakerCode;
+            DataMakerCodeLanguage = hack.DataMakerLanguage;
+            InputData = hack.InputData;
+            TimeLimit = hack.Status.Problem.TimeLimit;
+            MemoryLimit = hack.Status.Problem.MemoryLimit;
+        }
         public string Token { get; set; }
         public int StatusID { get; set; }
         public int HackID { get; set; }

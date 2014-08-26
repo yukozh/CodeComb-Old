@@ -66,20 +66,25 @@ namespace CodeComb.Web.SignalR
                 Online = Online.Distinct().ToList();
                 Groups.Add(Context.ConnectionId, user.Username);
                 Clients.Group(user.Username).onMessage(String.Format("{0}，欢迎您。您已经成功注册成为Code Comb评测机！", user.Username));
-                var now = DateTime.Now;
+                var time = DateTime.Now.AddMinutes(-5);
                 var err_statuses = (from s in DbContext.Statuses
                            where s.ResultAsInt == (int)Entity.JudgeResult.Pending
-                           || (s.ResultAsInt == (int)Entity.JudgeResult.Running && (now - s.Time).TotalMinutes > 10)
+                           || (s.ResultAsInt == (int)Entity.JudgeResult.Running && s.Time< time)
                            select s).ToList();
                 foreach (var status in err_statuses)
                 {
-                    foreach (var jt in status.JudgeTasks)
+                    foreach (var jt in status.JudgeTasks.ToList())
                     {
-                        SignalR.JudgeHub.context.Clients.Group(user.Username).Judge(new Judge.Models.JudgeTask(jt));
                         jt.Result = Entity.JudgeResult.Running;
                         DbContext.SaveChanges();
+                        var judgetask = new Judge.Models.JudgeTask(jt);
+                        System.Threading.Tasks.Task.Factory.StartNew(() =>
+                        {
+                            SignalR.JudgeHub.context.Clients.Group(user.Username).Judge(judgetask);
+                        });
                     }
                     status.Result = Entity.JudgeResult.Running;
+                    DbContext.SaveChanges();
                     SignalR.CodeCombHub.context.Clients.All.onStatusCreated(new Models.View.Status(status));//推送新状态
                 }
             }

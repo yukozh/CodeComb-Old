@@ -43,34 +43,34 @@
 </div>
 @if (ViewBag.AllowHack)
 {
-    <div style="display:none">
-        <div id="HackStatus">
+    <div style="display:none;">
+        <div id="HackStatus" style="width:700px;">
             <h2>Hack</h2>
-            <p><a href="javascript:">查看代码</a> <a href="javascript:">上传数据</a> <a href="javascript:">上传数据产生器</a></p>
+            <p><a href="javascript:void(0)" id="btnCodeView">查看代码</a> <a href="javascript:void(0)" id="btnHackDataView">上传数据</a> <a href="javascript:void(0)" id="btnDataMakerView">上传数据产生器</a></p>
             <div id="hackStatusCode">
-                <pre style="width:100%;height:360px;overflow:auto" id="Code"></pre>
+                <pre style="width:680px;height:360px;overflow:auto" id="Code"></pre>
             </div>
             <div id="hackData">
-                <textarea id="txtHackData" class="textbox" style="width:100%;height:360px;"></textarea>
+                <textarea id="txtHackData" class="textbox" style="width:680px;height:360px;"></textarea>
                 <p><input type="button" class="button button-def" value="提交" id="btnHackDataSubmit" /> <input type="button" id="btnClearHackData" class="button" value="清空" /></p>
             </div>
             <div id="hackDataMaker">
-                <textarea id="editor" name="code" style="width:600px;height:280px;font-size:12px;"></textarea>
+                <textarea id="editor" name="code" style="width:680px;height:360px;font-size:12px;"></textarea>
                 <p>
                     <select id="lstLanguages" name="language_id">
                         @{
-                            var i = 0;
-                            foreach (var name in CodeComb.Entity.CommonEnums.LanguageDisplay)
-                            {
-                                if (((CodeComb.Entity.User)ViewBag.CurrentUser).CommonLanguageAsInt == i)
-                                {
-                                    <option value="@(i++)" selected>@name</option>
-                                }
-                                else
-                                {
-                                    <option value="@(i++)">@name</option>
-                                }
-                            }
+    var i = 0;
+    foreach (var name in CodeComb.Entity.CommonEnums.LanguageDisplay)
+    {
+        if (((CodeComb.Entity.User)ViewBag.CurrentUser).CommonLanguageAsInt == i)
+        {
+            <option value="@(i++)" selected>@name</option>
+        }
+        else
+        {
+            <option value="@(i++)">@name</option>
+        }
+    }
                         }
                     </select>
                     <input type="button" id="btnSubmitDataMaker" class="button button-def" value="提交" />
@@ -78,12 +78,21 @@
                 </p>
             </div>
         </div>
+
     </div>
     <script>
-        function Hack(id)
+        function Hack(sid)
         {
-            $.getJSON("/Status/GetCode/"+id,{},function(code){
-                if()
+            status_id = sid;
+            $.getJSON("/Status/GetCode/"+status_id,{},function(code){
+                if(code.Available == false)
+                    CastMsg(code.Error);
+                else{
+                    $("#Code").html(code.Code);
+                    $("#hackData").hide();
+                    $("#hackDataMaker").hide();
+                    $.colorbox({ inline:true, width:'auto', href:'#HackStatus' });
+                }
             });
         }
         $("#hackData").hide();
@@ -91,10 +100,58 @@
         $("#btnClearHackData").click(function(){
             $("#txtHackData").val("");
         });
+        $("#btnCodeView").click(function(){
+            $("#hackStatusCode").show();
+            $("#hackData").hide();
+            $("#hackDataMaker").hide();
+            $.colorbox.resize('Height:auto');
+        });
+        $("#btnHackDataView").click(function(){
+            $("#hackStatusCode").hide();
+            $("#hackData").show();
+            $("#hackDataMaker").hide();
+            $.colorbox.resize('Height:auto');
+        });
+        $("#btnDataMakerView").click(function(){
+            $("#hackStatusCode").hide();
+            $("#hackData").hide();
+            $("#hackDataMaker").show();
+            $.colorbox.resize('Height:auto');
+        });
+        $("#btnSubmitDataMaker").click(function(){
+            $.post("/Status/Hack/"+status_id,{
+                data:"",
+                data_maker: editor.getValue(),
+                data_maker_language: $("#lstLanguages").val()
+            },function(result){
+                if(result == "err")
+                    CastMsg("您无法进行Hack");
+                else
+                {
+                    hack_id = parseInt(result);
+                    $.colorbox({ html: '<h3>评测结果</h3><p>正在等待系统验证及分配评测资源...</p>', width: '700px' });
+                }
+            });
+        });
+        $("#btnHackDataSubmit").click(function(){
+            $.post("/Status/Hack/"+status_id,{
+                data:$("#txtHackData").val(),
+                data_maker: "",
+                data_maker_language: null
+            },function(result){
+                if(result == "err")
+                    CastMsg("您无法进行Hack");
+                else
+                {
+                    hack_id = parseInt(result);
+                    $.colorbox({ html: '<h3>评测结果</h3><p>正在等待系统验证及分配评测资源...</p>', width: '700px' });
+                }
+            });
+        });
     </script>
 }
 <script>
-    id = @Model.ID;
+        id = @Model.ID;
     @if (Model.Format == ContestFormat.TopCoder || Model.Format == ContestFormat.Codeforces)
    {
     @:key2desc = true;

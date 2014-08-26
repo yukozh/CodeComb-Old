@@ -2449,3 +2449,30 @@ div.CodeMirror-selected {
 .btn-hack {
     color:#AAA!important;
 }
+
+.show_public_tips {
+    display: none;
+    position: fixed;
+    _position: absolute;
+    top: 30%;
+    left: 50%;
+    width: 360px;
+    margin: 0 0 0 -200px;
+    background:rgba(0, 0, 0, 0.7);
+    background: #000 \9;
+    _background: #000;
+    border-radius:8px;
+    font-size: 18px;
+    font-family: 'Microsoft Yahei',微软雅黑;
+    text-align: center;
+    line-height: 40px;
+    padding: 20px;
+    z-index: 21000;
+    _top: expression(documentElement.scrollTop + 150);
+    border: 1px solid #555;
+    color: #fff;
+}
+
+.show_public_tips_text {
+    color: #fff;
+}

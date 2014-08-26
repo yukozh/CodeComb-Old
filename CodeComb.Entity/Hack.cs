@@ -39,6 +39,9 @@ namespace CodeComb.Entity
         [Column("input_data")]
         public string InputData { get; set; }
 
+        [Column("time")]
+        public DateTime Time { get; set; }
+
         [Column("data_maker_code")]
         public string DataMakerCode { get; set; }
 

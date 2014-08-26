@@ -70,6 +70,27 @@
 {
     <div class="post-module module-contest-problems">
         <p><a href="javascript:void(0)" id="btnLoadCodeEditBox">提交评测</a></p>
+        @if (User.Identity.IsAuthenticated)
+        {
+            if (ViewBag.IsLocked)
+            { 
+                <p>该题已锁定</p>
+            }
+            else
+            { 
+                <p><a href="javascript:Lock()" id="btnLock">锁定该题</a></p>
+                using (Html.BeginForm("Lock", "Problem", new { id = Model.ID }, FormMethod.Post, new { id = "frmLockProblem" }))
+                { 
+                    @Html.AntiForgeryToken()
+                }
+                <script>
+                    function Lock()
+                    {
+                        $.post("/Problem/Lock/@Model.ID", $("#frmLockProblem").serialize(), function (result) { CastMsg(result) });
+                    }
+                </script>
+            }
+        }
         <div class="post-module-content">
             @foreach (CodeComb.Entity.Status status in ViewBag.Statuses)
         {

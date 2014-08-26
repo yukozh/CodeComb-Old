@@ -38,7 +38,7 @@ namespace CodeComb.Node
             RubyBin = ConfigurationManager.AppSettings["RUBY_BIN"];
             Net4Bin = ConfigurationManager.AppSettings["NET4_BIN"];
             FscBin = ConfigurationManager.AppSettings["FSC_BIN"];
-            MaxThreads = Convert.ToInt32(ConfigurationManager.AppSettings["FSC_BIN"]);
+            MaxThreads = Convert.ToInt32(ConfigurationManager.AppSettings["Threads"]);
             if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["LocalUsername"]))
             {
                 LocalAuth = new Identity();
