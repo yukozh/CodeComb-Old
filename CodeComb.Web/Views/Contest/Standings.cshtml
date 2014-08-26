@@ -52,7 +52,7 @@
             </div>
             <div id="hackData">
                 <textarea id="txtHackData" class="textbox" style="width:100%;height:360px;"></textarea>
-                <p><input type="button" class="button button-def" value="提交" /> <input type="button" class="button" value="清空" /></p>
+                <p><input type="button" class="button button-def" value="提交" id="btnHackDataSubmit" /> <input type="button" id="btnClearHackData" class="button" value="清空" /></p>
             </div>
             <div id="hackDataMaker">
                 <textarea id="editor" name="code" style="width:600px;height:280px;font-size:12px;"></textarea>
@@ -79,6 +79,19 @@
             </div>
         </div>
     </div>
+    <script>
+        function Hack(id)
+        {
+            $.getJSON("/Status/GetCode/"+id,{},function(code){
+                if()
+            });
+        }
+        $("#hackData").hide();
+        $("#hackDataMaker").hide();
+        $("#btnClearHackData").click(function(){
+            $("#txtHackData").val("");
+        });
+    </script>
 }
 <script>
     id = @Model.ID;
