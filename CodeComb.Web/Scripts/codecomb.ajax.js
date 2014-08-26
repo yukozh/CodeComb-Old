@@ -316,7 +316,7 @@ function BuildStandings(rank, data)
 {
     var html = '<td>' + rank + '</td>'
                   + '<td><img src="' + data.Gravatar + '" class="rank-avatar" /></td>'
-                  + '<td><a href="/User/' + standings.UserID + '">' + data.Nickname + '</a></td>'
+                  + '<td><a href="/User/' + data.UserID + '">' + data.Nickname + '</a></td>'
                   + '<td>' + data.Display1 + '</td>'
                   + '<td>' + data.Display2 + '</td>';
     for (var i in data.Details)

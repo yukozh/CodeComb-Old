@@ -121,15 +121,20 @@ namespace CodeComb.Web.SignalR
             DbContext.SaveChanges();
             if (hack.Result == Entity.HackResult.Success)
             {
-                var tc = new Entity.TestCase
-                {
-                    Input = hack.InputData,
-                    Hash = Helpers.Security.SHA1(hack.InputData),
-                    Type = Entity.TestCaseType.Custom,
-                    ProblemID = hack.Status.ProblemID,
-                    Output = hfb.Output
-                };
-                DbContext.TestCases.Add(tc);
+                var hash = Helpers.Security.SHA1(hack.InputData);
+                var tc = (from t in DbContext.TestCases where t.Hash == hash select t).FirstOrDefault();
+                if (tc == null)
+                { 
+                    tc = new Entity.TestCase
+                    {
+                        Input = hack.InputData,
+                        Hash = Helpers.Security.SHA1(hack.InputData),
+                        Type = Entity.TestCaseType.Custom,
+                        ProblemID = hack.Status.ProblemID,
+                        Output = hfb.Output
+                    };
+                    DbContext.TestCases.Add(tc);
+                }
                 DbContext.JudgeTasks.Add(new Entity.JudgeTask
                 {
                     StatusID = hack.StatusID,
@@ -142,11 +147,22 @@ namespace CodeComb.Web.SignalR
                 hack.Status.Result = Entity.JudgeResult.Hacked;
                 DbContext.SaveChanges();
                 SignalR.CodeCombHub.context.Clients.Group(hack.Defender.Username).onHacked(new Models.View.HackResult(hack));
+                SignalR.CodeCombHub.context.Clients.Group(hack.Hacker.Username).onHackFinished(new Models.View.HackResult(hack));
+
                 SignalR.CodeCombHub.context.Clients.All.onStatusChanged(new Models.View.Status(hack.Status));
+                if (DateTime.Now >= hack.Status.Problem.Contest.Begin && DateTime.Now < hack.Status.Problem.Contest.End)
+                {
+                    SignalR.CodeCombHub.context.Clients.All.onStandingsChanged(hack.Status.Problem.Contest.ID, new Models.View.Standing(hack.Defender, hack.Status.Problem.Contest));
+                    SignalR.CodeCombHub.context.Clients.All.onStandingsChanged(hack.Status.Problem.Contest.ID, new Models.View.Standing(hack.Hacker, hack.Status.Problem.Contest));
+                }
             }
             else
             {
                 SignalR.CodeCombHub.context.Clients.Group(hack.Hacker.Username).onHackFinished(new Models.View.HackResult(hack));
+                if (DateTime.Now >= hack.Status.Problem.Contest.Begin && DateTime.Now < hack.Status.Problem.Contest.End)
+                {
+                    SignalR.CodeCombHub.context.Clients.All.onStandingsChanged(hack.Status.Problem.Contest.ID, new Models.View.Standing(hack.Hacker, hack.Status.Problem.Contest));
+                }
             }
         }
     }

@@ -10,7 +10,14 @@ namespace CodeComb.Web.Helpers
         public static string ToTimeTip(DateTime time)
         {
             var span = DateTime.Now - time;
-            var sec = (int)span.TotalSeconds;
+            if (Math.Abs(span.TotalDays) > 365)
+            {
+                if (span.TotalDays > 0)
+                    return "很久以前";
+                else
+                    return "很久以后";
+            }
+            var sec = (long)span.TotalSeconds;
             if (sec == 0)
             {
                 return "刚刚";

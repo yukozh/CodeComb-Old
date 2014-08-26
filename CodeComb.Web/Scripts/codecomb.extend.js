@@ -306,7 +306,7 @@ $(document).ready(function () {
         HackResultDisplay(hack);
     }
     CodeCombHub.client.onHackFinished = function (hack) {
-        if (hack_id == hack.ID) HackResultDisplay(hack);
+        HackResultDisplay(hack);
     }
     $.connection.hub.start();
 
@@ -374,15 +374,27 @@ $(document).ready(function () {
         $("#editor").val(editor.getValue());
         $.post("/Status/Create", $("#frmSubmitCode").serialize(), function (data) {
             if (data == "Problem not existed")
-                $.colorbox({ html: '<h3>评测结果</h3><p>不存在这道题目！</p>', width: '700px' });
-            else if(data=="Insufficient permissions")
-                $.colorbox({ html: '<h3>评测结果</h3><p>权限不足！</p>', width: '700px' });
-            else if (data == "Locked")
-                $.colorbox({ html: '<h3>评测结果</h3><p>您已锁定了该题，无法再次提交！</p>', width: '700px' });
-            else if (data == "Wrong phase")
-                $.colorbox({ html: '<h3>评测结果</h3><p>本阶段不允许提交！</p>', width: '700px' });
-            else
+            {
+                CastMsg("不存在这道题目！");
+                $.colorbox.close();
+            }
+            else if (data == "Insufficient permissions")
+            {
+                CastMsg("权限不足！");
+                $.colorbox.close();
+            }
+            else if (data == "Locked") {
+                CastMsg("锁定题目后不能提交！");
+            }
+            else if (data == "Wrong phase"){
+            CastMsg("本阶段不允许提交评测！");}
+            else if (data == "OI") {
+                CastMsg("提交成功");
+            }
+            else {
                 RealTimeStatusID = parseInt(data);
+                $.colorbox({ html: '<h3>评测结果</h3><p>正在评测...</p>', width: '700px' });
+            }
         });
     });
 

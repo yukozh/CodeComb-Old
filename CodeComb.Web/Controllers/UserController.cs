@@ -235,5 +235,19 @@ namespace CodeComb.Web.Controllers
             return RedirectToAction("Settings", "User", new { id = id });
         }
         #endregion
+
+        #region 创建比赛
+        [Authorize]
+        public ActionResult Contest(int id)
+        { 
+            var user = (Entity.User)ViewBag.CurrentUser;
+            ViewBag.Nickname = user.Nickname;
+            var contests = (from c in DbContext.Contests
+                            where c.Managers.Where(x => x.UserID == user.ID).Count() > 0
+                            orderby c.Begin descending
+                            select c).ToList();
+            return View(contests);
+        }
+        #endregion
     }
 }

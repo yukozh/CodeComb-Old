@@ -11,7 +11,11 @@
                     <a href="#" id="btnAddContact" uid="@Model.ID" class="profile-btn"><img src="/Images/chat.png" alt="发送消息" /></a>
                     <a href="/User/Status/@Model.ID" class="profile-btn"><img src="/Images/status.png" alt="TA的记录" /></a>
                     <a href="/User/Topic/@Model.ID" class="profile-btn"><img src="/Images/forum.png" alt="TA的帖子" /></a>
-                    <a href="/User/Settings/@Model.ID" class="profile-btn"><img src="/Images/settings.png" alt="修改资料" /></a>
+                    <a href="/User/Contest/@Model.ID" class="profile-btn"><img src="/Images/contests.png" alt="TA的比赛" /></a>
+                    @if (User.Identity.IsAuthenticated && (Model.ID == ViewBag.CurrentUser.ID || ViewBag.CurrentUser.Role >= CodeComb.Entity.UserRole.Master))
+                    { 
+                        <a href="/User/Settings/@Model.ID" class="profile-btn"><img src="/Images/settings.png" alt="修改资料" /></a>
+                    }
                 </div>
                 <div class="post-detail-wrap">
                     @using (Html.BeginForm("SetPassword", "User", new { id = Model.ID }, FormMethod.Post, null))

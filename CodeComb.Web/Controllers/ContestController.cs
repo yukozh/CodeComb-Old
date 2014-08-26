@@ -254,5 +254,36 @@ namespace CodeComb.Web.Controllers
             var standings = Helpers.Standings.Build(id);
             return Json(standings, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create()
+        {
+            var contest = new Entity.Contest 
+            { 
+                AllowClarification = true,
+                AllowPrintRequest = false,
+                Begin = Convert.ToDateTime("2099-1-1 8:00"),
+                End = Convert.ToDateTime("2099-1-1 11:00"),
+                Format = Entity.ContestFormat.OI,
+                Password = null,
+                Content = "",
+                Ready = false,
+                Title = ViewBag.CurrentUser.Nickname +"创建的比赛",
+                RatingBegin = 0,
+                RatingEnd = 4000
+            };
+            var manager = new Entity.ContestManager 
+            {
+                ContestID = contest.ID,
+                IsCreator = true,
+                UserID = ViewBag.CurrentUser.ID
+            };
+            DbContext.Contests.Add(contest);
+            DbContext.ContestManagers.Add(manager);
+            DbContext.SaveChanges();
+            return RedirectToAction("General", "ContestSettings", new { id = contest.ID });
+        }
 	}
 }

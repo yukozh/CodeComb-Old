@@ -43,6 +43,9 @@ namespace CodeComb.Web.Models.View
                         Display2 = "-" + Key3;
                     else
                         Display2 = "+" + Key2 + " : -" + Key3;
+                    Key1 += Key2 * 100;
+                    Key1 -= Key3 * 50;
+                    Display1 = Key1.ToString();
                     break;
             }
         }

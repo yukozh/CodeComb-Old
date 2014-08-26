@@ -1,0 +1,62 @@
+﻿@model IEnumerable<CodeComb.Entity.Contest>
+@{
+    ViewBag.Title = ViewBag.Nickname + " - TA的比赛";
+    int ID = Convert.ToInt32(ViewContext.RouteData.Values["id"]);
+}
+<div class="profile-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="profile-actions">
+                    <a href="/User/@ID" class="profile-btn"><img src="/Images/profile.png" alt="个人信息" /></a>
+                    <a href="#" id="btnAddContact" uid="@ID" class="profile-btn"><img src="/Images/chat.png" alt="发送消息" /></a>
+                    <a href="/User/Status/@ID" class="profile-btn"><img src="/Images/status.png" alt="TA的记录" /></a>
+                    <a href="/User/Topic/@ID" class="profile-btn"><img src="/Images/forum.png" alt="TA的帖子" /></a>
+                    <a href="/User/Contest/@ID" class="profile-btn"><img src="/Images/contests.png" alt="TA的比赛" /></a>
+                    @if (User.Identity.IsAuthenticated && (ID == ViewBag.CurrentUser.ID || ViewBag.CurrentUser.Role >= CodeComb.Entity.UserRole.Master))
+                    {
+                        <a href="/User/Settings/@ID" class="profile-btn"><img src="/Images/settings.png" alt="修改资料" /></a>
+                    }
+                </div>
+                <div class="post-detail-wrap">
+                    <h3>@ViewBag.Nickname 的比赛</h3>
+                    @if (User.Identity.IsAuthenticated && ID == ViewBag.CurrentUser.ID)
+                    {
+                        <p><a href="javascript:$('#frmCreateContest').submit()">创建新比赛</a></p>
+                        using (Html.BeginForm("Create", "Contest", FormMethod.Post, new { id = "frmCreateContest" }))
+                        {
+                            @Html.AntiForgeryToken()
+                        }
+                    }
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>比赛ID</td>
+                                <td>比赛名称</td>
+                                <td>赛制</td>
+                                <td>开始时间</td>
+                                <td>审核</td>
+                                <td>操作</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.ID</td>
+                                    <td>@Html.ActionLink(item.Title, "Show", "Contest", new { id = item.ID }, null)</td>
+                                    <td>@item.Format.ToString()</td>
+                                    <td>@item.Begin</td>
+                                    <td>@(item.Ready ? "通过" : "未通过")</td>
+                                    <td>
+                                        @Html.ActionLink("编辑", "General", "ContestSettings", new { id = item.ID }, null)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div><div class="clear"></div>
+        </div>
+    </div>
+</div>

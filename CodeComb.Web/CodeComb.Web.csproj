@@ -265,12 +265,19 @@
     <Content Include="fonts\oxygenmono.eot" />
     <Content Include="fonts\oxygenmono.ttf" />
     <Content Include="fonts\oxygenmono.woff" />
+    <Content Include="Images\alphacolorbox-dark.png" />
     <Content Include="Images\alphacolorbox.png" />
+    <Content Include="Images\back.png" />
+    <Content Include="Images\banner-dark.png" />
+    <Content Include="Images\bg.dark.jpg" />
+    <Content Include="Images\border1-dark.png" />
     <Content Include="Images\border1.png" />
+    <Content Include="Images\border2-dark.png" />
     <Content Include="Images\border2.png" />
     <Content Include="Images\btn-highlight.png" />
     <Content Include="Images\chat.png" />
     <Content Include="Images\clar.png" />
+    <Content Include="Images\code.png" />
     <Content Include="Images\contests.png" />
     <Content Include="Images\description.png" />
     <Content Include="Images\forum.png" />
@@ -478,6 +485,7 @@
     <Content Include="Scripts\ckeditor\plugins\wsc\README.md" />
     <Content Include="Scripts\ckeditor\README.md" />
     <Content Include="Scripts\ckeditor\skins\moono\readme.md" />
+    <None Include="Properties\PublishProfiles\CodeComb.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Images\banner.png" />
     <Content Include="Images\logo-white.gif" />
@@ -495,6 +503,7 @@
     <Content Include="Scripts\codecomb.ajax.js" />
     <Content Include="Scripts\codecomb.extend.js" />
     <Content Include="Scripts\codemirror.js" />
+    <Content Include="Scripts\highlight.pack.js" />
     <Content Include="Scripts\iefix.js" />
     <Content Include="Scripts\excanvas.js" />
     <Content Include="Scripts\jplaceholder.js" />
@@ -512,21 +521,25 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\jquery.zclip.js" />
     <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\pascal.js" />
+    <Content Include="Scripts\PIE.htc" />
     <Content Include="Scripts\png.js" />
     <Content Include="Scripts\python.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\ruby.js" />
     <Content Include="Scripts\vb.js" />
+    <Content Include="Scripts\ZeroClipboard.swf" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Styles\codemirror.css" />
     <Content Include="Styles\colorbox.css" />
     <Content Include="Styles\css-dark.css" />
     <Content Include="Styles\css-ie.css" />
     <Content Include="Styles\css.css" />
+    <Content Include="Styles\github.css" />
     <Content Include="TodoList.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -582,6 +595,7 @@
     <Content Include="Views\ContestSettings\Manager.cshtml" />
     <Content Include="Views\User\Settings.cshtml" />
     <Content Include="Views\Problem\Index.cshtml" />
+    <Content Include="Views\User\Contest.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

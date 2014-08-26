@@ -223,6 +223,15 @@ namespace CodeComb.Web.Controllers
                                 where tc.Type == Entity.TestCaseType.Unilateralism
                                 orderby tc.Type ascending
                                 select tc.ID).ToList();
+                var statuses = problem.GetContestStatuses().Where(x => x.UserID == user.ID).ToList();
+                foreach (var s in statuses)
+                {
+                    foreach (var jt in s.JudgeTasks)
+                    {
+                        testcase_ids.Add(jt.TestCaseID);
+                    }
+                }
+                testcase_ids = testcase_ids.Distinct().ToList();
             }
             else
             {
@@ -266,6 +275,8 @@ namespace CodeComb.Web.Controllers
                 catch { }
             }
             SignalR.CodeCombHub.context.Clients.All.onStatusCreated(new Models.View.Status(status));//推送新状态
+            if (contest.Format == Entity.ContestFormat.OI)
+                return Content("OI");
             return Content(status.ID.ToString());
         }
 
