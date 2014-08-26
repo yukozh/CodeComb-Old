@@ -129,7 +129,7 @@ namespace CodeComb.Web.Models.View
                 else
                 {
                     var status = statuses.Where(x => x.ResultAsInt == (int)Entity.JudgeResult.Accepted).FirstOrDefault();
-                    var penalty_count = statuses.Where(x => Entity.Status.FreeResults.Contains((Entity.JudgeResult)x.ResultAsInt)).Count();
+                    var penalty_count = statuses.Where(x => !Entity.Status.FreeResults.Contains((Entity.JudgeResult)x.ResultAsInt)).Count();
                     if (status == null)
                     {
                         Display = "(-" + penalty_count + ")";
@@ -141,10 +141,12 @@ namespace CodeComb.Web.Models.View
                     }
                     else
                     {
-                        penalty_count = statuses.Where(x => Entity.Status.FreeResults.Contains((Entity.JudgeResult)x.ResultAsInt) && x.Time < status.Time).Count();
+                        Css = "rank-green";
+                        StatusID = status.ID;
+                        penalty_count = statuses.Where(x => !Entity.Status.FreeResults.Contains((Entity.JudgeResult)x.ResultAsInt) && x.Time < status.Time).Count();
                         var penalty_time = (status.Time - status.Problem.Contest.Begin).Add(new TimeSpan(0, 20 * penalty_count, 0));
                         Display = penalty_time.ToString("c");
-                        if (penalty_count == 0)
+                        if (penalty_count > 0)
                             Display += "<br/>(-" + penalty_count + ")";
                         StatusID = status.ID;
                         Key1 = 1;
@@ -199,10 +201,11 @@ namespace CodeComb.Web.Models.View
                         }
                         if (score < max * 0.3)
                             score = Convert.ToInt32(max * 0.3);
-                        score -= 50 * statuses.Where(x => Entity.Status.FreeResults.Contains((Entity.JudgeResult)x.ResultAsInt)).Count();
+                        score -= 50 * statuses.Where(x => !Entity.Status.FreeResults.Contains((Entity.JudgeResult)x.ResultAsInt)).Count();
                         Key1 = score;
                         Css = "rank-green";
                         Display = Key1 + "<br/>(" + time.ToString("hh':'mm") + ")";
+                        StatusID = status.ID;
                     }
                     else
                     {

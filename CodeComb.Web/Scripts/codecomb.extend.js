@@ -1,4 +1,5 @@
-﻿var IsPMOpened = false;
+﻿var key2desc = false;
+var IsPMOpened = false;
 var editor;
 var CurrentContactID = null;
 var RealTimeStatusID = null;
@@ -198,6 +199,18 @@ function GetDetails(id) {
     });
 }
 
+function HackResultDisplay(hack)
+{
+    var html = '<table><tr><td style="text-align:center"><p><img src="' + hack.HackerGravatar + '" class="hack-avatar"></p><p>进攻方: <a href-"/User/' + hack.HackerID + '">' + hack.HackerName + '</a></p></td><td style="text-align:center"><h2>VS</h2>';
+    html += '<h3 class="' + hack.Css + '">' + hack.Result + '</h3>';
+    html += '<p>记录号: ' + hack.StatusID + '</p>';
+    html += '<p>题目: <a href="/Problem/' + hack.ProblemID + '">' + hack.ProblemTitle + '</a></p>';
+    html += '<p>进攻方: <a href-"/User/' + hack.HackerID + '">' + hack.HackerName + '</a></p>';
+    html += '<p>防守方: <a href-"/User/' + hack.DefenderID + '">' + hack.DefenderName + '</a></p></td>';
+    html += '<td style="text-align:center"><p><img src="' + hack.DefenderGravatar + '" class="hack-avatar"></p><p>防守方: <a href-"/User/' + hack.DefenderID + '">' + hack.DefenderName + '</a></p></td></tr></table>';
+    $.colorbox({ html: html, width: '700px' });
+}
+
 $(document).ready(function () {
     $("#btnAddContact").click(function () {
         var uid = $(this).attr("uid");
@@ -280,6 +293,18 @@ $(document).ready(function () {
     }
     CodeCombHub.client.onClarificationsRequested = function (id) {
         ClarResponse(id);
+    }
+    CodeCombHub.client.onStandingsChanged = function (tid, data) {
+        if (tid == id)
+        {
+            StandingsUpdate(data);
+        }
+    }
+    CodeCombHub.client.onHacked = function (hack) {
+        HackResultDisplay(hack);
+    }
+    CodeCombHub.client.onHackFinished = function (hack) {
+        HackResultDisplay(hack);
     }
     $.connection.hub.start();
 

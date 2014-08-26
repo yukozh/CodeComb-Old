@@ -24,7 +24,8 @@ namespace CodeComb.Node
             "{Name}.py",
             "{Name}.rb",
             "{Name}.cs",
-            "{Name}.vb"
+            "{Name}.vb",
+            "{Name}.fs"
         };
         public static string[] CompileArgs = 
         { 
@@ -36,8 +37,9 @@ namespace CodeComb.Node
             "", 
             "", 
             "", 
-            "csc Main.cs", 
-            "vbc Main.vb" 
+            "csc {Name}.cs", 
+            "vbc {Name}.vb",
+            "fsc {Name}.fs" 
         };
         public static string[] ExcuteArgs = 
         { 
@@ -50,7 +52,8 @@ namespace CodeComb.Node
             "py33 {Name}.py", 
             "ruby {Name}.rb", 
             "{Name}.exe", 
-            "{Name}.exe" 
+            "{Name}.exe",
+            "{Name}.exe"
         };
         public const string SpjArgs = " output.txt Main.out input.txt";
         public static void CheckPath(int id)
@@ -67,6 +70,13 @@ namespace CodeComb.Node
 
         public static void Judge(JudgeTask jt)
         {
+            while (Program.CurrentThreads >= Program.MaxThreads)
+            {
+                System.Threading.Thread.Sleep(500);
+            }
+
+            Program.CurrentThreads++;
+
             CheckPath(jt.ID);
 
             if (!FileExisted(jt.DataID))
@@ -149,6 +159,32 @@ namespace CodeComb.Node
             p.StartInfo.RedirectStandardOutput = true;
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.WorkingDirectory = Program.TempPath + @"\" + id;
+            if (Program.LocalAuth != null)
+            {
+                p.StartInfo.UserName = Program.LocalAuth.Username;
+                p.StartInfo.Password = Program.LocalAuth.secPassword;
+            }
+            if (!string.IsNullOrEmpty(Program.GccInclude))
+            {
+                p.StartInfo.EnvironmentVariables.Add("C_INCLUDE_PATH", Program.GccInclude);
+                p.StartInfo.EnvironmentVariables.Add("CPLUS_INCLUDE_PATH", Program.GccInclude);
+            }
+            if (!string.IsNullOrEmpty(Program.GccBin))
+                p.StartInfo.EnvironmentVariables.Add("PATH", Program.GccBin);
+            if (!string.IsNullOrEmpty(Program.FpcBin))
+                p.StartInfo.EnvironmentVariables.Add("PATH", Program.FpcBin);
+            if (!string.IsNullOrEmpty(Program.JavaBin))
+                p.StartInfo.EnvironmentVariables.Add("PATH", Program.JavaBin);
+            if (!string.IsNullOrEmpty(Program.Python27Bin))
+                p.StartInfo.EnvironmentVariables.Add("PATH", Program.Python27Bin);
+            if (!string.IsNullOrEmpty(Program.Python33Bin))
+                p.StartInfo.EnvironmentVariables.Add("PATH", Program.Python33Bin);
+            if (!string.IsNullOrEmpty(Program.RubyBin))
+                p.StartInfo.EnvironmentVariables.Add("PATH", Program.RubyBin);
+            if (!string.IsNullOrEmpty(Program.Net4Bin))
+                p.StartInfo.EnvironmentVariables.Add("PATH", Program.Net4Bin);
+            if (!string.IsNullOrEmpty(Program.FscBin))
+                p.StartInfo.EnvironmentVariables.Add("PATH", Program.FscBin);
             p.Start();
             p.StandardInput.WriteLine(CompileArgs[language_id].Replace("{Name}", Mode.ToString()));
             p.StandardInput.WriteLine("");
@@ -229,6 +265,32 @@ namespace CodeComb.Node
             p.StartInfo.RedirectStandardOutput = true;
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.WorkingDirectory = Program.TempPath + @"\" + id;
+            if (Program.LocalAuth != null)
+            {
+                p.StartInfo.UserName = Program.LocalAuth.Username;
+                p.StartInfo.Password = Program.LocalAuth.secPassword;
+            }
+            if (!string.IsNullOrEmpty(Program.GccInclude))
+            {
+                p.StartInfo.EnvironmentVariables.Add("C_INCLUDE_PATH", Program.GccInclude);
+                p.StartInfo.EnvironmentVariables.Add("CPLUS_INCLUDE_PATH", Program.GccInclude);
+            }
+            if (!string.IsNullOrEmpty(Program.GccBin))
+                p.StartInfo.EnvironmentVariables.Add("PATH", Program.GccBin);
+            if (!string.IsNullOrEmpty(Program.FpcBin))
+                p.StartInfo.EnvironmentVariables.Add("PATH", Program.FpcBin);
+            if (!string.IsNullOrEmpty(Program.JavaBin))
+                p.StartInfo.EnvironmentVariables.Add("PATH", Program.JavaBin);
+            if (!string.IsNullOrEmpty(Program.Python27Bin))
+                p.StartInfo.EnvironmentVariables.Add("PATH", Program.Python27Bin);
+            if (!string.IsNullOrEmpty(Program.Python33Bin))
+                p.StartInfo.EnvironmentVariables.Add("PATH", Program.Python33Bin);
+            if (!string.IsNullOrEmpty(Program.RubyBin))
+                p.StartInfo.EnvironmentVariables.Add("PATH", Program.RubyBin);
+            if (!string.IsNullOrEmpty(Program.Net4Bin))
+                p.StartInfo.EnvironmentVariables.Add("PATH", Program.Net4Bin);
+            if (!string.IsNullOrEmpty(Program.FscBin))
+                p.StartInfo.EnvironmentVariables.Add("PATH", Program.FscBin);
             p.Start();
             if (Mode == JudgeHelper.Mode.Spj)
                 p.StandardInput.WriteLine(ExcuteArgs[language_id].Replace("{Name}", Mode.ToString()) + SpjArgs);
@@ -344,9 +406,10 @@ namespace CodeComb.Node
         public static void Feedback(JudgeFeedback jfb)
         {
             Program.hubJudge.Invoke("JudgeFeedBack", jfb);
+            Program.CurrentThreads--;
         }
 
-        public enum Mode {Main, Spj, Range, Std};
+        public enum Mode {Main, Spj, Range, Std, DataMaker};
 
         public static string GetModeName(Mode mode)
         {
@@ -356,6 +419,7 @@ namespace CodeComb.Node
                 case Mode.Range: return "范围校验器";
                 case Mode.Spj: return "特殊比较器";
                 case Mode.Std: return "标程";
+                case Mode.DataMaker: return "数据产生器";
                 default: return "";
             }
         }

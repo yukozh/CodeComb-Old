@@ -67,7 +67,7 @@
                                 @{var num = 'A';}
                                 @foreach (CodeComb.Web.Models.View.ProblemInContest problem in ViewBag.Problems)
                                 {
-                                    <div class="contest-problem-item">@Html.ActionLink(num++ + ": " + problem.Title, "Show", "Problem", new { id = problem.ID }, null)@Html.Sanitized(problem.Credits)@Html.Sanitized(problem.Status)@Html.Sanitized(problem.Lock)</div>
+                                    <p class="contest-problem-item">@Html.ActionLink(num++ + ": " + problem.Title, "Show", "Problem", new { id = problem.ID }, null)@Html.Sanitized(problem.Credits)@Html.Sanitized(problem.Status)@Html.Sanitized(problem.Lock)</p>
                                 }
                             </div>
                         }

@@ -234,6 +234,14 @@ namespace CodeComb.Web.Controllers
             var contest = DbContext.Contests.Find(id);
             if (contest.Format == Entity.ContestFormat.OI && DateTime.Now < contest.End && !ViewBag.IsMaster)
                 return RedirectToAction("Message", "Shared", new { msg = "目前不提供比赛排名显示。" });
+            ViewBag.AllowHack = false;
+            if (User.Identity.IsAuthenticated)
+            {
+                if (contest.Format == Entity.ContestFormat.Codeforces && DateTime.Now >= contest.Begin && DateTime.Now < contest.End)
+                    ViewBag.AllowHack = true;
+                else if(contest.Format == Entity.ContestFormat.TopCoder && DateTime.Now >= contest.RestEnd && DateTime.Now < contest.End)
+                    ViewBag.AllowHack = true;
+            }
             return View(contest);
         }
 

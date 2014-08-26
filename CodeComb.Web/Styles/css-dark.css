@@ -1451,6 +1451,10 @@ body {
     color:#AAA!important;
 }
 
+.status-info {
+    min-width:450px;
+}
+
 .status-item-wrap {
     margin: 20px 220px 25px 100px;
 	height: 70px;
@@ -2440,4 +2444,8 @@ div.CodeMirror-selected {
 
 .flag-green {
     color:green;
+}
+
+.btn-hack {
+    color:#AAA!important;
 }

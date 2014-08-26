@@ -1427,6 +1427,10 @@ body {
     margin-top: 50px;
 }
 
+.status-info {
+    min-width:450px;
+}
+
 .status-item {
     position: relative;
     display: block;
@@ -2300,6 +2304,15 @@ tbody tr:hover {
 .rank-avatar {
     width: 40px;
     height: 40px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+hack-avatar {
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
     border: 2px solid #fff;
     margin-right: 5px;

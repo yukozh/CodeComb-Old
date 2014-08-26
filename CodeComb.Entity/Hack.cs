@@ -33,6 +33,25 @@ namespace CodeComb.Entity
         [Column("status")]
         public int ResultAsInt { get; set; }
 
+        [Column("hint")]
+        public string Hint { get; set; }
+
+        [Column("input_data")]
+        public string InputData { get; set; }
+
+        [Column("data_maker_code")]
+        public string DataMakerCode { get; set; }
+
+        [Column("data_maker_language")]
+        public int DataMakerLanguageAsInt { get; set; }
+
+        [NotMapped]
+        public Language DataMakerLanguage
+        {
+            get { return (Language)DataMakerLanguageAsInt; }
+            set { DataMakerLanguageAsInt = (int)value; }
+        }
+
         [NotMapped]
         public HackResult Result 
         {

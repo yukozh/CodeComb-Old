@@ -2,7 +2,7 @@
 var id = null;
 var lock = false;
 var standings;
-
+var allowhack = false;
 function Load()
 {
     if (lock) return;
@@ -286,7 +286,7 @@ function BuildStatusDetail(status) {
     var html = '<div class="status-item-wrap">'
                   + '<div class="status-face">' + status.Gravatar + '</div>'
                   + '<div class="status-cont"><div class="status-name"><h2><a href="/User/' + status.UserID + '">' + status.Nickname + '</a></h2></div></div>'
-                  + '<div class="status-info"><a href="/Problem/' + status.ProblemID + '">' + status.ProblemTitle + '<a/> / ' + status.TimeUsage + 'ms / ' + status.MemoryUsage + 'KiB / '+status.Language+' @' + status.TimeTip + '</div>'
+                  + '<div class="status-info"><a href="/Problem/' + status.ProblemID + '">' + status.ProblemTitle + '</a> / ' + status.TimeUsage + 'ms / ' + status.MemoryUsage + 'KiB / '+status.Language+' @' + status.TimeTip + '</div>'
                   + '<div class="status-status">' + status.Result + (status.PointCount > 1 ? ' (' + status.Statistics[0] + '/' + status.PointCount + ')' : "") + '</div>'
                   + '</div><div class="status-points">';
     var per = parseInt(100 / status.PointCount);
@@ -319,7 +319,7 @@ function BuildStandings(rank, data)
                   + '<td>' + data.Display2 + '</td>';
     for (var i in data.Details)
     {
-        if(data.Details[i].Key1 == 0)
+        if(data.Details[i].Key1 == 0 || !allowhack)
             html += '<td class="' + data.Details[i].Css + '">' + data.Details[i].Display + '</td>';
         else
             html += '<td class="' + data.Details[i].Css + '"><a class="btn-hack" href="javascript:Hack(' + data.Details.StatusID + ')">' + data.Details[i].Display + '</a></td>';
@@ -337,6 +337,17 @@ function StandingsDisplay()
 }
 function StandingsUpdate(data)
 {
+    var updated = false;
+    for(var i in standings)
+    {
+        if (standings[i].UserID == data.UserID)
+        {
+            standings[i] = data;
+            updated = true;
+        }
+    }
+    if (!updated)
+        standings.push(data);
     var cmp;
     if (key2desc) {
         cmp = function (a, b) {
@@ -355,6 +366,7 @@ function StandingsUpdate(data)
         }
     }
     standings.sort(cmp);
+    StandingsDisplay();
 }
 function SetTag(id) {
     if (tags.indexOf(id + ",") >= 0) {

@@ -14,7 +14,11 @@ namespace CodeComb.Node
     {
         public static HubConnection HubConnection;
         public static IHubProxy hubJudge;
-        public static string Username, Password, TempPath, DataPath, LibPath, Host;
+        public static readonly string Username, Password, TempPath, DataPath, LibPath, Host;
+        public static readonly string GccInclude, GccBin, FpcBin, JavaBin, Python33Bin, Python27Bin, RubyBin, Net4Bin, FscBin;
+        public static readonly Identity LocalAuth;
+        public static readonly int MaxThreads;
+        public static int CurrentThreads = 0;
         static Program()
         {
             Host = ConfigurationManager.AppSettings["Host"];
@@ -25,6 +29,22 @@ namespace CodeComb.Node
             TempPath = ConfigurationManager.AppSettings["TempPath"];
             DataPath = ConfigurationManager.AppSettings["DataPath"];
             LibPath = ConfigurationManager.AppSettings["LibPath"];
+            GccInclude = ConfigurationManager.AppSettings["GCC_INCLUDE"];
+            GccBin = ConfigurationManager.AppSettings["GCC_BIN"];
+            FpcBin = ConfigurationManager.AppSettings["FPC_BIN"];
+            JavaBin = ConfigurationManager.AppSettings["JAVA_BIN"];
+            Python33Bin = ConfigurationManager.AppSettings["PYTHON33_BIN"];
+            Python27Bin = ConfigurationManager.AppSettings["PYTHON27_BIN"];
+            RubyBin = ConfigurationManager.AppSettings["RUBY_BIN"];
+            Net4Bin = ConfigurationManager.AppSettings["NET4_BIN"];
+            FscBin = ConfigurationManager.AppSettings["FSC_BIN"];
+            MaxThreads = Convert.ToInt32(ConfigurationManager.AppSettings["FSC_BIN"]);
+            if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["LocalUsername"]))
+            {
+                LocalAuth = new Identity();
+                LocalAuth.Username = ConfigurationManager.AppSettings["LocalUsername"];
+                LocalAuth.Password = ConfigurationManager.AppSettings["LocalPassword"];
+            }
         }
         static void KeepAlive()
          {
@@ -55,11 +75,17 @@ Code Comb Node");
 
             hubJudge.On<JudgeTask>("Judge", jt =>
             {
-                System.Threading.Thread thread = new System.Threading.Thread(() => 
+                System.Threading.Tasks.Task.Factory.StartNew(() => 
                 {
                     JudgeHelper.Judge(jt);
                 });
-                thread.Start();
+            });
+            hubJudge.On<HackTask>("Hack", ht =>
+            {
+                System.Threading.Tasks.Task.Factory.StartNew(() =>
+                {
+                    HackHelper.Hack(ht);
+                });
             });
             hubJudge.On<string>("onMessage", msg =>
             {

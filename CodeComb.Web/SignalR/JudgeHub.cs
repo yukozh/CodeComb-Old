@@ -66,6 +66,22 @@ namespace CodeComb.Web.SignalR
                 Online = Online.Distinct().ToList();
                 Groups.Add(Context.ConnectionId, user.Username);
                 Clients.Group(user.Username).onMessage(String.Format("{0}，欢迎您。您已经成功注册成为Code Comb评测机！", user.Username));
+                var now = DateTime.Now;
+                var err_statuses = (from s in DbContext.Statuses
+                           where s.ResultAsInt == (int)Entity.JudgeResult.Pending
+                           || (s.ResultAsInt == (int)Entity.JudgeResult.Running && (now - s.Time).TotalMinutes > 10)
+                           select s).ToList();
+                foreach (var status in err_statuses)
+                {
+                    foreach (var jt in status.JudgeTasks)
+                    {
+                        SignalR.JudgeHub.context.Clients.Group(user.Username).Judge(new Judge.Models.JudgeTask(jt));
+                        jt.Result = Entity.JudgeResult.Running;
+                        DbContext.SaveChanges();
+                    }
+                    status.Result = Entity.JudgeResult.Running;
+                    SignalR.CodeCombHub.context.Clients.All.onStatusCreated(new Models.View.Status(status));//推送新状态
+                }
             }
         }
         public void JudgeFeedBack(JudgeFeedback jfb)
@@ -82,8 +98,51 @@ namespace CodeComb.Web.SignalR
             {
                 jt.Status.ResultAsInt = jt.Status.JudgeTasks.Max(x => x.ResultAsInt);
                 DbContext.SaveChanges();
+                var contest = jt.Status.Problem.Contest;
+                if (DateTime.Now >= contest.Begin && DateTime.Now < contest.End)
+                {
+                    SignalR.CodeCombHub.context.Clients.All.onStandingsChanged(contest.ID, new Models.View.Standing(jt.Status.User, contest));
+                }
             }
             SignalR.CodeCombHub.context.Clients.All.onStatusChanged(new Models.View.Status(jt.Status));//推送新状态
+        }
+        public void HackFeedBack(HackFeedback hfb)
+        {
+            if (Online.FindIndex(x => x.Token == Context.ConnectionId) < 0)
+                return;
+            var hack = DbContext.Hacks.Find(hfb.HackID);
+            hack.Result = hfb.Result;
+            hack.Hint = hfb.Hint;
+            DbContext.SaveChanges();
+            if (hack.Result == Entity.HackResult.Success)
+            {
+                var tc = new Entity.TestCase
+                {
+                    Input = hack.InputData,
+                    Hash = Helpers.Security.SHA1(hack.InputData),
+                    Type = Entity.TestCaseType.Custom,
+                    ProblemID = hack.Status.ProblemID,
+                    Output = hfb.Output
+                };
+                DbContext.TestCases.Add(tc);
+                DbContext.JudgeTasks.Add(new Entity.JudgeTask
+                {
+                    StatusID = hack.StatusID,
+                    Result = hfb.JudgeResult,
+                    TimeUsage = hfb.TimeUsage,
+                    MemoryUsage = hfb.MemoryUsage,
+                    Hint = hfb.Hint,
+                    TestCaseID = tc.ID
+                });
+                hack.Status.Result = Entity.JudgeResult.Hacked;
+                DbContext.SaveChanges();
+                SignalR.CodeCombHub.context.Clients.Group(hack.Defender.Username).onHacked(new Models.View.HackResult(hack));
+                SignalR.CodeCombHub.context.Clients.All.onStatusChanged(new Models.View.Status(hack.Status));
+            }
+            else
+            {
+                SignalR.CodeCombHub.context.Clients.Group(hack.Hacker.Username).onHackFinished(new Models.View.HackResult(hack));
+            }
         }
     }
 }

@@ -224,6 +224,7 @@
     <Compile Include="Models\View\ClarProblem.cs" />
     <Compile Include="Models\View\Contact.cs" />
     <Compile Include="Models\View\Contest.cs" />
+    <Compile Include="Models\View\HackResult.cs" />
     <Compile Include="Models\View\HomeContest.cs" />
     <Compile Include="Models\View\HomeNews.cs" />
     <Compile Include="Models\View\Login.cs" />

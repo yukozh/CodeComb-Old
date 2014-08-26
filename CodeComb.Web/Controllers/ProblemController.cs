@@ -69,7 +69,7 @@ namespace CodeComb.Web.Controllers
                 return RedirectToAction("Message", "Shared", new { msg = "您无权查看该题目！" });
             var Problems = new List<Models.View.StatusSnapshot>();
             foreach (var p in problem.Contest.Problems.OrderBy(x=>x.Credit))
-                Problems.Add(new Models.View.StatusSnapshot(p.Contest, ViewBag.CurrentUser));
+                Problems.Add(new Models.View.StatusSnapshot(p, ViewBag.CurrentUser));
             ViewBag.Problems = Problems;
             var statuses = problem.GetContestStatuses().Where(x => x.User.Username == User.Identity.Name).OrderByDescending(x => x.Time).ToList();
             if (contest.Format == ContestFormat.OI)
@@ -186,13 +186,14 @@ namespace CodeComb.Web.Controllers
         public ActionResult DeleteTestCase(int id)
         {
             var testcase = DbContext.TestCases.Find(id);
+            var problem_id = testcase.ProblemID;
             var contest = testcase.Problem.Contest;
             var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
             if(user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
                 return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
             DbContext.TestCases.Remove(testcase);
             DbContext.SaveChanges();
-            return RedirectToAction("TestCases", "Problem", new { id = contest.ID });
+            return RedirectToAction("TestCases", "Problem", new { id = problem_id });
         }
 
         [Authorize]
@@ -207,7 +208,7 @@ namespace CodeComb.Web.Controllers
                 return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
             testcase.TypeAsInt = (testcase.TypeAsInt + 1) % Enum.GetNames(typeof(Entity.TestCaseType)).Count();
             DbContext.SaveChanges();
-            return RedirectToAction("TestCases", "Problem", new { id = contest.ID });
+            return RedirectToAction("TestCases", "Problem", new { id = testcase.ProblemID });
         }
 
         [HttpPost]
@@ -224,7 +225,7 @@ namespace CodeComb.Web.Controllers
             testcase.Input = input;
             testcase.Output = output;
             DbContext.SaveChanges();
-            return RedirectToAction("TestCases", "Problem", new { id = contest.ID });
+            return RedirectToAction("TestCases", "Problem", new { id = testcase.ProblemID});
         }
 
         [HttpPost]
@@ -247,7 +248,7 @@ namespace CodeComb.Web.Controllers
                 Hash = Helpers.Security.SHA1(input)
             });
             DbContext.SaveChanges();
-            return RedirectToAction("TestCases", "Problem", new { id = contest.ID });
+            return RedirectToAction("TestCases", "Problem", new { id = problem.ID });
         }
 
         [HttpPost]
@@ -297,7 +298,7 @@ namespace CodeComb.Web.Controllers
             }
             DbContext.SaveChanges();
             System.IO.Directory.Delete(dir + timestamp, true);
-            return RedirectToAction("TestCases", "Problem", new { id = contest.ID });
+            return RedirectToAction("TestCases", "Problem", new { id = problem.ID });
         }
 
         [HttpGet]
