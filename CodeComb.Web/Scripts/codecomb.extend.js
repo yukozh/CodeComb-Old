@@ -399,4 +399,17 @@ $(document).ready(function () {
     $('.profile-btn').mouseleave(function () {
         $('.profile-btn-alt').remove();
     });
+
+    $(".testcase-copywrap").zclip({
+        path: "ZeroClipboard.swf",
+        copy: function () {
+            var t = $(this).data("id"),
+                e = "__new__line__" + (new Date).getTime(),
+                i = $("<div></div>").html($("#testcase-" + t).html().replace(/<br([\s\S]*?)>/gi, e));
+            return i.text().replace(/\n/g, "\r\n").replace(/\r\r/g, "\r").replace(new RegExp(e, "gi"), "\r\n");
+        },
+        afterCopy: function () {
+            CastMsg("已复制到剪贴板。");
+        }
+    });
 });
