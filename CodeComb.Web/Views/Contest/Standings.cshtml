@@ -15,12 +15,12 @@
                             <th style="width:40px;">头像</th>
                             <th style="width:120px;">昵称</th>
                             @if (Model.Format == ContestFormat.ACM)
-                            { 
+                            {
                                 <th style="width:35px;">AC</th>
                                 <th style="width:80px;">总罚时</th>
                             }
                             else if (Model.Format == ContestFormat.OI || Model.Format == ContestFormat.OPJOI)
-                            { 
+                            {
                                 <th style="width:45px;">分数</th>
                                 <th style="width:55px;">耗时</th>
                             }
@@ -30,19 +30,18 @@
                                 <th style="width:55px;">Hacks</th>
                             }
                             @for (char i = 'A'; i < Model.Problems.Count + 'A'; i++)
-                            { 
+                            {
                                 <th>@i</th>
                             }
                         </tr>
                     </thead>
-                    <tbody id="lstStandings">
-                    </tbody>
+                    <tbody id="lstStandings"></tbody>
                 </table>
             </div>
         </div><div class="clear"></div>
     </div>
 </div>
-@if(ViewBag.AllowHack)
+@if (ViewBag.AllowHack)
 {
     <div style="display:none">
         <div id="HackStatus">
@@ -56,19 +55,39 @@
                 <p><input type="button" class="button button-def" value="提交" /> <input type="button" class="button" value="清空" /></p>
             </div>
             <div id="hackDataMaker">
-
+                <textarea id="editor" name="code" style="width:600px;height:280px;font-size:12px;"></textarea>
+                <p>
+                    <select id="lstLanguages" name="language_id">
+                        @{
+                            var i = 0;
+                            foreach (var name in CodeComb.Entity.CommonEnums.LanguageDisplay)
+                            {
+                                if (((CodeComb.Entity.User)ViewBag.CurrentUser).CommonLanguageAsInt == i)
+                                {
+                                    <option value="@(i++)" selected>@name</option>
+                                }
+                                else
+                                {
+                                    <option value="@(i++)">@name</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <input type="button" id="btnSubmitDataMaker" class="button button-def" value="提交" />
+                    <input type="button" id="btnClearCodeBox" class="button" value="清空" />
+                </p>
             </div>
         </div>
     </div>
 }
 <script>
     id = @Model.ID;
-   @if (Model.Format == ContestFormat.TopCoder || Model.Format == ContestFormat.Codeforces)
-   { 
+    @if (Model.Format == ContestFormat.TopCoder || Model.Format == ContestFormat.Codeforces)
+   {
     @:key2desc = true;
-   }
+       }
     @if(ViewBag.AllowHack)
     {
         @:allowhack = true;
-    }
+        }
 </script>
