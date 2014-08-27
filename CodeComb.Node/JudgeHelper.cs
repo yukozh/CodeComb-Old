@@ -13,7 +13,7 @@ namespace CodeComb.Node
 {
     public static class JudgeHelper
     {
-        public const int CompileTimeLimit = 4000;
+        public const int CompileTimeLimit = 1500;
         public static string[] FileNames = 
         { 
             "{Name}.c",
@@ -77,39 +77,6 @@ namespace CodeComb.Node
 
             Program.CurrentThreads++;
 
-            CheckPath(jt.ID);
-
-            if (!FileExisted(jt.DataID))
-            {
-                DownloadFile(jt.DataID);
-            }
-
-            //
-            MakeCodeFile(jt.ID, jt.Code, (int)jt.CodeLanguage, Mode.Main);
-
-            //编译选手程序
-            if (!Compile(jt.ID, (int)jt.CodeLanguage, Mode.Main))
-                return;
-
-            MakeCodeFile(jt.ID, jt.SpecialJudgeCode, (int)jt.SpecialJudgeCodeLanguage, Mode.Main);
-
-            //编译SPJ
-            if (!string.IsNullOrEmpty(jt.SpecialJudgeCode))
-            {
-                if (!Compile(jt.ID, (int)jt.SpecialJudgeCodeLanguage, Mode.Spj))
-                {
-                    return;
-                }
-            }
-            else
-            {
-                File.Copy(Program.LibPath + @"\CodeComb.Validator.exe", Program.TempPath + @"\" + jt.ID + @"\Spj.exe", true);
-            }
-
-            //准备输入数据
-            File.Copy(Program.DataPath + @"\" + jt.DataID + @"\input.txt", Program.TempPath + @"\" + jt.ID + @"\input.txt", true);
-
-            long ExitCode;
             JudgeFeedback jfb = new JudgeFeedback()
             {
                 ID = jt.ID,
@@ -118,26 +85,71 @@ namespace CodeComb.Node
                 Success = false
             };
 
-            //运行选手程序
-            if (!Run(jt.ID, (int)jt.CodeLanguage, jt.TimeLimit, jt.MemoryLimit, Mode.Main, out ExitCode, ref jfb))
-                return;
-
-            //准备输出数据
-            File.Copy(Program.DataPath + @"\" + jt.DataID + @"\output.txt", Program.TempPath + @"\" + jt.ID + @"\output.txt", true);
-
-            if (!string.IsNullOrEmpty(jt.SpecialJudgeCode))
+            try
             {
-                if (!Run(jt.ID, (int)jt.SpecialJudgeCodeLanguage, jt.TimeLimit, jt.MemoryLimit, Mode.Spj, out ExitCode, ref jfb))
-                    return;
-            }
-            else
-            {
-                if (!Run(jt.ID, (int)Entity.Language.Cxx, jt.TimeLimit, jt.MemoryLimit, Mode.Spj, out ExitCode, ref jfb))
-                    return;
-            }
+                CheckPath(jt.ID);
 
-            //校验结果
-            Validate(jt.ID, ExitCode, jfb);
+                if (!FileExisted(jt.DataID))
+                {
+                    DownloadFile(jt.DataID);
+                }
+
+                //
+                MakeCodeFile(jt.ID, jt.Code, (int)jt.CodeLanguage, Mode.Main);
+
+                //编译选手程序
+                if (!Compile(jt.ID, (int)jt.CodeLanguage, Mode.Main))
+                    return;
+
+                MakeCodeFile(jt.ID, jt.SpecialJudgeCode, (int)jt.SpecialJudgeCodeLanguage, Mode.Main);
+
+                //编译SPJ
+                if (!string.IsNullOrEmpty(jt.SpecialJudgeCode))
+                {
+                    if (!Compile(jt.ID, (int)jt.SpecialJudgeCodeLanguage, Mode.Spj))
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    File.Copy(Program.LibPath + @"\CodeComb.Validator.exe", Program.TempPath + @"\" + jt.ID + @"\Spj.exe", true);
+                }
+
+                //准备输入数据
+                File.Copy(Program.DataPath + @"\" + jt.DataID + @"\input.txt", Program.TempPath + @"\" + jt.ID + @"\input.txt", true);
+
+                long ExitCode;
+
+                //运行选手程序
+                if (!Run(jt.ID, (int)jt.CodeLanguage, jt.TimeLimit, jt.MemoryLimit, Mode.Main, out ExitCode, ref jfb))
+                    return;
+
+                //准备输出数据
+                File.Copy(Program.DataPath + @"\" + jt.DataID + @"\output.txt", Program.TempPath + @"\" + jt.ID + @"\output.txt", true);
+
+                if (!string.IsNullOrEmpty(jt.SpecialJudgeCode))
+                {
+                    if (!Run(jt.ID, (int)jt.SpecialJudgeCodeLanguage, jt.TimeLimit, jt.MemoryLimit, Mode.Spj, out ExitCode, ref jfb))
+                        return;
+                }
+                else
+                {
+                    if (!Run(jt.ID, (int)Entity.Language.Cxx, jt.TimeLimit, jt.MemoryLimit, Mode.Spj, out ExitCode, ref jfb))
+                        return;
+                }
+
+                //校验结果
+                Validate(jt.ID, ExitCode, jfb);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                jfb.Hint = System.Web.HttpUtility.HtmlEncode(ex.ToString());
+                jfb.Result = Entity.JudgeResult.SystemError;
+                Program.CurrentThreads--;
+                Feedback(jfb);
+            }
         }
 
         public static bool Compile(int id, int language_id, Mode Mode)
@@ -166,25 +178,71 @@ namespace CodeComb.Node
             }
             if (!string.IsNullOrEmpty(Program.GccInclude))
             {
-                p.StartInfo.EnvironmentVariables.Add("C_INCLUDE_PATH", Program.GccInclude);
-                p.StartInfo.EnvironmentVariables.Add("CPLUS_INCLUDE_PATH", Program.GccInclude);
+                if (p.StartInfo.EnvironmentVariables["C_INCLUDE_PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["C_INCLUDE_PATH"] = Program.GccInclude;
+                else
+                    p.StartInfo.EnvironmentVariables["C_INCLUDE_PATH"] += ";" + Program.GccInclude;
+                if (p.StartInfo.EnvironmentVariables["CPLUS_INCLUDE_PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["CPLUS_INCLUDE_PATH"] = Program.GccInclude;
+                else
+                    p.StartInfo.EnvironmentVariables["CPLUS_INCLUDE_PATH"] += ";" + Program.GccInclude;
             }
             if (!string.IsNullOrEmpty(Program.GccBin))
-                p.StartInfo.EnvironmentVariables.Add("PATH", Program.GccBin);
+            {
+                if (p.StartInfo.EnvironmentVariables["PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["PATH"] = Program.GccBin;
+                else
+                    p.StartInfo.EnvironmentVariables["PATH"] += ";" + Program.GccBin;
+            }
             if (!string.IsNullOrEmpty(Program.FpcBin))
-                p.StartInfo.EnvironmentVariables.Add("PATH", Program.FpcBin);
+            {
+                if (p.StartInfo.EnvironmentVariables["PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["PATH"] = Program.FpcBin;
+                else
+                    p.StartInfo.EnvironmentVariables["PATH"] += ";" + Program.FpcBin;
+            }
             if (!string.IsNullOrEmpty(Program.JavaBin))
-                p.StartInfo.EnvironmentVariables.Add("PATH", Program.JavaBin);
+            {
+                if (p.StartInfo.EnvironmentVariables["PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["PATH"] = Program.JavaBin;
+                else
+                    p.StartInfo.EnvironmentVariables["PATH"] += ";" + Program.JavaBin;
+            }
             if (!string.IsNullOrEmpty(Program.Python27Bin))
-                p.StartInfo.EnvironmentVariables.Add("PATH", Program.Python27Bin);
+            {
+                if (p.StartInfo.EnvironmentVariables["PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["PATH"] = Program.Python27Bin;
+                else
+                    p.StartInfo.EnvironmentVariables["PATH"] += ";" + Program.Python27Bin;
+            }
             if (!string.IsNullOrEmpty(Program.Python33Bin))
-                p.StartInfo.EnvironmentVariables.Add("PATH", Program.Python33Bin);
+            {
+                if (p.StartInfo.EnvironmentVariables["PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["PATH"] = Program.Python33Bin;
+                else
+                    p.StartInfo.EnvironmentVariables["PATH"] += ";" + Program.Python33Bin;
+            }
             if (!string.IsNullOrEmpty(Program.RubyBin))
-                p.StartInfo.EnvironmentVariables.Add("PATH", Program.RubyBin);
+            {
+                if (p.StartInfo.EnvironmentVariables["PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["PATH"] = Program.RubyBin;
+                else
+                    p.StartInfo.EnvironmentVariables["PATH"] += ";" + Program.RubyBin;
+            }
             if (!string.IsNullOrEmpty(Program.Net4Bin))
-                p.StartInfo.EnvironmentVariables.Add("PATH", Program.Net4Bin);
+            {
+                if (p.StartInfo.EnvironmentVariables["PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["PATH"] = Program.Net4Bin;
+                else
+                    p.StartInfo.EnvironmentVariables["PATH"] += ";" + Program.Net4Bin;
+            }
             if (!string.IsNullOrEmpty(Program.FscBin))
-                p.StartInfo.EnvironmentVariables.Add("PATH", Program.FscBin);
+            {
+                if (p.StartInfo.EnvironmentVariables["PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["PATH"] = Program.FscBin;
+                else
+                    p.StartInfo.EnvironmentVariables["PATH"] += ";" + Program.FscBin;
+            }
             p.Start();
             p.StandardInput.WriteLine(CompileArgs[language_id].Replace("{Name}", Mode.ToString()));
             p.StandardInput.WriteLine("");
@@ -272,25 +330,71 @@ namespace CodeComb.Node
             }
             if (!string.IsNullOrEmpty(Program.GccInclude))
             {
-                p.StartInfo.EnvironmentVariables.Add("C_INCLUDE_PATH", Program.GccInclude);
-                p.StartInfo.EnvironmentVariables.Add("CPLUS_INCLUDE_PATH", Program.GccInclude);
+                if (p.StartInfo.EnvironmentVariables["C_INCLUDE_PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["C_INCLUDE_PATH"] = Program.GccInclude;
+                else
+                    p.StartInfo.EnvironmentVariables["C_INCLUDE_PATH"] += ";" + Program.GccInclude;
+                if (p.StartInfo.EnvironmentVariables["CPLUS_INCLUDE_PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["CPLUS_INCLUDE_PATH"] = Program.GccInclude;
+                else
+                    p.StartInfo.EnvironmentVariables["CPLUS_INCLUDE_PATH"] += ";" + Program.GccInclude;
             }
             if (!string.IsNullOrEmpty(Program.GccBin))
-                p.StartInfo.EnvironmentVariables.Add("PATH", Program.GccBin);
+            {
+                if (p.StartInfo.EnvironmentVariables["PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["PATH"] = Program.GccBin;
+                else
+                    p.StartInfo.EnvironmentVariables["PATH"] += ";" + Program.GccBin;
+            }
             if (!string.IsNullOrEmpty(Program.FpcBin))
-                p.StartInfo.EnvironmentVariables.Add("PATH", Program.FpcBin);
+            {
+                if (p.StartInfo.EnvironmentVariables["PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["PATH"] = Program.FpcBin;
+                else
+                    p.StartInfo.EnvironmentVariables["PATH"] += ";" + Program.FpcBin;
+            }
             if (!string.IsNullOrEmpty(Program.JavaBin))
-                p.StartInfo.EnvironmentVariables.Add("PATH", Program.JavaBin);
+            {
+                if (p.StartInfo.EnvironmentVariables["PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["PATH"] = Program.JavaBin;
+                else
+                    p.StartInfo.EnvironmentVariables["PATH"] += ";" + Program.JavaBin;
+            }
             if (!string.IsNullOrEmpty(Program.Python27Bin))
-                p.StartInfo.EnvironmentVariables.Add("PATH", Program.Python27Bin);
+            {
+                if (p.StartInfo.EnvironmentVariables["PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["PATH"] = Program.Python27Bin;
+                else
+                    p.StartInfo.EnvironmentVariables["PATH"] += ";" + Program.Python27Bin;
+            }
             if (!string.IsNullOrEmpty(Program.Python33Bin))
-                p.StartInfo.EnvironmentVariables.Add("PATH", Program.Python33Bin);
+            {
+                if (p.StartInfo.EnvironmentVariables["PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["PATH"] = Program.Python33Bin;
+                else
+                    p.StartInfo.EnvironmentVariables["PATH"] += ";" + Program.Python33Bin;
+            }
             if (!string.IsNullOrEmpty(Program.RubyBin))
-                p.StartInfo.EnvironmentVariables.Add("PATH", Program.RubyBin);
+            {
+                if (p.StartInfo.EnvironmentVariables["PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["PATH"] = Program.RubyBin;
+                else
+                    p.StartInfo.EnvironmentVariables["PATH"] += ";" + Program.RubyBin;
+            }
             if (!string.IsNullOrEmpty(Program.Net4Bin))
-                p.StartInfo.EnvironmentVariables.Add("PATH", Program.Net4Bin);
+            {
+                if (p.StartInfo.EnvironmentVariables["PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["PATH"] = Program.Net4Bin;
+                else
+                    p.StartInfo.EnvironmentVariables["PATH"] += ";" + Program.Net4Bin;
+            }
             if (!string.IsNullOrEmpty(Program.FscBin))
-                p.StartInfo.EnvironmentVariables.Add("PATH", Program.FscBin);
+            {
+                if (p.StartInfo.EnvironmentVariables["PATH"] == null)
+                    p.StartInfo.EnvironmentVariables["PATH"] = Program.FscBin;
+                else
+                    p.StartInfo.EnvironmentVariables["PATH"] += ";" + Program.FscBin;
+            }
             p.Start();
             if (Mode == JudgeHelper.Mode.Spj)
                 p.StandardInput.WriteLine(ExcuteArgs[language_id].Replace("{Name}", Mode.ToString()) + SpjArgs);

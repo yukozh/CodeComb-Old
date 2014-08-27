@@ -75,8 +75,6 @@ namespace CodeComb.Web.SignalR
                 {
                     foreach (var jt in status.JudgeTasks.ToList())
                     {
-                        jt.Result = Entity.JudgeResult.Running;
-                        DbContext.SaveChanges();
                         var judgetask = new Judge.Models.JudgeTask(jt);
                         System.Threading.Tasks.Task.Factory.StartNew(() =>
                         {
@@ -108,6 +106,11 @@ namespace CodeComb.Web.SignalR
                 {
                     SignalR.CodeCombHub.context.Clients.All.onStandingsChanged(contest.ID, new Models.View.Standing(jt.Status.User, contest));
                 }
+            }
+            else
+            {
+                jt.Status.Result = Entity.JudgeResult.Running;
+                DbContext.SaveChanges();
             }
             SignalR.CodeCombHub.context.Clients.All.onStatusChanged(new Models.View.Status(jt.Status));//推送新状态
         }
