@@ -2004,6 +2004,7 @@ tbody tr:hover {
     color: #FFF;
     text-shadow: 1px 1px 0 #000;
     text-decoration:none!important;
+    white-space:nowrap;
 }
 
 .label-big {

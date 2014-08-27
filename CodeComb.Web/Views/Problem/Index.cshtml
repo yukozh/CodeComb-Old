@@ -48,13 +48,16 @@
             <h3>检索</h3>
             <p><input type="text" class="textbox" placeholder="题目名称" id="txtProblemTitle" /></p>
             <p><input type="button" class="button button-def" value="筛选" id="btnProblemSearch" /></p>
+            <h3>题目分类</h3>
             @foreach (AlgorithmTag tag in ViewBag.Tags)
             { 
-                <h3>@tag.Title</h3>
-                foreach (AlgorithmTag child in tag.Children)
-                { 
+                <p>@tag.Title</p>
+                <p>
+                    @foreach (AlgorithmTag child in tag.Children)
+                    {
                     <a href="javascript:SetTag(@child.ID)" class="ProblemTag label" id="tag_@child.ID">@child.Title</a>
-                }
+                    }
+                </p>
             }
         </div>
     </div><div class="clear"></div>

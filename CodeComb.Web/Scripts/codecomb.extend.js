@@ -253,7 +253,7 @@ $(document).ready(function () {
                     html_detail += details[i].Hint;
                     html_detail += '</blockquote></div></div>';
                 }
-                $.colorbox({ html: '<h3>评测结果</h3><p><span class=status-text-' + StatusCss[status.ResultAsInt] + '>' + status.Result + '</span> Time=' + status.TimeUsage + 'ms, Memory=' + status.MemoryUsage + 'KiB</p><div class="status-content" id="lstDetails">' + html_detail + '</div>', width: '700px' });
+                $.colorbox({ html: '<h3>评测结果</h3><p><span class=status-text-' + StatusCss[status.ResultAsInt] + '>' + status.Result + '</span> Time=' + status.TimeUsage + 'ms, Memory=' + status.MemoryUsage + 'KiB</p><div id="lstDetails">' + html_detail + '</div>', width: '700px' });
                 $(".btnDetail").unbind().click(function () {
                     var did = $(this).attr("did");
                     $("#d_" + did).toggle();

@@ -20,6 +20,7 @@ namespace CodeComb.Node
             "{Name}.cpp",
             "{Name}.cpp",
             "{Name}.java",
+            "{Name}.pas",
             "{Name}.py",
             "{Name}.py",
             "{Name}.rb",

@@ -1994,6 +1994,7 @@ tbody tr:hover {
     font-size:14px;
     color:black!important;
     text-decoration:none!important;
+    white-space:nowrap;
 }
 
 .label-big {
