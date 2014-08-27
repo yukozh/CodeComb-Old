@@ -5,6 +5,7 @@ var CurrentContactID = null;
 var RealTimeStatusID = null;
 var status_id = null;
 var hack_id = null;
+var CodeCombHub;
 
 function GetContacts()
 {
@@ -214,20 +215,8 @@ function HackResultDisplay(hack)
 }
 
 $(document).ready(function () {
-    $("#btnAddContact").click(function () {
-        var uid = $(this).attr("uid");
-        AddContact(uid);
-    });
-    $("#btnPostMessage").click(function () {
-        PostMessage();
-    });
-    $("#txtMessageContent").keydown(function (e) {
-        if (e.ctrlKey && e.which == 13)
-            PostMessage();
-    });
-
     //SignalR
-    var CodeCombHub = $.connection.codeCombHub;
+    CodeCombHub = $.connection.codeCombHub;
     CodeCombHub.client.onStatusChanged = function (status) {
         if ($("#lstStatuses").length > 0) {
             if ($("#s_" + status.ID).length > 0) {
@@ -242,8 +231,7 @@ $(document).ready(function () {
                 GetDetails(status.ID);
             }
         }
-        if (RealTimeStatusID != null)
-        {
+        if (RealTimeStatusID != null) {
             if (RealTimeStatusID != status.ID) return;
             var html_detail = "";
             $.getJSON("/Status/GetStatusDetails/" + status.ID, {}, function (details) {
@@ -263,8 +251,7 @@ $(document).ready(function () {
         }
     };
     CodeCombHub.client.onStatusCreated = function (status) {
-        if ($("#lstStatuses").length > 0)
-        {
+        if ($("#lstStatuses").length > 0) {
             if (contest_id != null && status.ContestID != contest_id) return;
             if (nickname != null && status._Nickname.indexOf(nickname) < 0) return;
             if (problem_id != null && problem_id != 0 && status.ProblemID != problem_id) return;
@@ -277,8 +264,7 @@ $(document).ready(function () {
             GetChatRecords(CurrentContactID);
         if (!IsPMOpened) $("#btnPMDisplay").addClass("btn-highlight");
     };
-    CodeCombHub.client.onClarificationsResponsed = function (clar)
-    {
+    CodeCombHub.client.onClarificationsResponsed = function (clar) {
         var title, question, answer, clarid;
         title = '<span style="color:blue">' + clar.ProblemRelation + "</span>";
         if (!clar.NoProblemRelation)
@@ -297,8 +283,7 @@ $(document).ready(function () {
         ClarResponse(id);
     }
     CodeCombHub.client.onStandingsChanged = function (tid, data) {
-        if (tid == id)
-        {
+        if (tid == id) {
             StandingsUpdate(data);
         }
     }
@@ -308,7 +293,31 @@ $(document).ready(function () {
     CodeCombHub.client.onHackFinished = function (hack) {
         HackResultDisplay(hack);
     }
-    $.connection.hub.start();
+    CodeCombHub.client.onJudgerStatusChanged = function (judger) {
+        var html = '<img class="post-face" src="' + judger.Gravatar + '" /><a href="/User/' + judger.ID + '">' + judger.Nickname + '</a> ' + judger.Motto + ' 负载：' + judger.Ratio + '% 状态：<span class="' + judger.Css + '">' + judger.Status + '</span>';
+        //<p id="j_' + judger.ID + '"> <p id="j_' + judger.ID + '">
+        if ($("#j_" + judger.ID).length > 0)
+            $("#j_" + judger.ID).html(html);
+        else
+            $("#lstJudgers").prepend('<p id="j_' + judger.ID + '">' + html + '<p id="j_' + judger.ID + '">');
+    }
+    $.connection.hub.start().done(function () {
+        if ($("#lstJudgers").length > 0) {
+            CodeCombHub.server.joinJudgeList();
+        }
+    });
+
+    $("#btnAddContact").click(function () {
+        var uid = $(this).attr("uid");
+        AddContact(uid);
+    });
+    $("#btnPostMessage").click(function () {
+        PostMessage();
+    });
+    $("#txtMessageContent").keydown(function (e) {
+        if (e.ctrlKey && e.which == 13)
+            PostMessage();
+    });
 
     $("#btnLoadCodeEditBox").click(function () {
         $.colorbox({ inline: true, width: "700px", href: "#CodeEditBox", onComplete: function () { editor.refresh(); } });

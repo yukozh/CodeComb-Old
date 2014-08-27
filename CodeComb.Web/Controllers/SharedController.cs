@@ -21,5 +21,21 @@ namespace CodeComb.Web.Controllers
         {
             return Content(Helpers.Markdown.ToHtml(content));
         }
+
+        public ActionResult Judger()
+        {
+            var judgers = new List<Models.View.Judger>();
+            foreach (var client in SignalR.JudgeHub.Online)
+            {
+                var user = (from u in DbContext.Users where u.Username == client.Username select u).Single();
+                judgers.Add(new Models.View.Judger(user, client));
+            }
+            return View(judgers);
+        }
+
+        public ActionResult About()
+        {
+            return View();
+        }
 	}
 }

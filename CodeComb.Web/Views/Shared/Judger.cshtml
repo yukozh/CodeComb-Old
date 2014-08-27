@@ -1,0 +1,27 @@
+﻿@model IEnumerable<CodeComb.Web.Models.View.Judger>
+@{
+    ViewBag.Title = "评测节点";
+}
+
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="post-detail-wrap">
+                    <div class="post-title"><h2>评测节点</h2></div>
+                    <div class="post-content">
+                        <div>
+                            <p>在线评测节点列表：</p>
+                            <div id="lstJudgers">
+                                @foreach (var item in Model)
+                                {
+                                    <p id="j_@item.ID"><img class="post-face" src="@item.Gravatar" /><a href="/User/@item.ID">@Html.Sanitized(item.Nickname)</a> @Html.Sanitized(item.Motto) 负载：@item.Ratio% 状态：<span class="@item.Css">@item.Status</span></p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>

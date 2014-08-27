@@ -228,6 +228,7 @@
     <Compile Include="Models\View\HackResult.cs" />
     <Compile Include="Models\View\HomeContest.cs" />
     <Compile Include="Models\View\HomeNews.cs" />
+    <Compile Include="Models\View\Judger.cs" />
     <Compile Include="Models\View\Login.cs" />
     <Compile Include="Models\View\Post.cs" />
     <Compile Include="Models\View\ProblemInContest.cs" />
@@ -596,6 +597,8 @@
     <Content Include="Views\User\Settings.cshtml" />
     <Content Include="Views\Problem\Index.cshtml" />
     <Content Include="Views\User\Contest.cshtml" />
+    <Content Include="Views\Shared\Judger.cshtml" />
+    <Content Include="Views\Shared\About.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

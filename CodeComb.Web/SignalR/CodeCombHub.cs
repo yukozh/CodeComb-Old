@@ -25,5 +25,9 @@ namespace CodeComb.Web.SignalR
             }
             return base.OnDisconnected(stopCalled);
         }
+        public void JoinJudgeList()
+        {
+            Groups.Add(Context.ConnectionId, "System Judge");
+        }
     }
 }

@@ -269,6 +269,7 @@ namespace CodeComb.Web.Controllers
                 {
                     var group = SignalR.JudgeHub.Online[Helpers.String.RandomInt(0, SignalR.JudgeHub.Online.Count - 1)].Username;
                     SignalR.JudgeHub.context.Clients.Group(group).Judge(new Judge.Models.JudgeTask(jt));
+                    SignalR.JudgeHub.ThreadBusy(group);
                     jt.Result = Entity.JudgeResult.Running;
                     DbContext.SaveChanges();
                 }
@@ -397,6 +398,7 @@ namespace CodeComb.Web.Controllers
                 {
                     var group = SignalR.JudgeHub.Online[Helpers.String.RandomInt(0, SignalR.JudgeHub.Online.Count - 1)].Username;
                     SignalR.JudgeHub.context.Clients.Group(group).Hack(new Judge.Models.HackTask(hack));
+                    SignalR.JudgeHub.ThreadBusy(group);
                     hack.Result = Entity.HackResult.Running;
                     DbContext.SaveChanges();
                 }

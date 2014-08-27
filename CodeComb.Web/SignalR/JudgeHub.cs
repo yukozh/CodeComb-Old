@@ -10,8 +10,8 @@ namespace CodeComb.Web.SignalR
 {
     public class JudgeHub : Hub
     {
-        public Database.DB DbContext = new Database.DB();
         public static List<Client> Online = new List<Client>();
+        public Database.DB DbContext = new Database.DB();
         public static Microsoft.AspNet.SignalR.IHubContext context = Microsoft.AspNet.SignalR.GlobalHost.ConnectionManager.GetHubContext<JudgeHub>();
         public override System.Threading.Tasks.Task OnDisconnected(bool stopCalled)
         {
@@ -46,7 +46,7 @@ namespace CodeComb.Web.SignalR
                 return null;
             return DbContext.TestCases.Find(ID).Hash;
         }
-        public void Auth(string Username, string Password)
+        public void Auth(string Username, string Password, int MaxThreads)
         {
             var pwd = Helpers.Security.SHA1(Password);
             var user = (from u in DbContext.Users
@@ -62,8 +62,13 @@ namespace CodeComb.Web.SignalR
                 {
                     Clients.Group(user.Username).onMessage(String.Format("{0}已经在线，无法接受您的连接！", user.Username));
                 }
-                Online.Add(new Client { Token = Context.ConnectionId, Username = user.Username });
+                var client = new Client { Token = Context.ConnectionId, Username = user.Username, MaxThreads = MaxThreads, CurrentThreads = 0 };
+                Online.Add(client);
                 Online = Online.Distinct().ToList();
+                System.Threading.Tasks.Task.Factory.StartNew(() => 
+                {
+                    SignalR.CodeCombHub.context.Clients.Group("System Judge").onJudgerStatusChanged(new Models.View.Judger(user, client));
+                });
                 Groups.Add(Context.ConnectionId, user.Username);
                 Clients.Group(user.Username).onMessage(String.Format("{0}，欢迎您。您已经成功注册成为Code Comb评测机！", user.Username));
                 var time = DateTime.Now.AddMinutes(-5);
@@ -76,6 +81,7 @@ namespace CodeComb.Web.SignalR
                     foreach (var jt in status.JudgeTasks.ToList())
                     {
                         var judgetask = new Judge.Models.JudgeTask(jt);
+                        ThreadBusy(user.Username);
                         System.Threading.Tasks.Task.Factory.StartNew(() =>
                         {
                             SignalR.JudgeHub.context.Clients.Group(user.Username).Judge(judgetask);
@@ -97,6 +103,7 @@ namespace CodeComb.Web.SignalR
             jt.TimeUsage = jfb.TimeUsage;
             jt.Result = jfb.Result;
             DbContext.SaveChanges();
+            ThreadFree();
             if (jt.Status.JudgeTasks.Where(x => x.ResultAsInt == (int)Entity.JudgeResult.Running || x.ResultAsInt == (int)Entity.JudgeResult.Pending).Count() == 0)
             {
                 jt.Status.ResultAsInt = jt.Status.JudgeTasks.Max(x => x.ResultAsInt);
@@ -166,6 +173,31 @@ namespace CodeComb.Web.SignalR
                 {
                     SignalR.CodeCombHub.context.Clients.All.onStandingsChanged(hack.Status.Problem.Contest.ID, new Models.View.Standing(hack.Hacker, hack.Status.Problem.Contest));
                 }
+            }
+        }
+        public static void ThreadBusy(string JudgerName)
+        {
+            var index = Online.FindIndex(x => x.Username == JudgerName);
+            if (index >= 0)
+            {
+                Online[index].CurrentThreads++;
+                Database.DB DbContext = new Database.DB();
+                var username = Online[index].Username;
+                var user = (from u in DbContext.Users where u.Username == username select u).Single();
+                SignalR.CodeCombHub.context.Clients.Group("System Judge").onJudgerStatusChanged(new Models.View.Judger(user, Online[index]));
+            }
+        }
+        private void ThreadFree()
+        {
+            var index = Online.FindIndex(x => x.Token == Context.ConnectionId);
+            if (index >= 0)
+            {
+                Online[index].CurrentThreads--;
+                if (Online[index].CurrentThreads < 0)
+                    Online[index].CurrentThreads = 0;
+                var username = Online[index].Username;
+                var user = (from u in DbContext.Users where u.Username == username select u).Single();
+                SignalR.CodeCombHub.context.Clients.Group("System Judge").onJudgerStatusChanged(new Models.View.Judger(user, Online[index]));
             }
         }
     }

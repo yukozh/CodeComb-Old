@@ -95,7 +95,7 @@ Code Comb Node");
             HubConnection.TraceWriter = Console.Out;
             HubConnection.Start().Wait();
             HubConnection.ConnectionSlow += HubConnection_ConnectionSlow;
-            hubJudge.Invoke("Auth", Username, Password).Wait();
+            hubJudge.Invoke("Auth", Username, Password, MaxThreads).Wait();
             System.Threading.Thread t = new System.Threading.Thread(KeepAlive);
             t.Start();
         }
