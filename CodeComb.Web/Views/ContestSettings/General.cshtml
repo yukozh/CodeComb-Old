@@ -30,7 +30,14 @@
                                     比赛赛制：<select name="FormatAsInt" id="lstContestFormat">
                                         @for (int i = 0; i < ((string[])ViewBag.ContestFormats).Count(); i++)
                                         {
-                                            <option value="@i">@ViewBag.ContestFormats[i]</option>
+                                            if (Model.FormatAsInt == i)
+                                            {
+                                                <option value="@i" selected>@ViewBag.ContestFormats[i]</option>
+                                            }
+                                            else
+                                            { 
+                                                <option value="@i">@ViewBag.ContestFormats[i]</option>
+                                            }
                                         }
                                     </select>
                                 </p>
