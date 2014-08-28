@@ -2477,3 +2477,8 @@ div.CodeMirror-selected {
 .show_public_tips_text {
     color: #fff;
 }
+
+dd{
+    word-wrap: break-word; 
+　　word-break: normal;
+}
