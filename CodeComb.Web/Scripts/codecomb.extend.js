@@ -354,6 +354,14 @@ $(document).ready(function () {
         });
     });
 
+    $('.ckeditor-code').each(function () {
+        $(this).html('<code>' + $(this).html() + '</code>');
+        $(this).removeClass('ckeditor-code');
+    });
+    if (navigator.userAgent.indexOf("MSIE") == -1) {
+        hljs.initHighlightingOnLoad();
+    }
+
     $("#btnLoadCodeEditBox").click(function () {
         $.colorbox({ inline: true, width: "700px", href: "#CodeEditBox", onComplete: function () { editor.refresh(); } });
     });

@@ -2477,3 +2477,7 @@ div.CodeMirror-selected {
 .show_public_tips_text {
     color: #fff;
 }
+
+.hljs-keyword {
+    rgb(215,186,125)!important;
+}
