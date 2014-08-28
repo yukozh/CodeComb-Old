@@ -101,6 +101,7 @@ function PrivateMessageDispay()
 
 function GetChatRecords(sender_id)
 {
+    $("#ChatRecords").html("");
     CurrentContactID = sender_id;
     $.getJSON("/PrivateMessage/GetChatRecords", { sender_id: sender_id, rnd: Math.random() }, function (chatrecords) {
         for (var i in chatrecords)
