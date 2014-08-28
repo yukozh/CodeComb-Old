@@ -39,7 +39,7 @@
                                     <td>@Model.Problems.Count</td>
                                 </tr>
                                 @foreach (var chk in Checks)
-                                { 
+                                {
                                     <tr>
                                         <td>@chk.Problem</td>
                                         <td class="@chk.Css">@chk.Result</td>
@@ -47,6 +47,46 @@
                                 }
                             </tbody>
                         </table>
+                        @if (IsMaster)
+                        {
+                            <br />
+                            <h3>重测</h3>
+                            <p>
+                                <input type="button" class="button button-def" value="重测全部记录" onclick="$('#frmRejudge').submit()" />
+                                @if (Model.Format == ContestFormat.TopCoder || Model.Format == ContestFormat.Codeforces)
+                                {
+                                    <input type="button" class="button" value="重测全部Hack" onclick="$('#frmRehack').submit()" />
+                                }
+                            </p>
+                            using (Html.BeginForm("Rejudge", "ContestSettings", new { id = Model.ID }, FormMethod.Post, new { id = "frmRejudge" }))
+                            {
+                                @Html.AntiForgeryToken()
+                            }
+                            if (Model.Format == ContestFormat.TopCoder || Model.Format == ContestFormat.Codeforces)
+                            {
+                                using (Html.BeginForm("Rehack", "ContestSettings", new { id = Model.ID }, FormMethod.Post, new { id = "frmRehack" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                }
+                            }
+                        }
+                        @if (ViewBag.CurrentUser.Role >= CodeComb.Entity.UserRole.Master)
+                        {
+                            <br />
+                            <h3>Rating计算</h3>
+                            <p>
+                                <input type="button" class="button button-def" value="计算Rating" onclick="$('#frmCountRating').submit()" />
+                                <input type="button" class="button" value="删除Rating" onclick="$('#frmDeleteRating').submit()" />
+                            </p>
+                            using (Html.BeginForm("Count", "Rating", new { id = Model.ID }, FormMethod.Post, new { id = "frmCountRating" }))
+                            {
+                                @Html.AntiForgeryToken()
+                            }
+                            using (Html.BeginForm("Delete", "Rating", new { id = Model.ID }, FormMethod.Post, new { id = "frmDeleteRating" }))
+                            {
+                                @Html.AntiForgeryToken()
+                            }
+                        }
                     </div>
                 </div>
             </div>

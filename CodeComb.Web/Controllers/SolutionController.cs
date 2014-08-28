@@ -47,13 +47,21 @@ namespace CodeComb.Web.Controllers
             catch { }
         }//id=problem id
 
+        protected bool IsMaster(int contest_id)
+        {
+            if (!User.Identity.IsAuthenticated) return false;
+            var user = (from u in DbContext.Users where u.Username == User.Identity.Name select u).Single();
+            if (user.Role >= Entity.UserRole.Master) return true;
+            var cnt_cm = (from cm in DbContext.ContestManagers where cm.ContestID == contest_id && cm.UserID == user.ID select cm).Count();
+            if (cnt_cm == 0) return false;
+            return true;
+        }
         //
         // GET: /Solution/
         public ActionResult Index(int id)
         {
             var problem = DbContext.Problems.Find(id);
-            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
-            if (DateTime.Now < problem.Contest.End && user.Role < Entity.UserRole.Master && !(from m in problem.Contest.Managers select m.ID).Contains(user.ID))
+            if (DateTime.Now < problem.Contest.End && !IsMaster(problem.ContestID))
                 return RedirectToAction("Message", "Shared", new { msg = "目前还不能使用解题报告系统！" });
             ViewBag.CurrentContest = problem.Contest;
             ViewBag.ProblemTitle = problem.Title;
@@ -64,13 +72,18 @@ namespace CodeComb.Web.Controllers
             return View(solutions);
         }//checked
 
-        public ActionResult Show(int id)//checked
+        public ActionResult Show(int id)
         {
             var solution = DbContext.Solutions.Find(id);
             var problem = solution.Problem;
-            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
-            if (DateTime.Now < problem.Contest.End && user.Role < Entity.UserRole.Master && !(from m in problem.Contest.Managers select m.ID).Contains(user.ID))
-                return RedirectToAction("Message", "Shared", new { msg = "目前还不能使用结题报告系统！" });
+            if (DateTime.Now < problem.Contest.End)
+            { 
+                if(!User.Identity.IsAuthenticated)
+                    return RedirectToAction("Message", "Shared", new { msg = "目前还不能使用结题报告系统！" });
+                var user = (Entity.User)ViewBag.CurrentUser;
+                if (!IsMaster(problem.ContestID))
+                    return RedirectToAction("Message", "Shared", new { msg = "目前还不能使用结题报告系统！" });
+            }
             ViewBag.Tags = solution.SolutionTags;
             return View(solution);
         }
@@ -82,8 +95,15 @@ namespace CodeComb.Web.Controllers
         {
             var solution = DbContext.Solutions.Find(id);
             var problem = solution.Problem;
-            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
-            if (DateTime.Now < problem.Contest.End && user.Role < Entity.UserRole.Master && !(from m in problem.Contest.Managers select m.ID).Contains(user.ID) && solution.UserID != user.ID)
+            var user = (Entity.User)ViewBag.CurrentUser;
+            if (DateTime.Now < problem.Contest.End)
+            {
+                if (!User.Identity.IsAuthenticated)
+                    return RedirectToAction("Message", "Shared", new { msg = "您无权删除这份解题报告！" });
+                if (!IsMaster(problem.ContestID))
+                    return RedirectToAction("Message", "Shared", new { msg = "您无权删除这份解题报告！" });
+            }
+            if (solution.UserID != user.ID && !IsMaster(problem.ContestID))
                 return RedirectToAction("Message", "Shared", new { msg = "您无权删除这份解题报告！" });
             DbContext.Solutions.Remove(solution);
             DbContext.SaveChanges();
@@ -98,9 +118,8 @@ namespace CodeComb.Web.Controllers
         {
             var solution = DbContext.Solutions.Find(id);
             var contest = solution.Problem.Contest;
-            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
-            if (user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
-
+            var user = (Entity.User)ViewBag.CurrentUser;
+            if (!IsMaster(contest.ID))
                 return RedirectToAction("Message", "Shared", new { msg="权限不足！"});
             solution.Language = model.Language;
             solution.Title = model.Title;
@@ -115,8 +134,8 @@ namespace CodeComb.Web.Controllers
         {
             var solution = DbContext.Solutions.Find(id);
             var contest = solution.Problem.Contest;
-            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
-            if (user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
+            var user = (Entity.User)ViewBag.CurrentUser;
+            if (!IsMaster(contest.ID))
                 return RedirectToAction("Message", "Shared", new { msg = "权限不足！" });
             return View(solution);
         }
@@ -126,8 +145,8 @@ namespace CodeComb.Web.Controllers
         {
             var solution = DbContext.Solutions.Find(id);
             var contest = solution.Problem.Contest;
-            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
-            if (user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
+            var user = (Entity.User)ViewBag.CurrentUser;
+            if (solution.UserID != user.ID && !IsMaster(contest.ID))
                 return RedirectToAction("Message", "Shared", new { msg = "权限不足！" });
             ViewBag.Tags = (from at in DbContext.AlgorithmTags
                             where at.FatherID == null
@@ -142,8 +161,8 @@ namespace CodeComb.Web.Controllers
         {
             var solution = DbContext.Solutions.Find(id);
             var contest = solution.Problem.Contest;
-            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
-            if (user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
+            var user = (Entity.User)ViewBag.CurrentUser;
+            if (user.ID != solution.ID && !IsMaster(contest.ID))
                 return Json(null, JsonRequestBehavior.AllowGet);
             var tags = (from t in solution.SolutionTags
                         select t.AlgorithmTagID).ToList();
@@ -156,8 +175,8 @@ namespace CodeComb.Web.Controllers
         {
             var solution = DbContext.Solutions.Find(id);
             var contest = solution.Problem.Contest;
-            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
-            if (user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
+            var user = (Entity.User)ViewBag.CurrentUser;
+            if (solution.ID != user.ID && !IsMaster(contest.ID))
                 return Content("Failed");
             var tags = solution.SolutionTags.Where(x => x.AlgorithmTagID == tid).ToList();
             if (tags.Count == 0)
@@ -185,10 +204,10 @@ namespace CodeComb.Web.Controllers
         {
             var problem = DbContext.Problems.Find(id);
             ViewBag.ProblemTitle = problem.Title;
-            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
-            if (DateTime.Now < problem.Contest.End && user.Role < Entity.UserRole.Master && !(from m in problem.Contest.Managers select m.ID).Contains(user.ID))
+            var user = (Entity.User)ViewBag.CurrentUser;
+            if (DateTime.Now < problem.Contest.End && !IsMaster(problem.ContestID))
                 return RedirectToAction("Message", "Shared", new { msg = "现在不允许编写解题报告！" });
-            if (problem.Statuses.Where(x => x.ResultAsInt == (int)Entity.JudgeResult.Accepted && x.UserID == user.ID).Count() == 0 && user.Role < Entity.UserRole.Master && !(from m in problem.Contest.Managers select m.ID).Contains(user.ID))
+            if (problem.Statuses.Where(x => x.ResultAsInt == (int)Entity.JudgeResult.Accepted && x.UserID == user.ID).Count() == 0 && !IsMaster(problem.ContestID))
                 return RedirectToAction("Message", "Shared", new { msg = "只有通过了本题才可以编写解题报告！" });
             return View();
         }
@@ -200,10 +219,10 @@ namespace CodeComb.Web.Controllers
         public ActionResult Create(int id, Solution model)//checked
         {
             var problem = DbContext.Problems.Find(id);
-            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
-            if (DateTime.Now < problem.Contest.End && user.Role < Entity.UserRole.Master && !(from m in problem.Contest.Managers select m.ID).Contains(user.ID))
+            var user = (Entity.User)ViewBag.CurrentUser;
+            if (DateTime.Now < problem.Contest.End && !IsMaster(problem.ContestID))
                 return RedirectToAction("Message", "Shared", new { msg = "现在不允许编写解题报告！" });
-            if (problem.Statuses.Where(x => x.ResultAsInt == (int)Entity.JudgeResult.Accepted && x.UserID == user.ID).Count() == 0 && user.Role < Entity.UserRole.Master && !(from m in problem.Contest.Managers select m.ID).Contains(user.ID))
+            if (problem.Statuses.Where(x => x.ResultAsInt == (int)Entity.JudgeResult.Accepted && x.UserID == user.ID).Count() == 0 && !IsMaster(problem.ContestID))
                 return RedirectToAction("Message", "Shared", new { msg = "只有通过了本题才可以编写解题报告！" });
             var solution = new Solution 
             { 

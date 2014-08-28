@@ -196,5 +196,39 @@ namespace CodeComb.Web.Controllers
             ViewBag.Checks = checks;
             return View(contest);
         }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Rejudge(int id)
+        {
+            var user = (Entity.User)ViewBag.CurrentUser;
+            var contest = DbContext.Contests.Find(id);
+            if (user.Role < Entity.UserRole.Master && (from cm in contest.Managers select cm.ID).Contains(user.ID))
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            var statuses = (from s in DbContext.Statuses
+                            where s.Problem.ContestID == id
+                            select s.ID).ToList();
+            foreach (var sid in statuses)
+                StatusController._Rejudge(sid);
+            return RedirectToAction("More", "ContestSettings", new { id = id });
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Rehack(int id)
+        {
+            var user = (Entity.User)ViewBag.CurrentUser;
+            var contest = DbContext.Contests.Find(id);
+            if(user.Role < Entity.UserRole.Master && (from cm in contest.Managers select cm.ID).Contains(user.ID))
+                return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
+            var hacks = (from h in DbContext.Hacks
+                            where h.Status.Problem.ContestID == id
+                            select h.ID).ToList();
+            foreach (var hid in hacks)
+                StatusController._Rehack(hid);
+            return RedirectToAction("More", "ContestSettings", new { id = id });
+        }
 	}
 }

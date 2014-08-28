@@ -212,6 +212,7 @@
     <Compile Include="Helpers\HtmlFilter.cs" />
     <Compile Include="Helpers\Markdown.cs" />
     <Compile Include="Helpers\MvcHtmlHelperExt.cs" />
+    <Compile Include="Helpers\Rating.cs" />
     <Compile Include="Helpers\Regexes.cs" />
     <Compile Include="Helpers\Security.cs" />
     <Compile Include="Helpers\SMTP.cs" />

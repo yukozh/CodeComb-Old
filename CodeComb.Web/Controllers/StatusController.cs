@@ -287,19 +287,12 @@ namespace CodeComb.Web.Controllers
             return Content(status.ID.ToString());
         }
 
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public ActionResult Rejudge(int id)
-        {
+        public static bool  _Rejudge(int id)
+        { 
+            Database.DB DbContext = new Database.DB();
             var status = DbContext.Statuses.Find(id);
             var problem = status.Problem;
             var contest = problem.Contest;
-            var user = (Entity.User)ViewBag.CurrentUser;
-            if (!(user.Role >= Entity.UserRole.Master || (from cm in contest.Managers select cm.UserID).Contains(user.ID)))
-            {
-                return Content("No");
-            }
             List<int> testcase_ids;
             if (DateTime.Now < contest.Begin || DateTime.Now >= contest.End || contest.Format == Entity.ContestFormat.ACM || contest.Format == Entity.ContestFormat.OPJOI || contest.Format == Entity.ContestFormat.OI)
             {
@@ -314,7 +307,7 @@ namespace CodeComb.Web.Controllers
                                 where tc.Type == Entity.TestCaseType.Unilateralism
                                 orderby tc.Type ascending
                                 select tc.ID).ToList();
-                var statuses = problem.GetContestStatuses().Where(x => x.UserID == user.ID).ToList();
+                var statuses = problem.GetContestStatuses().Where(x => x.UserID == status.UserID).ToList();
                 foreach (var s in statuses)
                 {
                     foreach (var jt in s.JudgeTasks)
@@ -362,7 +355,7 @@ namespace CodeComb.Web.Controllers
                 try
                 {
                     var group = SignalR.JudgeHub.GetNode();
-                    if (group == null) return Content("No Online Judger");
+                    if (group == null) return false;
                     SignalR.JudgeHub.context.Clients.Group(group).Judge(new Judge.Models.JudgeTask(jt));
                     SignalR.JudgeHub.ThreadBusy(group);
                     jt.Result = Entity.JudgeResult.Running;
@@ -371,7 +364,26 @@ namespace CodeComb.Web.Controllers
                 catch { }
             }
             SignalR.CodeCombHub.context.Clients.All.onStatusCreated(new Models.View.Status(status));//推送新状态
-            return Content("OK");
+            return true;
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult Rejudge(int id)
+        {
+            var status = DbContext.Statuses.Find(id);
+            var problem = status.Problem;
+            var contest = problem.Contest;
+            var user = (Entity.User)ViewBag.CurrentUser;
+            if (!(user.Role >= Entity.UserRole.Master || (from cm in contest.Managers select cm.UserID).Contains(user.ID)))
+            {
+                return Content("No");
+            }
+            if (_Rejudge(id))
+                return Content("OK");
+            else
+                return Content("No Online Judger");
         }
 
         [HttpGet]
@@ -505,6 +517,31 @@ namespace CodeComb.Web.Controllers
             }
         }
 
+        public static bool _Rehack(int id)
+        {
+            Database.DB DbContext = new Database.DB();
+            var hack = DbContext.Hacks.Find(id);
+            var status = hack.Status;
+            var problem = status.Problem;
+            var contest = problem.Contest;
+            if (status.Result == Entity.JudgeResult.Hacked)
+            {
+                DbContext.TestCases.Remove(status.JudgeTasks.Last().TestCase);
+                DbContext.SaveChanges();
+                status.Result = status.JudgeTasks.Max(x => x.Result);
+                DbContext.SaveChanges();
+            }
+            var group = SignalR.JudgeHub.GetNode();
+            hack.Result = Entity.HackResult.Pending;
+            DbContext.SaveChanges();
+            if (group == null) return false;
+            SignalR.JudgeHub.context.Clients.Group(group).Hack(new Judge.Models.HackTask(hack));
+            SignalR.JudgeHub.ThreadBusy(group);
+            hack.Result = Entity.HackResult.Running;
+            DbContext.SaveChanges();
+            return true;
+        }
+
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -519,22 +556,10 @@ namespace CodeComb.Web.Controllers
             {
                 return Content("No");
             }
-            if (status.Result == Entity.JudgeResult.Hacked)
-            {
-                DbContext.TestCases.Remove(status.JudgeTasks.Last().TestCase);
-                DbContext.SaveChanges();
-                status.Result = status.JudgeTasks.Max(x => x.Result);
-                DbContext.SaveChanges();
-            }
-            var group = SignalR.JudgeHub.GetNode();
-            hack.Result = Entity.HackResult.Pending;
-            DbContext.SaveChanges();
-            if (group == null) return Content("Err");
-            SignalR.JudgeHub.context.Clients.Group(group).Hack(new Judge.Models.HackTask(hack));
-            SignalR.JudgeHub.ThreadBusy(group);
-            hack.Result = Entity.HackResult.Running;
-            DbContext.SaveChanges();
-            return Content("OK");
+            if (_Rehack(id))
+                return Content("OK");
+            else 
+                return Content("Err");
         }
 	}
 }
