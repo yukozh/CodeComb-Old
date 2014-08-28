@@ -7,6 +7,22 @@ var status_id = null;
 var hack_id = null;
 var CodeCombHub;
 
+function BroadCastBox()
+{
+    $.colorbox({
+        inline: true,
+        href: '#BroadCastBox',
+        height: '475px',
+        width:'700px',
+        onComplete: function () {
+            CKEDITOR.replace('txtBroadCast', { toolbar: 'Basic', width: '645px', height: '200px' });
+        },
+        onClosed: function () {
+            CKEDITOR.instances.txtBroadCast.destroy();
+        }
+    });
+}
+
 function GetContacts()
 {
     var contact_ids = GetCookie();
@@ -293,9 +309,12 @@ $(document).ready(function () {
     CodeCombHub.client.onHackFinished = function (hack) {
         HackResultDisplay(hack);
     }
+    CodeCombHub.client.onBroadCast = function (data) {
+        var html = "<h3>BroadCast</h3>" + data;
+        $.colorbox({ html: html, width: '700px' });
+    }
     CodeCombHub.client.onJudgerStatusChanged = function (judger) {
         var html = '<img class="post-face" src="' + judger.Gravatar + '" /><a href="/User/' + judger.ID + '">' + judger.Nickname + '</a> ' + judger.Motto + ' 负载：' + judger.Ratio + '% 状态：<span class="' + judger.Css + '">' + judger.Status + '</span>';
-        //<p id="j_' + judger.ID + '"> <p id="j_' + judger.ID + '">
         if ($("#j_" + judger.ID).length > 0)
             $("#j_" + judger.ID).html(html);
         else
@@ -320,9 +339,18 @@ $(document).ready(function () {
     });
 
     $("#btnRejudge").click(function () {
-        $.post("/Status/Rejudge/" + id, { rnd: Math.random() }, function (ret)
+        $.post("/Status/Rejudge/" + id, $("#frmRejudge").serialize(), function (ret)
         {
             CastMsg("正在进行重测...");
+        });
+    });
+
+    $("#btnBroadCast").click(function () {
+        var content = CKEDITOR.instances.txtBroadCast.getData();
+        $("#txtBroadCast").val(content);
+        $.post("/Shared/BroadCast", $("#frmBroadCast").serialize(), function (ret) {
+            if (ret == "OK") CastMsg("广播成功！");
+            $.colorbox.close();
         });
     });
 

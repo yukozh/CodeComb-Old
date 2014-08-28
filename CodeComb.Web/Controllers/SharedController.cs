@@ -37,5 +37,18 @@ namespace CodeComb.Web.Controllers
         {
             return View();
         }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult BroadCast(string content)
+        {
+            var user = (Entity.User)ViewBag.CurrentUser;
+            if (user.Role < Entity.UserRole.Master)
+                return Content("NO");
+            SignalR.CodeCombHub.context.Clients.All.onBroadCast(Helpers.HtmlFilter.Instance.SanitizeHtml(content));
+            return Content("OK");
+        }
 	}
 }

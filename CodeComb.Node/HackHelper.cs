@@ -13,7 +13,6 @@ namespace CodeComb.Node
 {
     public class HackHelper
     {
-        public const int CompileTimeLimit = 3000;
         public static string[] FileNames = 
         { 
             "{Name}.c",
@@ -273,15 +272,18 @@ namespace CodeComb.Node
             p.StandardInput.WriteLine("compile.out");
             p.StandardInput.WriteLine("compile.err");
             p.StandardInput.WriteLine("");
-            p.StandardInput.WriteLine(CompileTimeLimit);
+            if (language_id == (int)Entity.Language.Java)
+                p.StandardInput.WriteLine(Program.CompileTimeLimit + 2000);
+            else
+                p.StandardInput.WriteLine(Program.CompileTimeLimit);
             p.StandardInput.WriteLine(128 * 1024);
-            p.StandardInput.WriteLine(1000);
+            p.StandardInput.WriteLine(Program.CompileTimeLimit);
             p.StandardInput.Close();
             p.WaitForExit();
             var ResultAsString = p.StandardOutput.ReadToEnd();
             JavaScriptSerializer jss = new JavaScriptSerializer();
             var Result = jss.Deserialize<Result>(ResultAsString);
-            if (Result.TimeUsage > CompileTimeLimit)
+            if (Result.TimeUsage > Program.CompileTimeLimit)
             {
                 if (Mode == HackHelper.Mode.Range)
                 {

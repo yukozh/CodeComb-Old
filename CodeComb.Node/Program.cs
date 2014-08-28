@@ -18,6 +18,7 @@ namespace CodeComb.Node
         public static readonly string GccInclude, GccBin, FpcBin, JavaBin, Python33Bin, Python27Bin, RubyBin, Net4Bin, FscBin;
         public static readonly Identity LocalAuth;
         public static readonly int MaxThreads;
+        public static readonly int CompileTimeLimit;
         public static int CurrentThreads = 0;
         static Program()
         {
@@ -38,6 +39,7 @@ namespace CodeComb.Node
             RubyBin = ConfigurationManager.AppSettings["RUBY_BIN"];
             Net4Bin = ConfigurationManager.AppSettings["NET4_BIN"];
             FscBin = ConfigurationManager.AppSettings["FSC_BIN"];
+            CompileTimeLimit = Convert.ToInt32(ConfigurationManager.AppSettings["CompileTimeLimit"]);
             MaxThreads = Convert.ToInt32(ConfigurationManager.AppSettings["Threads"]);
             if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["LocalUsername"]))
             {

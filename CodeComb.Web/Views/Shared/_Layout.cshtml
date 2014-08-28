@@ -51,12 +51,17 @@
     <![endif]-->
     <script src="~/Scripts/jquery.signalR-2.1.1.js"></script>
     <script src="~/signalr/hubs"></script>
+    <script type="text/javascript" src="~/Scripts/ckeditor/ckeditor.js"></script>
 </head>
 <body class="page-contests page-contests-all">
     @if (User.Identity.IsAuthenticated)
     { 
         <!-- page action buttons -->
         <div class="page-actions">
+            @if (ViewBag.CurrentUser.Role >= CodeComb.Entity.UserRole.Master)
+            { 
+            <a href="javascript:BroadCastBox()" class="profile-btn"><img src="/Images/broadcast.png" alt="发布广播" /></a>
+            }
             <a href="javascript:CurrentContactID=null;PrivateMessageDispay();GetContacts();" id="btnPMDisplay" class="profile-btn"><img src="/Images/chat.png" alt="我的消息" /></a>
 
         </div>
@@ -119,6 +124,20 @@
     <script>
         var username = "c_@User.Identity.Name";
     </script>
+    @if (User.Identity.IsAuthenticated && ViewBag.CurrentUser.Role >= CodeComb.Entity.UserRole.Master)
+    { 
+        <div style="display:none">
+            <div id="BroadCastBox">
+                <h3>BroadCast</h3>
+                @using (Html.BeginForm("BroadCast", "Shared", FormMethod.Post, new { id = "frmBroadCast" }))
+                { 
+                    @Html.AntiForgeryToken()
+                    <textarea id="txtBroadCast" name="content"></textarea>
+                    <p><input type="button" class="button button-def" id="btnBroadCast" value="广播" /></p>
+                }
+            </div>
+        </div>
+    }
     <!-- /body -->
     <!-- /post -->
     <!-- footer -->
