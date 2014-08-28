@@ -20,6 +20,9 @@ namespace CodeComb.Web.Controllers
             var status = DbContext.Statuses.Find(id);
             var contest = status.Problem.Contest;
             var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            ViewBag.IsMaster = false;
+            if (user.Role >= Entity.UserRole.Master || (from cm in status.Problem.Contest.Managers select cm.UserID).Contains(user.ID))
+                ViewBag.IsMaster = true;
             bool Showable = false;
             if (DateTime.Now >= contest.End || user.Role >= Entity.UserRole.Master || (from m in contest.Managers select m.ID).ToList().Contains(user.ID))
                 Showable = true;
@@ -81,7 +84,7 @@ namespace CodeComb.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetStatuses(int page, string nickname, int? result,int? contest_id, int? problem_id)
+        public ActionResult GetStatuses(int page, string nickname, int? result,int? contest_id, int? problem_id, int? user_id)
         {
             var _statuses = from s in DbContext.Statuses select s;
             if (!string.IsNullOrEmpty(nickname))
@@ -97,6 +100,8 @@ namespace CodeComb.Web.Controllers
                 _statuses = _statuses.Where(x => x.Problem.ContestID == contest_id && x.Time >= x.Problem.Contest.Begin && x.Time < x.Problem.Contest.End);
             if (problem_id != null)
                 _statuses = _statuses.Where(x => x.ProblemID == problem_id);
+            if (user_id != null)
+                _statuses = _statuses.Where(x => x.UserID == user_id);
             _statuses = _statuses.OrderByDescending(x => x.Time);
             var statuses = new List<Models.View.Status>();
             foreach (var status in _statuses.Skip(10 * page).Take(10).ToList())
@@ -267,7 +272,8 @@ namespace CodeComb.Web.Controllers
             {
                 try
                 {
-                    var group = SignalR.JudgeHub.Online[Helpers.String.RandomInt(0, SignalR.JudgeHub.Online.Count - 1)].Username;
+                    var group = SignalR.JudgeHub.GetNode();
+                    if (group == null) return Content("No Online Judger");
                     SignalR.JudgeHub.context.Clients.Group(group).Judge(new Judge.Models.JudgeTask(jt));
                     SignalR.JudgeHub.ThreadBusy(group);
                     jt.Result = Entity.JudgeResult.Running;
@@ -279,6 +285,93 @@ namespace CodeComb.Web.Controllers
             if (contest.Format == Entity.ContestFormat.OI)
                 return Content("OI");
             return Content(status.ID.ToString());
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult Rejudge(int id)
+        {
+            var status = DbContext.Statuses.Find(id);
+            var problem = status.Problem;
+            var contest = problem.Contest;
+            var user = (Entity.User)ViewBag.CurrentUser;
+            if (!(user.Role >= Entity.UserRole.Master || (from cm in contest.Managers select cm.UserID).Contains(user.ID)))
+            {
+                return Content("No");
+            }
+            List<int> testcase_ids;
+            if (DateTime.Now < contest.Begin || DateTime.Now >= contest.End || contest.Format == Entity.ContestFormat.ACM || contest.Format == Entity.ContestFormat.OPJOI || contest.Format == Entity.ContestFormat.OI)
+            {
+                testcase_ids = (from tc in problem.TestCases
+                                where tc.Type != Entity.TestCaseType.Sample
+                                orderby tc.Type ascending
+                                select tc.ID).ToList();
+            }
+            else if (contest.Format == Entity.ContestFormat.Codeforces)
+            {
+                testcase_ids = (from tc in problem.TestCases
+                                where tc.Type == Entity.TestCaseType.Unilateralism
+                                orderby tc.Type ascending
+                                select tc.ID).ToList();
+                var statuses = problem.GetContestStatuses().Where(x => x.UserID == user.ID).ToList();
+                foreach (var s in statuses)
+                {
+                    foreach (var jt in s.JudgeTasks)
+                    {
+                        testcase_ids.Add(jt.TestCaseID);
+                    }
+                }
+                testcase_ids = testcase_ids.Distinct().ToList();
+            }
+            else
+            {
+                if (DateTime.Now < contest.RestBegin)
+                {
+                    testcase_ids = (from tc in problem.TestCases
+                                    where tc.Type == Entity.TestCaseType.Sample
+                                    orderby tc.Type ascending
+                                    select tc.ID).ToList();
+                }
+                else
+                {
+                    testcase_ids = (from tc in problem.TestCases
+                                    where tc.Type != Entity.TestCaseType.Sample
+                                    orderby tc.Type ascending
+                                    select tc.ID).ToList();
+                }
+            }
+            var existed_ids = (from jt in status.JudgeTasks
+                               select jt.TestCaseID).ToList();
+            testcase_ids = testcase_ids.Except(existed_ids).ToList();
+            foreach (var tid in testcase_ids)
+            {
+                DbContext.JudgeTasks.Add(new Entity.JudgeTask
+                {
+                    StatusID = status.ID,
+                    TestCaseID = tid,
+                    Result = Entity.JudgeResult.Pending,
+                    MemoryUsage = 0,
+                    TimeUsage = 0,
+                    Hint = ""
+                });
+            }
+            DbContext.SaveChanges();
+            foreach (var jt in status.JudgeTasks)
+            {
+                try
+                {
+                    var group = SignalR.JudgeHub.GetNode();
+                    if (group == null) return Content("No Online Judger");
+                    SignalR.JudgeHub.context.Clients.Group(group).Judge(new Judge.Models.JudgeTask(jt));
+                    SignalR.JudgeHub.ThreadBusy(group);
+                    jt.Result = Entity.JudgeResult.Running;
+                    DbContext.SaveChanges();
+                }
+                catch { }
+            }
+            SignalR.CodeCombHub.context.Clients.All.onStatusCreated(new Models.View.Status(status));//推送新状态
+            return Content("OK");
         }
 
         [HttpGet]
@@ -396,7 +489,8 @@ namespace CodeComb.Web.Controllers
                 DbContext.SaveChanges();
                 try
                 {
-                    var group = SignalR.JudgeHub.Online[Helpers.String.RandomInt(0, SignalR.JudgeHub.Online.Count - 1)].Username;
+                    var group = SignalR.JudgeHub.GetNode();
+                    if (group == null) return Content("err");
                     SignalR.JudgeHub.context.Clients.Group(group).Hack(new Judge.Models.HackTask(hack));
                     SignalR.JudgeHub.ThreadBusy(group);
                     hack.Result = Entity.HackResult.Running;
@@ -409,6 +503,38 @@ namespace CodeComb.Web.Controllers
             {
                 return Content("err");
             }
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult Rehack(int id)
+        {
+            var hack = DbContext.Hacks.Find(id);
+            var status = hack.Status;
+            var problem = status.Problem;
+            var contest = problem.Contest;
+            var user = (Entity.User)ViewBag.CurrentUser;
+            if (!(user.Role >= Entity.UserRole.Master || (from cm in contest.Managers select cm.UserID).Contains(user.ID)))
+            {
+                return Content("No");
+            }
+            if (status.Result == Entity.JudgeResult.Hacked)
+            {
+                DbContext.TestCases.Remove(status.JudgeTasks.Last().TestCase);
+                DbContext.SaveChanges();
+                status.Result = status.JudgeTasks.Max(x => x.Result);
+                DbContext.SaveChanges();
+            }
+            var group = SignalR.JudgeHub.GetNode();
+            hack.Result = Entity.HackResult.Pending;
+            DbContext.SaveChanges();
+            if (group == null) return Content("Err");
+            SignalR.JudgeHub.context.Clients.Group(group).Hack(new Judge.Models.HackTask(hack));
+            SignalR.JudgeHub.ThreadBusy(group);
+            hack.Result = Entity.HackResult.Running;
+            DbContext.SaveChanges();
+            return Content("OK");
         }
 	}
 }

@@ -1,0 +1,55 @@
+﻿@model CodeComb.Entity.Contest
+@{
+    ViewBag.Title = "其他操作 - " + Model.Title;
+    var IsMaster = (bool)ViewBag.IsMaster;
+    var IsCreator = (bool)ViewBag.IsCreator;
+    List<ContestCheck> Checks = ViewBag.Checks;
+}
+
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="profile-actions">
+                    <a href="/Contest/@Model.ID" class="profile-btn"><img src="/Images/back.png" alt="返回比赛" /></a>
+                    <a href="/Contest/Settings/General/@Model.ID" class="profile-btn"><img src="/Images/description.png" alt="基本信息" /></a>
+                    <a href="/Contest/Settings/Problems/@Model.ID" class="profile-btn"><img src="/Images/code.png" alt="题目管理" /></a>
+                    <a href="/Contest/Settings/Manager/@Model.ID" class="profile-btn"><img src="/Images/standings.png" alt="管理人员" /></a>
+                    <a href="/Contest/Settings/More/@Model.ID" class="profile-btn"><img src="/Images/judgers.png" alt="其他操作" /></a>
+                </div>
+                <div class="post-detail-wrap">
+                    <div class="post-title"><h2>其他操作 - @Model.Title</h2></div>
+                    <div class="post-info"></div>
+                    <div class="post-content">
+                        <h3>比赛完整性检测</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>检测内容</th>
+                                    <th>检测结果</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>赛制</td>
+                                    <td>@Model.Format.ToString()</td>
+                                </tr>
+                                <tr>
+                                    <td>题目数</td>
+                                    <td>@Model.Problems.Count</td>
+                                </tr>
+                                @foreach (var chk in Checks)
+                                { 
+                                    <tr>
+                                        <td>@chk.Problem</td>
+                                        <td class="@chk.Css">@chk.Result</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>

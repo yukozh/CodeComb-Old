@@ -14,25 +14,16 @@ namespace CodeComb.Web.Controllers
         //
         // GET: /User/
         #region 登录登出
-        public ActionResult Login(string ReturnUrl)
+        public ActionResult Login()
         {
             if (User.Identity.IsAuthenticated)
-            {
-                if (ReturnUrl != null)
-                {
-                    return Redirect(ReturnUrl);
-                }
-                else
-                {
-                    return Redirect("/");
-                }
-            }
+                return Redirect("/");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(Login model, string ReturnUrl)
+        public ActionResult Login(Login model)
         {
             var user = (from u in DbContext.Users
                         where u.Username == model.Username
@@ -52,14 +43,10 @@ namespace CodeComb.Web.Controllers
                 FormsAuthentication.SetAuthCookie(model.Username, model.Remember);
                 user.Online = true;
                 DbContext.SaveChanges();
-                if (ReturnUrl != null)
-                {
-                    return Redirect(ReturnUrl);
-                }
-                else
-                {
+                if (Request.UrlReferrer == null)
                     return Redirect("/");
-                }
+                else
+                    return Redirect(Request.UrlReferrer.ToString());
             }
         }
 
@@ -239,8 +226,8 @@ namespace CodeComb.Web.Controllers
         #region 创建比赛
         [Authorize]
         public ActionResult Contest(int id)
-        { 
-            var user = (Entity.User)ViewBag.CurrentUser;
+        {
+            var user = DbContext.Users.Find(id);
             ViewBag.Nickname = user.Nickname;
             var contests = (from c in DbContext.Contests
                             where c.Managers.Where(x => x.UserID == user.ID).Count() > 0

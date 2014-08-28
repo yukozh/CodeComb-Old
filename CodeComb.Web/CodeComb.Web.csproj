@@ -225,6 +225,7 @@
     <Compile Include="Models\View\Code.cs" />
     <Compile Include="Models\View\Contact.cs" />
     <Compile Include="Models\View\Contest.cs" />
+    <Compile Include="Models\View\ContestCheck.cs" />
     <Compile Include="Models\View\HackResult.cs" />
     <Compile Include="Models\View\HomeContest.cs" />
     <Compile Include="Models\View\HomeNews.cs" />
@@ -599,6 +600,7 @@
     <Content Include="Views\User\Contest.cshtml" />
     <Content Include="Views\Shared\Judger.cshtml" />
     <Content Include="Views\Shared\About.cshtml" />
+    <Content Include="Views\ContestSettings\More.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

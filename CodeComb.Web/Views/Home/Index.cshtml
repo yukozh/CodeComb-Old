@@ -48,7 +48,6 @@
                     <a href="/Status" class="float-left page-header-item"><div class="page-header-item-text">记录</div><div class="page-header-item-bg"></div></a>
                     <a href="/Forum" class="float-left page-header-item"><div class="page-header-item-text">论坛</div><div class="page-header-item-bg"></div></a>
                     <a href="/Rating" class="float-left page-header-item"><div class="page-header-item-text">排名</div><div class="page-header-item-bg"></div></a>
-                    <a href="/FAQ" class="float-left page-header-item"><div class="page-header-item-text">FAQ</div><div class="page-header-item-bg"></div></a>
                     <div class="clear"></div>
                 </div>
                 <div class="float-right">
@@ -104,7 +103,7 @@
                         </div>
                     </div>
                     <div class="index-contests index-module">
-                        <h3>Incoming Contests</h3><div class="index-module-content">
+                        <h3>Recent Contests</h3><div class="index-module-content">
                             @foreach (HomeContest item in ViewBag.HomeContests)
                             {
                                 <div class="index-contests-item"><div class="index-contests-title">@Html.ActionLink(item.Title, "Index", "Contest", new { id = item.ID }, null)</div><div class="index-contests-time">@Html.ToContestStatus(item.Begin, item.RestBegin, item.RestEnd, item.End)</div></div>

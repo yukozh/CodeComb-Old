@@ -252,7 +252,7 @@ DWORD WINAPI TimeLimitValidatorThreadProc(LPVOID lpParam)
 			TerminateProcess(pData->ProcessHandle, NULL);
 			return 1;
 		}
-		if (PhysicalTime > pData->TimeLimit * 2)
+		if (PhysicalTime > pData->TimeLimit + 2)
 		{
 			KillProcessTree(pData->ProcessID);
 			TerminateProcess(pData->ProcessHandle, NULL);

@@ -39,8 +39,6 @@
     <script src="~/Scripts/vb.js"></script>
     <script src="~/Scripts/highlight.pack.js"></script>
     <script src="~/Scripts/jquery.zclip.js"></script>
-    <script src="~/Scripts/jquery.signalR-2.1.1.js"></script>
-    <script src="~/signalr/hubs"></script>
     <!--[if lt IE 8]>
     <script src="/Scripts/json2.js"></script>
     <![endif]-->
@@ -51,13 +49,15 @@
     <!--[if lte IE 6]>
     <script src="/Scripts/png.js"></script>
     <![endif]-->
+    <script src="~/Scripts/jquery.signalR-2.1.1.js"></script>
+    <script src="~/signalr/hubs"></script>
 </head>
 <body class="page-contests page-contests-all">
     @if (User.Identity.IsAuthenticated)
     { 
         <!-- page action buttons -->
         <div class="page-actions">
-            <a href="javascript:CurrentContactID=null;PrivateMessageDispay();GetContacts();" id="btnPMDisplay" class="profile-btn"><img src="/Images/chat.png" alt="私下聊天" /></a>
+            <a href="javascript:CurrentContactID=null;PrivateMessageDispay();GetContacts();" id="btnPMDisplay" class="profile-btn"><img src="/Images/chat.png" alt="我的消息" /></a>
 
         </div>
     }
@@ -72,7 +72,6 @@
                     <a href="/Status" class="float-left page-header-item"><div class="page-header-item-text">记录</div><div class="page-header-item-bg"></div></a>
                     <a href="/Forum" class="float-left page-header-item"><div class="page-header-item-text">论坛</div><div class="page-header-item-bg"></div></a>
                     <a href="/Rating" class="float-left page-header-item"><div class="page-header-item-text">排名</div><div class="page-header-item-bg"></div></a>
-                    <a href="/FAQ" class="float-left page-header-item"><div class="page-header-item-text">FAQ</div><div class="page-header-item-bg"></div></a>
                     <div class="clear"></div>
                 </div>
                 <div class="float-right">
@@ -126,7 +125,7 @@
     <div class="page-footer">
         <div class="cont-wrap">
             <div class="grid_12">
-            <p>@Html.ActionLink("评测节点", "Judger", "Shared", null, null) | @Html.ActionLink("实验室", "Lab", "Shared", null, null) | @Html.ActionLink("API", "API", "Shared", null, null) | @Html.ActionLink("帮助", "FAQ", "Shared", null, null) | @Html.ActionLink("关于", "About", "Shared", null, null)| @Html.ActionLink("隐私", "About", "Shared", null, null) | @Html.ActionLink("联系", "About", "Shared", null, null) | @Html.ActionLink("服务条款", "About", "Shared", null, null)</p>
+            <p>@Html.ActionLink("评测节点", "Judger", "Shared", null, null) | @Html.ActionLink("实验室", "Lab", "Shared", null, null) | @Html.ActionLink("API", "API", "Shared", null, null) | @Html.ActionLink("帮助", "FAQ", "Shared", null, null) | @Html.ActionLink("关于", "About", "Shared", null, null) | @Html.ActionLink("隐私", "About", "Shared", null, null) | @Html.ActionLink("联系", "About", "Shared", null, null) | @Html.ActionLink("服务条款", "About", "Shared", null, null)</p>
             <p> Copyright (C) 2014 CodeComb.</p>
             </div><div class="clear"></div>
         </div>

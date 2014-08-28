@@ -25,7 +25,7 @@
                             {
                                 if (Model.Top)
                                 {
-                                    <a class="post-info" href="javascript:$.post('/Topic/UnSetTop',$('#frmUnSetTop').serialize(),function(){alert('已经取消置顶');})">取消置顶</a>
+                                    <a class="post-info" href="javascript:$.post('/Topic/UnSetTop',$('#frmUnSetTop').serialize(),function(){CastMsg('已经取消置顶');})">取消置顶</a>
                                     using (Html.BeginForm("UnSetTop", "Topic", FormMethod.Post, new { id = "frmUnSetTop", style = "display:none" }))
                                     {
                                         @Html.AntiForgeryToken()
@@ -34,7 +34,7 @@
                                 }
                                 else
                                 {
-                                    <a class="post-info" href="javascript:$.post('/Topic/SetTop',$('#frmSetTop').serialize(),function(){alert('已经设置置顶');})">置顶</a>
+                                    <a class="post-info" href="javascript:$.post('/Topic/SetTop',$('#frmSetTop').serialize(),function(){CastMsg('已经设置置顶');})">置顶</a>
                                     using (Html.BeginForm("SetTop", "Topic", FormMethod.Post, new { id = "frmSetTop", style = "display:none" }))
                                     {
                                         @Html.AntiForgeryToken()

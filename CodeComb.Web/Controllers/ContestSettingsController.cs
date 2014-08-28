@@ -129,5 +129,72 @@ namespace CodeComb.Web.Controllers
             DbContext.SaveChanges();
             return RedirectToAction("Manager", "ContestSettings", new { id = id });
         }
+
+        [Authorize]
+        public ActionResult More(int id)
+        {
+            if (!ViewBag.IsMaster)
+                return RedirectToAction("Message", "Shared", new { msg = "您没有权限对本场比赛进行任何修改！" });
+            var contest = DbContext.Contests.Find(id);
+            ViewBag.ContestFormats = Enum.GetNames(typeof(Entity.ContestFormat));
+            var checks = new List<Models.View.ContestCheck>();
+            foreach (var p in contest.Problems)
+            {
+                var chk = new Models.View.ContestCheck 
+                { 
+                    Problem = p.Title,
+                    Status = Models.View.CheckStatus.Info,
+                    Result = ""
+                };
+                if (!string.IsNullOrEmpty(p.SpecialJudge))
+                {
+                    chk.Status = Models.View.CheckStatus.Info;
+                    chk.Result += "检测到了特殊比较器, ";
+                }
+                if (p.Solutions.Count == 0)
+                {
+                    chk.Status = Models.View.CheckStatus.Warning;
+                    chk.Result += "没有设置题解, ";
+                }
+                if (p.TestCases.Where(x => x.Type == Entity.TestCaseType.Sample).Count() == 0)
+                {
+                    chk.Status = Models.View.CheckStatus.Warning;
+                    chk.Result += "没有设置样例数据, ";
+                    if (contest.Format == Entity.ContestFormat.TopCoder)
+                        chk.Status = Models.View.CheckStatus.Error;
+                }
+                if (contest.Format == Entity.ContestFormat.CodeComb && p.TestCases.Where(x => x.Type == Entity.TestCaseType.Unilateralism).Count() == 0)
+                {
+                    chk.Status = Models.View.CheckStatus.Error;
+                    chk.Result += "没有设置Unilateralism数据, ";
+                }
+                if (contest.Format == Entity.ContestFormat.Codeforces || contest.Format == Entity.ContestFormat.TopCoder)
+                {
+                    if (string.IsNullOrEmpty(p.StandardSource))
+                    {
+                        chk.Status = Models.View.CheckStatus.Error;
+                        chk.Result += "没有设置标程, ";
+                    }
+                    if (string.IsNullOrEmpty(p.RangeChecker))
+                    {
+                        chk.Status = Models.View.CheckStatus.Error;
+                        chk.Result += "没有设置数据范围校验器, ";
+                    }
+                }
+                if (p.Credit == 0)
+                {
+                    chk.Status = Models.View.CheckStatus.Error;
+                    chk.Result += "没有设置题目分数/顺序, ";
+                }
+                chk.Result = chk.Result.TrimEnd(' ').TrimEnd(',');
+                if (chk.Result == "")
+                {
+                    chk.Result = "该题通过了审查";
+                }
+                checks.Add(chk);
+            }
+            ViewBag.Checks = checks;
+            return View(contest);
+        }
 	}
 }

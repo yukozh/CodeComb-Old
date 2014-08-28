@@ -135,6 +135,7 @@ function LoadStatuses() {
             result: result,
             contest_id: contest_id,
             problem_id: problem_id,
+            user_id: user_id,
             rnd: Math.random()
         }, function (statuses) {
             if (page == 0 && statuses.length == 0) {
@@ -155,7 +156,7 @@ function LoadSolutionTags()
 {
     if ($("#lstSolutionTags").length > 0)
     {
-        $.getJSON("/Solution/GetTags/" + id, {}, function (tags) {
+        $.getJSON("/Solution/GetTags/" + id, { rnd: Math.random() }, function (tags) {
             for (var i = 0; i < tags.length;i++)
             {
                 $("#t_" + tags[i]).removeClass("gray");
@@ -168,7 +169,7 @@ function LoadStandings()
 {
     if ($("#lstStandings").length > 0)
     {
-        $.getJSON("/Contest/GetStandings/" + id, {}, function (data) {
+        $.getJSON("/Contest/GetStandings/" + id, { rnd: Math.random() }, function (data) {
             standings = data;
             StandingsDisplay();
         });
@@ -182,7 +183,8 @@ function LoadProblems()
             morethan: morethan,
             lessthan: lessthan,
             title: title,
-            tags: tags
+            tags: tags,
+            rnd: Math.random()
         }, function (problems) {
             if (problems.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
             for (var i in problems) {

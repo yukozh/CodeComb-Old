@@ -10,7 +10,7 @@ var CodeCombHub;
 function GetContacts()
 {
     var contact_ids = GetCookie();
-    $.getJSON("/PrivateMessage/GetContacts", { ids: JSON.stringify(contact_ids) }, function (contacts) {
+    $.getJSON("/PrivateMessage/GetContacts", { ids: JSON.stringify(contact_ids), rnd: Math.random() }, function (contacts) {
         var html = "";
         for (var i in contacts)
         {
@@ -112,7 +112,7 @@ function PostMessage()
 
 function ShowClar(id)
 {
-    $.getJSON("/Contest/GetClar/" + id, {}, function (clar) {
+    $.getJSON("/Contest/GetClar/" + id, { rnd: Math.random() }, function (clar) {
         var title, question, answer, clarid;
         title = '<span style="color:blue">' + clar.ProblemRelation + "</span>";
         if (!clar.NoProblemRelation)
@@ -131,7 +131,7 @@ function ShowClar(id)
 
 function ClarResponse(id)
 {
-    $.getJSON("/Contest/GetClar/" + id, {}, function (clar) {
+    $.getJSON("/Contest/GetClar/" + id, { rnd: Math.random() }, function (clar) {
         var title, question, answer, clarid;
         title = '<span style="color:blue">' + clar.ProblemRelation + "</span>";
         if (!clar.NoProblemRelation)
@@ -150,7 +150,7 @@ function ClarResponse(id)
         $.colorbox({
             html: html, width: '700px', onComplete: function () {
                 $("#btnClarResponse").unbind().click(function () {
-                    $.post("/Contest/ResponseClar/" + $("#clar_id").attr("cid"), { answer: $("#txtClarResponse").val(), broadcast: $("#chkBroadcast").is(':checked') }, function () {
+                    $.post("/Contest/ResponseClar/" + $("#clar_id").attr("cid"), { answer: $("#txtClarResponse").val(), broadcast: $("#chkBroadcast").is(':checked'), rnd: Math.random() }, function () {
                         $.colorbox.close();
                     });
                 });
@@ -161,7 +161,7 @@ function ClarResponse(id)
 
 function SetSolutionTag(tid)
 {
-    $.post("/Solution/SetTag/" + id, { tid: tid }, function (data) {
+    $.post("/Solution/SetTag/" + id, { tid: tid, rnd: Math.random() }, function (data) {
         if (data == "Added")
         {
             $("#t_" + tid).removeClass("gray");
@@ -177,7 +177,7 @@ function SetSolutionTag(tid)
 
 function EditTestCase(id)
 {
-    $.getJSON("/Problem/GetTestCase/" + id, {}, function (testcase) {
+    $.getJSON("/Problem/GetTestCase/" + id, { rnd: Math.random() }, function (testcase) {
         $("#txtInput").val(testcase.Input);
         $("#txtOutput").val(testcase.Output);
         $("#EditID").val(testcase.ID);
@@ -186,7 +186,7 @@ function EditTestCase(id)
 }
 
 function GetDetails(id) {
-    $.getJSON("/Status/GetStatusDetails/"+id, {}, function (details) {
+    $.getJSON("/Status/GetStatusDetails/" + id, { rnd: Math.random() }, function (details) {
         var html = "";
         for (var i in details) {
             html += '<h3><a href="javascript:void(0)" class="btnDetail" did="' + details[i].ID + '">#' + details[i].ID + ': <span class="status-text-' + StatusCss[details[i].Result] + '">' + StatusDisplay[details[i].Result] + '</span> (' + details[i].TimeUsage + 'ms, ' + details[i].MemoryUsage + 'KiB)</a></h3>';
@@ -234,7 +234,7 @@ $(document).ready(function () {
         if (RealTimeStatusID != null) {
             if (RealTimeStatusID != status.ID) return;
             var html_detail = "";
-            $.getJSON("/Status/GetStatusDetails/" + status.ID, {}, function (details) {
+            $.getJSON("/Status/GetStatusDetails/" + status.ID, { rnd: Math.random() }, function (details) {
                 for (var i in details) {
                     html_detail += '<p><a href="javascript:void(0)" class="btnDetail" did="' + details[i].ID + '">#' + details[i].ID + ': <span class="status-text-' + StatusCss[details[i].Result] + '">' + StatusDisplay[details[i].Result] + '</span> (' + details[i].TimeUsage + 'ms, ' + details[i].MemoryUsage + 'KiB)</a></p>';
                     html_detail += '<div class="status-detail-main" style="display:none" id="d_' + details[i].ID + '"><blockquote>';
@@ -319,6 +319,13 @@ $(document).ready(function () {
             PostMessage();
     });
 
+    $("#btnRejudge").click(function () {
+        $.post("/Status/Rejudge/" + id, { rnd: Math.random() }, function (ret)
+        {
+            CastMsg("正在进行重测...");
+        });
+    });
+
     $("#btnLoadCodeEditBox").click(function () {
         $.colorbox({ inline: true, width: "700px", href: "#CodeEditBox", onComplete: function () { editor.refresh(); } });
     });
@@ -395,8 +402,12 @@ $(document).ready(function () {
             else if (data == "Locked") {
                 CastMsg("锁定题目后不能提交！");
             }
-            else if (data == "Wrong phase"){
-            CastMsg("本阶段不允许提交评测！");}
+            else if (data == "Wrong phase") {
+                CastMsg("本阶段不允许提交评测！");
+            }
+            else if (data == "No Online Judger") {
+                CastMsg("评测机离线！当有可用评测资源时将评测本记录。");
+            }
             else if (data == "OI") {
                 CastMsg("提交成功");
             }

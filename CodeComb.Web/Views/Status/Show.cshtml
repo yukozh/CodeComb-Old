@@ -19,6 +19,14 @@
                                 <pre><code class="@Html.GetLanguageClass(Model.Language)">@Model.Code</code></pre>
                             </div>
                         }
+                        @if (ViewBag.IsMaster)
+                        { 
+                            <p><input type="button" value="重测" id="btnRejudge" class="button button-def" /></p>
+                            using (Html.BeginForm("Rejudge", "Status", new { id = Model.ID }, FormMethod.Post, new { id = "frmRejudge" }))
+                            { 
+                                @Html.AntiForgeryToken()
+                            }
+                        }
                     </div>
                 </div>
             </div>
@@ -26,6 +34,7 @@
     </div>
 </div>
 <script>
+    id = @Model.ID;
     $.getJSON("/Status/GetStatus/@Model.ID", {}, function (status) {
         BuildStatusDetail(status);
         GetDetails(status.ID);

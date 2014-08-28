@@ -13,7 +13,7 @@ namespace CodeComb.Node
 {
     public static class JudgeHelper
     {
-        public const int CompileTimeLimit = 1500;
+        public const int CompileTimeLimit = 3000;
         public static string[] FileNames = 
         { 
             "{Name}.c",
@@ -267,7 +267,7 @@ namespace CodeComb.Node
                 }
                 else if (Mode == JudgeHelper.Mode.Spj)
                 {
-                    jfb.Hint = "特殊比较器编译超时";
+                    jfb.Hint = "比较器编译超时";
                     jfb.Result = Entity.JudgeResult.SystemError;
                 }
                 else if (Mode == JudgeHelper.Mode.Std)
@@ -286,7 +286,7 @@ namespace CodeComb.Node
             {
                 if (Result.ExitCode != 0)
                 {
-                    jfb.Hint = File.ReadAllText(Program.TempPath + @"\" + jfb.ID + @"\compile.out") + File.ReadAllText(Program.TempPath + @"\" + jfb.ID + @"\compile.err");
+                    jfb.Hint = File.ReadAllText(Program.TempPath + @"\" + jfb.ID + @"\compile.out", Encoding.GetEncoding(936)) + File.ReadAllText(Program.TempPath + @"\" + jfb.ID + @"\compile.err", Encoding.GetEncoding(936));
                     if (Mode == JudgeHelper.Mode.Range)
                     {
                         jfb.Hint = "数据范围校验器编译失败\n" + jfb.Hint;
@@ -294,7 +294,7 @@ namespace CodeComb.Node
                     }
                     else if (Mode == JudgeHelper.Mode.Spj)
                     {
-                        jfb.Hint = "特殊比较器编译失败\n" + jfb.Hint;
+                        jfb.Hint = "比较器编译失败\n" + jfb.Hint;
                         jfb.Result = Entity.JudgeResult.SystemError;
                     }
                     else if (Mode == JudgeHelper.Mode.Std)
@@ -522,7 +522,7 @@ namespace CodeComb.Node
             {
                 case Mode.Main: return "选手程序";
                 case Mode.Range: return "范围校验器";
-                case Mode.Spj: return "特殊比较器";
+                case Mode.Spj: return "比较器";
                 case Mode.Std: return "标程";
                 case Mode.DataMaker: return "数据产生器";
                 default: return "";

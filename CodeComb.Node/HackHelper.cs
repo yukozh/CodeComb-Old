@@ -13,7 +13,7 @@ namespace CodeComb.Node
 {
     public class HackHelper
     {
-        public const int CompileTimeLimit = 4000;
+        public const int CompileTimeLimit = 3000;
         public static string[] FileNames = 
         { 
             "{Name}.c",
@@ -290,7 +290,7 @@ namespace CodeComb.Node
                 }
                 else if (Mode == HackHelper.Mode.Spj)
                 {
-                    hfb.Hint = "特殊比较器编译超时";
+                    hfb.Hint = "比较器编译超时";
                     hfb.Result = Entity.HackResult.SystemError;
                 }
                 else if (Mode == HackHelper.Mode.Std)
@@ -323,7 +323,7 @@ namespace CodeComb.Node
                     }
                     else if (Mode == HackHelper.Mode.Spj)
                     {
-                        hfb.Hint = "特殊比较器编译失败\n" + hfb.Hint;
+                        hfb.Hint = "比较器编译失败\n" + hfb.Hint;
                         hfb.Result = Entity.HackResult.SystemError;
                     }
                     else if (Mode == HackHelper.Mode.Std)
@@ -544,7 +544,7 @@ namespace CodeComb.Node
             {
                 case Mode.Main: return "选手程序";
                 case Mode.Range: return "范围校验器";
-                case Mode.Spj: return "特殊比较器";
+                case Mode.Spj: return "比较器";
                 case Mode.Std: return "标程";
                 case Mode.DataMaker: return "数据产生器";
                 default: return "";

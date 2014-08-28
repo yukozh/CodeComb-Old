@@ -94,16 +94,15 @@ Code Comb Node");
             HubConnection.TraceLevel = TraceLevels.All;
             HubConnection.TraceWriter = Console.Out;
             HubConnection.Start().Wait();
-            HubConnection.ConnectionSlow += HubConnection_ConnectionSlow;
+            HubConnection.Reconnected += HubConnection_Reconnected;
             hubJudge.Invoke("Auth", Username, Password, MaxThreads).Wait();
             System.Threading.Thread t = new System.Threading.Thread(KeepAlive);
             t.Start();
         }
 
-        static void HubConnection_ConnectionSlow()
+        static void HubConnection_Reconnected()
         {
-            Console.WriteLine("{0} Connection slow", DateTime.Now.ToString("HH:mm:ss"));
-            HubConnection.Start();
+            hubJudge.Invoke("Auth", Username, Password, MaxThreads);
         }
     }
 }

@@ -187,6 +187,14 @@ namespace CodeComb.Web.SignalR
                 SignalR.CodeCombHub.context.Clients.Group("System Judge").onJudgerStatusChanged(new Models.View.Judger(user, Online[index]));
             }
         }
+        public static string GetNode()
+        {
+            if (Online.Count == 0) return null;
+            Online = Online.OrderByDescending(x=>x.FreeThreads).ThenBy(x=>x.MaxThreads).ToList();
+            if (Online.Where(x => x.Ratio < 100).Count() == 0)
+                Online = Online.OrderBy(x => x.Ratio).ToList();
+            return Online[0].Username;
+        }
         private void ThreadFree()
         {
             var index = Online.FindIndex(x => x.Token == Context.ConnectionId);
