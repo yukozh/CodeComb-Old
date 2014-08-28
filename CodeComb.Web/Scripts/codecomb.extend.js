@@ -31,7 +31,7 @@ function GetContacts()
         for (var i in contacts)
         {
             AutoAddContact(contacts[i].ID);
-            html += '<p><a href="javascript:GetChatRecords(' + contacts[i].ID + ')">' + contacts[i].Gravatar + contacts[i].Nickname + '</a> ' + (contacts[i].MessageCount > 0 ? ('(' + contacts[i].MessageCount + ')') : '') + '</p>';
+            html += '<p><a href="javascript:$(\'#ChatRecords\').html(\'\');GetChatRecords(' + contacts[i].ID + ')">' + contacts[i].Gravatar + contacts[i].Nickname + '</a> ' + (contacts[i].MessageCount > 0 ? ('(' + contacts[i].MessageCount + ')') : '') + '</p>';
         }
         $("#lstContacts").html(html);
     });
@@ -101,7 +101,6 @@ function PrivateMessageDispay()
 
 function GetChatRecords(sender_id)
 {
-    $("#ChatRecords").html("");
     CurrentContactID = sender_id;
     $.getJSON("/PrivateMessage/GetChatRecords", { sender_id: sender_id, rnd: Math.random() }, function (chatrecords) {
         for (var i in chatrecords)
