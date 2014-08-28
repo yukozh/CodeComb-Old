@@ -2481,4 +2481,5 @@ div.CodeMirror-selected {
 dd{
     word-wrap: break-word; 
 　　word-break: normal;
+　　width:90%;
 }
