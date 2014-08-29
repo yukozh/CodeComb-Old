@@ -32,7 +32,7 @@
                             var i = 0;
                             foreach (var name in CodeComb.Entity.CommonEnums.LanguageDisplay)
                             {
-                                if (Model.SpecialJudgeLanguageAsInt == i)
+                                if (Model.RangeCheckerLanguageAsInt == i)
                                 {
                                     <option value="@(i++)" selected>@name</option>
                                 }
@@ -44,7 +44,7 @@
                                     }
                                 </select>
                             </p>
-                            <p><input type="submit" class="button button-def" value="保存" /></p>
+                            <p><input type="submit" class="button button-def" value="保存" /> 注:Java类名应为Range。 @Html.ActionLink("帮助", "Index", "FAQ", null, null)</p>
                         }
                     </div>
                 </div>

@@ -57,6 +57,8 @@ namespace CodeComb.Web.Controllers
         {
             if ((from f in DbContext.Forums where f.ID == model.ForumID && f.FatherID != null select f).Count() == 0)
                 return RedirectToAction("Message", "Shared", new { msg = "没有找到这个论坛版块！" });
+            if(string.IsNullOrEmpty(model.Content))
+                return RedirectToAction("Message", "Shared", new { msg = "内容不能为空！" });
             var topic = new CodeComb.Entity.Topic
             {
                 ForumID = model.ForumID,

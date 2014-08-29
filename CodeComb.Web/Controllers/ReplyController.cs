@@ -22,6 +22,8 @@ namespace CodeComb.Web.Controllers
         [ValidateInput(false)]
         public ActionResult Create(int id, string content, int? father_id)
         {
+            if (string.IsNullOrEmpty(content))
+                return Content("NO");
             var reply = new Reply 
             { 
                 FatherID = father_id,

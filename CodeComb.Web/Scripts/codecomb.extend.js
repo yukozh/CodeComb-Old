@@ -16,9 +16,6 @@ function BroadCastBox()
         width:'700px',
         onComplete: function () {
             CKEDITOR.replace('txtBroadCast', { toolbar: 'Basic', width: '645px', height: '200px' });
-        },
-        onClosed: function () {
-            CKEDITOR.instances.txtBroadCast.destroy();
         }
     });
 }
@@ -350,6 +347,7 @@ $(document).ready(function () {
         $("#txtBroadCast").val(content);
         $.post("/Shared/BroadCast", $("#frmBroadCast").serialize(), function (ret) {
             if (ret == "OK") CastMsg("广播成功！");
+            CKEDITOR.instances.txtBroadCast.destroy();
             $.colorbox.close();
         });
     });

@@ -11,6 +11,7 @@ namespace CodeComb.Entity
     public class Status
     {
         public static JudgeResult[] FreeResults = { JudgeResult.CompileError, JudgeResult.SystemError, JudgeResult.Pending, JudgeResult.Running, JudgeResult.Accepted };
+        public static JudgeResult[] _FreeResults = { JudgeResult.CompileError, JudgeResult.SystemError, JudgeResult.Pending, JudgeResult.Running };
         [Column("id")]
         public int ID { get; set; }
 

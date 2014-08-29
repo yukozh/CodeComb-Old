@@ -27,7 +27,7 @@
                             {
                             <p><label style="width:100px">旧密码：</label>@Html.Password("OldPassword", "", new { @class = "textbox" })</p>
                             }
-                            <p><label style="width:100px">新密码：</label>@Html.Password("NewPassword", "", new { @class = "textbox" })</p>
+                            <p><label style="width:100px">新密码：</label>@Html.Password("NewPassword", "", new { @class = "textbox" }) 至少4位</p>
                             <p><label style="width:100px">密码重复：</label>@Html.Password("RepeatPassword", "", new { @class = "textbox" })</p>
                         </blockquote>
                         <p><input type="submit" value="保存" class="button button-def" /></p>
@@ -38,7 +38,7 @@
                         <h3>修改资料</h3>
                         @Html.AntiForgeryToken()
                         <blockquote>
-                            <p><label style="width:100px">昵称：</label>@Html.TextBoxFor(x=>x.Nickname, new { @class = "textbox" })</p>
+                            <p><label style="width:100px">昵称：</label>@Html.TextBoxFor(x=>x.Nickname, new { @class = "textbox" }) 长度4~16</p>
                             <p><label style="width:100px">Gravatar：</label>@Html.TextBoxFor(x=>x.Gravatar, new { @class = "textbox" })</p>
                             <p>@Html.Gravatar(Model.Gravatar, 180, "rank-face")</p>
                             <p><label style="width:100px">个性签名：</label></p>

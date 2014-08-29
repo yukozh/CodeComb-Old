@@ -206,7 +206,7 @@ namespace CodeComb.Web.Models.View
                         }
                         if (score < max * 0.3)
                             score = Convert.ToInt32(max * 0.3);
-                        score -= 50 * statuses.Where(x => !Entity.Status.FreeResults.Contains((Entity.JudgeResult)x.ResultAsInt)).Count();
+                        score -= 50 * statuses.Where(x => !Entity.Status._FreeResults.Contains((Entity.JudgeResult)x.ResultAsInt)).Count();
                         Key1 = score;
                         Css = "rank-green";
                         Display = Key1 + "<br/>(" + time.ToString("hh':'mm") + ")";

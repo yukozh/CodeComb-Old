@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.Mvc;
+using System.Text.RegularExpressions;
 using CodeComb.Entity;
 using CodeComb.Web.Models.View;
 
@@ -118,6 +119,8 @@ namespace CodeComb.Web.Controllers
         {
             if (Session["Email"] == null)
                 return RedirectToAction("Message", "Shared", new { msg = "非法访问。" });
+            if (!Regex.IsMatch(model.Username, @"^\w+$") || model.Username.Length < 4 || model.Username.Length > 16)
+                return RedirectToAction("Message", "Shared", new { msg = "用户名不合法，用户名长度必须为4~16个字符，同时只允许使用英文字母、数字和下划线" });
             var user = (from u in DbContext.Users
                         where u.Username == model.Username
                         select u).SingleOrDefault();
@@ -185,6 +188,8 @@ namespace CodeComb.Web.Controllers
                 return RedirectToAction("Message", "Shared", new { msg = "您没有权限这样做！" });
             if(Helpers.Security.SHA1(OldPassword) != user.Password && ViewBag.CurrentUser.Role < Entity.UserRole.Master)
                 return RedirectToAction("Message", "Shared", new { msg = "旧密码输入不正确！" });
+            if (NewPassword.Length < 4)
+                return RedirectToAction("Message", "Shared", new { msg = "密码长度至少为4！" });
             if(NewPassword !=RepeatPassword)
                 return RedirectToAction("Message", "Shared", new { msg = "两次密码输入不一致！" });
             user.Password = Helpers.Security.SHA1(RepeatPassword);
@@ -200,6 +205,8 @@ namespace CodeComb.Web.Controllers
             var user = DbContext.Users.Find(id);
             if (user.ID != ViewBag.CurrentUser.ID && ViewBag.CurrentUser.Role < Entity.UserRole.Master || ViewBag.CurrentUser.Role == UserRole.Temporary)
                 return RedirectToAction("Message", "Shared", new { msg = "您没有权限这样做！" });
+            if (Nickname.Length < 4 || Nickname.Length > 16) return RedirectToAction("Message", "Shared", new { msg = "昵称长度应为4~16个字符！" });
+            if (Motto.Length > 255) return RedirectToAction("Message", "Shared", new { msg = "个性签名长度应为0~255个字符！" });
             user.Nickname = Nickname;
             user.Gravatar = Gravatar;
             user.Motto = Motto;
@@ -219,6 +226,7 @@ namespace CodeComb.Web.Controllers
                 return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
             var user = DbContext.Users.Find(id);
             user.RoleAsInt = role;
+            DbContext.SaveChanges();
             return RedirectToAction("Settings", "User", new { id = id });
         }
         #endregion

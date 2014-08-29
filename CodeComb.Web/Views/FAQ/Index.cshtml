@@ -240,6 +240,183 @@ int main(int argc, char* argv[])
 </pre>
                     <h3>数据范围校验器</h3>
                     <p>如果您的比赛赛制设定为Codeforces或TopCoder，您需要为每个题目设置一个数据范围校验器，使用这个校验器来读取选手提交上来的数据，并检验其合法性，如果合法，程序返回0，否则返回其他值。</p>
+                    <p>您可以在数据范围校验器中调用Judge.hpp头文件，该头文件的源代码如下：</p>
+                    <pre class="cpp"><code>#ifndef _JUDGE_HPP_
+#define _JUDGE_HPP_
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;cstdlib&gt;
+#include &lt;fstream&gt;
+#include &lt;cstdio&gt;
+//Other headers
+namespace Judge
+{
+using std::string;
+using std::vector;
+using std::fstream;
+string ReadLine();
+string ReadFileLine(fstream);
+void WriteLine(string);
+vector &lt;string&gt; Split(string,string);
+string TrimEnd(string,char);
+string TrimBegin(string,char);
+string Trim(string,char);
+string Replace(string,string,string);
+string ToString(long long);
+string ToString(int);
+string ToString(char*);
+string ToString(double,int);//Int is len and max_len is 100
+int ToInt32(string);
+unsigned int ToUInt32(string);
+long long ToInt64(string);
+unsigned long long ToUInt64(string);
+double ToDouble(string);
+long double ToLongDouble(string);
+const char* ToCharPtr(string);
+string ReadLine()
+{
+    string temp;
+    std::getline(std::cin,temp);
+    return temp;
+}
+string ReadFileLine(fstream stream)
+{
+    string temp;
+    std::getline(stream,temp);
+    return temp;
+}
+void WriteLine(string str)
+{
+    std::cout &lt;&lt; str &lt;&lt; std::endl;
+}
+int ToInt32(string str)
+{
+    int temp;
+    sscanf(str.c_str(),"%d",&temp);
+    for(unsigned int i = (unsigned int)(str[0] == '-');i &lt; str.size();++i)
+        if(str[i] &lt; '0' || str[i] &gt; '9')
+            exit(-1);
+    return temp;
+}
+unsigned int ToUInt32(string str)
+{
+    unsigned int temp;
+    sscanf(str.c_str(),"%u",&temp);
+    for(unsigned int i = 0;i &lt; str.size();++i)
+        if(str[i] &lt; '0' || str[i] &gt; '9')
+            exit(-1);
+    return temp;
+}
+long long ToInt64(string str)
+{
+    long long temp;
+    sscanf(str.c_str(),"%lld",&temp);
+    for(unsigned int i = (unsigned int)(str[0] == '-');i &lt; str.size();++i)
+        if(str[i] &lt; '0' || str[i] &gt; '9')
+            exit(-1);
+    return temp;
+}
+unsigned long long ToUInt64(string str)
+{
+    unsigned long long temp;
+    sscanf(str.c_str(),"%llu",&temp);
+    for(unsigned int i = 0;i &lt; str.size();++i)
+        if(str[i] &lt; '0' || str[i] &gt; '9')
+            exit(-1);
+    return temp;
+}
+double ToDouble(string str)
+{
+    double temp;
+    sscanf(str.c_str(),"%lf",&temp);
+    for(unsigned int i = (unsigned int)(str[0] == '-');i &lt; str.size();++i)
+        if(str[i] &lt; '0' || str[i] &gt; '9')
+            exit(-1);
+    return temp;
+}
+long double ToLongDouble(string str)
+{
+    long double temp;
+    sscanf(str.c_str(),"%Lf",&temp);
+    for(unsigned int i = (unsigned int)(str[0] == '-');i &lt; str.size();++i)
+        if(str[i] &lt; '0' || str[i] &gt; '9')
+            exit(-1);
+    return temp;
+}
+string ToString(long long num)
+{
+    char temp[30];
+    sprintf(temp,"%lld",num);
+    return string(temp);
+}
+string ToString(int num)
+{
+    char temp[30];
+    sprintf(temp,"%d",num);
+    return string(temp);
+}
+string ToString(double num,int len)
+{
+    char temp[102],s[10];
+    if(len &gt; 100)
+        exit(-1);
+    sprintf(s,"%c.%df",'%',len);
+    sprintf(temp,s,num);
+    return string(temp);
+}
+string ToString(char * ptr)
+{
+    return string(ptr);
+}
+const char* ToCharPtr(string str)
+{
+    return str.c_str();
+}
+string TrimBegin(string Source, char c)
+{
+    string::iterator it = Source.begin();
+    while(it != Source.end() && *it == c)
+        ++it;
+    Source.erase(Source.begin(),it);
+    return Source;
+}
+string TrimEnd(string Source, char c)
+{
+    string::iterator it = Source.end();
+    while(it != Source.begin() && *(it - 1) == c)
+        --it;
+    Source.erase(it,Source.end());
+    return Source;
+}
+string Trim(string Source, char c)
+{
+    Source = Judge::TrimBegin(Source,c);
+    Source = Judge::TrimEnd(Source,c);
+    return Source;
+}
+string Replace(string Source,string str1,string str2)
+{
+    unsigned int pos = 0;
+    while((pos = Source.find(str1,pos)) != string::npos)
+        Source.replace(pos,str1.size(),str2);
+    return Source;
+}
+vector&lt;string&gt; Split(string Source,string str)
+{
+    vector&lt;string&gt; res;
+    unsigned int p;
+    while((p = Source.find(str)) != string::npos)
+    {
+        res.push_back(str.substr(0, p));
+        str.erase(0, p + str.size());
+    }
+    res.push_back(str);
+    return res;
+}
+}
+#endif // _JUDGE_HPP_
+</code></pre>
                     <h3>标程</h3>
                     <p>如果您的比赛赛制设定为Codeforces或TopCoder，您需要为每个题目设置一个标程，该标程必须是本题正确的算法，系统将选手通过数据范围校验器的数据注入到本程序中，取出本程序的结果，与选手程序输出的结果对比。</p>
                 </div>
