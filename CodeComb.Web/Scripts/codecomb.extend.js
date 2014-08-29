@@ -482,4 +482,10 @@ $(document).ready(function () {
             CastMsg("已复制到剪贴板。");
         }
     });
+
+    // DatetimePicker Init
+    $('#startTime').datetimepicker();
+    $('#endTime').datetimepicker();
+    $('#restStartTime').datetimepicker();
+    $('#restEndTime').datetimepicker();
 });

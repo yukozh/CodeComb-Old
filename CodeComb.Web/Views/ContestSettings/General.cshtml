@@ -41,11 +41,11 @@
                                         }
                                     </select>
                                 </p>
-                                <p>开始时间：@Html.TextBoxFor(x => x.Begin, new { @class = "textbox" })</p>
-                                <p>结束时间：@Html.TextBoxFor(x => x.End, new { @class = "textbox" })</p>
+                                <p>开始时间：@Html.TextBoxFor(x => x.Begin, new { @class = "textbox", @id = "startTime" })</p>
+                                <p>结束时间：@Html.TextBoxFor(x => x.End, new { @class = "textbox", @id = "endTime" })</p>
                                 <div id="TopCoderSettings" style="display:none">
-                                    <p>休息开始：@Html.TextBoxFor(x => x.RestBegin, new { @class = "textbox" })</p>
-                                    <p>休息结束：@Html.TextBoxFor(x => x.RestBegin, new { @class = "textbox" })</p>
+                                    <p>休息开始：@Html.TextBoxFor(x => x.RestBegin, new { @class = "textbox", @id = "restStartTime" })</p>
+                                    <p>休息结束：@Html.TextBoxFor(x => x.RestBegin, new { @class = "textbox", @id = "restEndTime" })</p>
                                 </div>
                                 <p>比赛适合能力范围：@Html.TextBoxFor(x => x.RatingBegin, new { @class = "textbox" }) 至 @Html.TextBoxFor(x => x.RatingEnd, new { @class = "textbox" })</p>
                                 <p>比赛密码：@Html.TextBoxFor(x => x.Password, new { @class = "textbox" }) (不填写则为公开赛)</p>
