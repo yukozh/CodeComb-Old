@@ -536,6 +536,8 @@ namespace CodeComb.Node
         {
             Program.hubJudge.Invoke("HackFeedBack", hfb);
             Program.CurrentThreads--;
+            if (System.IO.Directory.Exists(Program.TempPath + @"\" + hfb.HackID))
+                System.IO.Directory.Delete(Program.TempPath + @"\" + hfb.HackID, true);
         }
 
         public enum Mode {Main, Spj, Range, Std, DataMaker};

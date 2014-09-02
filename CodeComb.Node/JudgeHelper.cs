@@ -514,6 +514,8 @@ namespace CodeComb.Node
         {
             Program.hubJudge.Invoke("JudgeFeedBack", jfb);
             Program.CurrentThreads--;
+            if (System.IO.Directory.Exists(Program.TempPath + @"\" + jfb.ID))
+                System.IO.Directory.Delete(Program.TempPath + @"\" + jfb.ID, true);
         }
 
         public enum Mode {Main, Spj, Range, Std, DataMaker};

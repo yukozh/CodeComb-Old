@@ -12,6 +12,8 @@ namespace CodeComb.Web.Models.View
         {
             ID = problem.ID;
             Title = problem.Title;
+            ContestTitle = problem.Contest.Title;
+            ContestID = problem.ContestID;
             AC = problem.Statuses.Where(x => x.ResultAsInt == (int)Entity.JudgeResult.Accepted).Count();
             Submit = problem.Statuses.Count;
             Difficulty = "R";
@@ -54,5 +56,7 @@ namespace CodeComb.Web.Models.View
         public int AC { get; set; }
         public int Submit { get; set; }
         public string Difficulty { get; set; }
+        public string ContestTitle { get; set; }
+        public int ContestID { get; set; }
     }
 }

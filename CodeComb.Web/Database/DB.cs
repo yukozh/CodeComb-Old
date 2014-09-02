@@ -34,6 +34,7 @@ namespace CodeComb.Database
         public DbSet<SolutionTag> SolutionTags { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Solution> Solutions { get; set; }
+        public DbSet<DeviceToken> DeviceTokens { get; set; }
 
         public DB()
             : base("mysqldb")
@@ -65,6 +66,10 @@ namespace CodeComb.Database
             modelBuilder.Entity<User>()
                 .HasMany(u => u.PMReceived)
                 .WithRequired(p => p.Receiver);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.DeviceTokens)
+                .WithRequired(dt => dt.User);
 
             modelBuilder.Entity<Contest>()
                .HasMany(c => c.Clarifications)

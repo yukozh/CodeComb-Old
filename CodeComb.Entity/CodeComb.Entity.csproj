@@ -65,6 +65,7 @@
     <Compile Include="CommonEnums.cs" />
     <Compile Include="Contest.cs" />
     <Compile Include="ContestManager.cs" />
+    <Compile Include="DeviceToken.cs" />
     <Compile Include="Forum.cs" />
     <Compile Include="Glance.cs" />
     <Compile Include="Hack.cs" />

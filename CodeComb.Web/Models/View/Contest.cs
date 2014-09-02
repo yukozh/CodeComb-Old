@@ -13,7 +13,7 @@ namespace CodeComb.Web.Models.View
             ID = contest.ID;
             Format = contest.Format.ToString();
             ProblemCount = contest.Problems.Count;
-            Time = contest.Begin.ToString("yyyy-MM-dd HH:mm:ss");
+            Time = contest.Begin.ToString("yyyy-MM-dd HH:mm");
             TimeLength = Helpers.Time.ToVagueTimeLength(contest.Begin, contest.End);
             Title = HttpUtility.HtmlEncode(contest.Title);
             Database.DB DbContext = new Database.DB();
@@ -25,6 +25,24 @@ namespace CodeComb.Web.Models.View
                          && s.Time >= contest.Begin
                          && s.Time < contest.End
                          select s.UserID).Distinct().Count();
+            Managers = "";
+            foreach (var m in contest.Managers)
+            {
+                Managers += String.Format("<a href='/User/{0}'>{1}</a> ", m.UserID, Helpers.ColorName.GetNicknameHtml(m.User.Nickname, m.User.Ratings.Sum(x => x.Credit) + 1500));
+            }
+            Rating = "";
+            if (contest.Ready)
+            {
+                Rating = string.Format("<span class='label blue'>评级赛({0}~{1})</span> ", contest.RatingBegin, contest.RatingEnd);
+            }
+            if (string.IsNullOrEmpty(contest.Password))
+            {
+                Private = false;
+            }
+            else
+            {
+                Private = true;
+            }
         }
         public int ID { get; set; }
         public string TimeLength { get; set; }
@@ -33,5 +51,8 @@ namespace CodeComb.Web.Models.View
         public string Title { get; set; }
         public int ProblemCount { get; set; }
         public int UserCount { get; set; }
+        public string Managers { get; set; }
+        public string Rating { get; set; }
+        public bool Private { get; set; }
     }
 }

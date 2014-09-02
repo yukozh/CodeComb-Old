@@ -58,12 +58,21 @@ namespace CodeComb.Web.SignalR
             {
                 user.Online = true;
                 DbContext.SaveChanges();
-                if (Online.FindIndex(x => x.Username == user.Username) >= 0)
+                var index = Online.FindIndex(x => x.Username == user.Username);
+                Client client;
+                if (index >= 0)
                 {
-                    Clients.Group(user.Username).onMessage(String.Format("{0}已经在线，无法接受您的连接！", user.Username));
+                    Clients.Group(user.Username).onMessage(String.Format("{0}登录了您的帐号，您已被迫停止评测服务！", user.Username));
+                    Groups.Remove(Online[index].Token, Online[index].Username);
+                    Online[index].Token = Context.ConnectionId;
+                    Groups.Add(Context.ConnectionId, user.Username);
+                    client = Online[index];
                 }
-                var client = new Client { Token = Context.ConnectionId, Username = user.Username, MaxThreads = MaxThreads, CurrentThreads = 0 };
-                Online.Add(client);
+                else
+                {
+                    client = new Client { Token = Context.ConnectionId, Username = user.Username, MaxThreads = MaxThreads, CurrentThreads = 0 };
+                    Online.Add(client);
+                }
                 Online = Online.Distinct().ToList();
                 System.Threading.Tasks.Task.Factory.StartNew(() => 
                 {

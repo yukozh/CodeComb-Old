@@ -75,6 +75,21 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MySql.Data.Entity.6.9.2-rc1\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
     </Reference>
+    <Reference Include="PushSharp.Android">
+      <HintPath>..\packages\PushSharp.2.0.4.0\lib\net40\PushSharp.Android.dll</HintPath>
+    </Reference>
+    <Reference Include="PushSharp.Apple">
+      <HintPath>..\packages\PushSharp.2.0.4.0\lib\net40\PushSharp.Apple.dll</HintPath>
+    </Reference>
+    <Reference Include="PushSharp.Core">
+      <HintPath>..\packages\PushSharp.2.0.4.0\lib\net40\PushSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="PushSharp.Windows">
+      <HintPath>..\packages\PushSharp.2.0.4.0\lib\net40\PushSharp.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="PushSharp.WindowsPhone">
+      <HintPath>..\packages\PushSharp.2.0.4.0\lib\net40\PushSharp.WindowsPhone.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -212,6 +227,7 @@
     <Compile Include="Helpers\HtmlFilter.cs" />
     <Compile Include="Helpers\Markdown.cs" />
     <Compile Include="Helpers\MvcHtmlHelperExt.cs" />
+    <Compile Include="Helpers\Push.cs" />
     <Compile Include="Helpers\Rating.cs" />
     <Compile Include="Helpers\Regexes.cs" />
     <Compile Include="Helpers\Security.cs" />
@@ -249,6 +265,8 @@
     <Compile Include="SignalR\Client.cs" />
     <Compile Include="SignalR\CodeCombHub.cs" />
     <Compile Include="SignalR\JudgeHub.cs" />
+    <Compile Include="SignalR\MobileHub.cs" />
+    <Compile Include="SignalR\MobileUser.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -545,6 +563,7 @@
     <Content Include="Styles\css-ie.css" />
     <Content Include="Styles\css.css" />
     <Content Include="Styles\github.css" />
+    <Content Include="Styles\jquery.datetimepicker.css" />
     <Content Include="TodoList.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -622,6 +641,10 @@
     <ProjectReference Include="..\CodeComb.Judge\CodeComb.Judge.csproj">
       <Project>{d41692bb-5e4f-4c1d-ac40-b530d8e17bef}</Project>
       <Name>CodeComb.Judge</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CodeComb.Mobile.Models\CodeComb.Mobile.Models.csproj">
+      <Project>{728587ef-3299-4417-bc57-171dfcb3730a}</Project>
+      <Name>CodeComb.Mobile.Models</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

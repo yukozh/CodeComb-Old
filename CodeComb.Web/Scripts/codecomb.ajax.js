@@ -116,9 +116,10 @@ function LoadContests() {
             if (contests.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
             for (var i in contests) {
                 $("#lstContests").addClass("shadow");
+                var Private = "<span class='label red'>私有赛</span>";
                 $("#lstContests").append('<div class="post-item post-item-zip">'
                                                  + '    <div class="post-title"><h3><a href="/Contest/' + contests[i].ID + '">' + contests[i].Title + '</a></h3></div>'
-                                                 + '    <div class="post-info">' + contests[i].ProblemCount + ' Problem(s), Format: ' + contests[i].Format + ', Duration: ' + contests[i].TimeLength + ' / Start: ' + contests[i].Time + '</div>'
+                                                 + '    <div class="post-info">'+(contests[i].Private?Private:"")+contests[i].Rating+'题量: ' + contests[i].ProblemCount + ', 赛制: ' + contests[i].Format + ', 时长: ' + contests[i].TimeLength + ', 开始: ' + contests[i].Time + '参与: '+contests[i].UserCount+', 举办: '+ contests[i].Managers +'</div>'
                                                  + '</div>');
             }
             lock = false;
@@ -177,6 +178,7 @@ function LoadStandings()
 }
 function LoadProblems()
 {
+    var css = ["green", "orange", "blue", "red", "purple"];
     if ($("#lstProblems").length > 0) {
         $.getJSON("/Problem/GetProblems", {
             page: page,
@@ -189,7 +191,8 @@ function LoadProblems()
             if (problems.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
             for (var i in problems) {
                 $("#lstProblems").append('<tr><td style="text-align:center" class="' + problems[i].FlagCss + '">' + problems[i].Flag + '</td>'
-                                                 + '<td><a href="/Problem/' + problems[i].ID + '">P' + problems[i].ID + ' ' + problems[i].Title + '</a></td>'
+                                                 + '<td><a href="/Problem/' + problems[i].ID + '">P' + problems[i].ID + ' ' + problems[i].Title + '</a>'
+                                                 + '<a style="float:right" href="/Contest/' + problems[i].ContestID + '"><span class="label '+css[i%5]+'">' + problems[i].ContestTitle + '</span></a></td>'
                                                  + '<td style="text-align:center">' + problems[i].AC + '</td>'
                                                  + '<td style="text-align:center">' + problems[i].Submit + '</td>'
                                                  + '<td style="text-align:center">' + problems[i].Difficulty + '</td>'

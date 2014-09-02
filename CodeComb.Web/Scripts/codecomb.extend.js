@@ -6,6 +6,11 @@ var RealTimeStatusID = null;
 var status_id = null;
 var hack_id = null;
 var CodeCombHub;
+var isIE = !!window.ActiveXObject;
+var isIE6 = isIE && !window.XMLHttpRequest;
+var isIE8 = isIE && !!document.documentMode;
+var isIE7 = isIE && !isIE6 && !isIE8;
+var isIE678 = isIE6 || isIE7 || isIE8;
 
 function BroadCastBox()
 {
@@ -356,7 +361,7 @@ $(document).ready(function () {
         $(this).html('<code>' + $(this).html() + '</code>');
         $(this).removeClass('ckeditor-code');
     });
-    if (navigator.userAgent.indexOf("MSIE") == -1) {
+    if (!(isIE6 || isIE7 || isIE8)) {
         hljs.initHighlightingOnLoad();
     }
 
@@ -446,6 +451,7 @@ $(document).ready(function () {
                 CastMsg("提交成功");
             }
             else {
+                if (isIE678) window.location = "/Status";
                 RealTimeStatusID = parseInt(data);
                 $.colorbox({ html: '<h3>评测结果</h3><p>正在评测...</p>', width: '700px' });
             }

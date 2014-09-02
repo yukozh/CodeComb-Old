@@ -15,7 +15,7 @@ namespace CodeComb.Web.Controllers
             var time = DateTime.Now.AddDays(7);
             var contests = (from c in DbContext.Contests
                             where DateTime.Now < c.End
-                            && c.Ready
+                            && c.Problems.Count > 0
                             && c.Password == null
                             && c.Begin <= time
                             orderby c.Begin ascending
@@ -28,6 +28,7 @@ namespace CodeComb.Web.Controllers
         {
             var _contests = (from c in DbContext.Contests
                             where DateTime.Now >= c.End
+                            && c.Problems.Count > 0
                             select c);
             if (format != null)
                 _contests = _contests.Where(x => x.FormatAsInt == format);

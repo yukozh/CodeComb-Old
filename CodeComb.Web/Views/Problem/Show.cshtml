@@ -49,11 +49,11 @@
                                         [<a class="testcase-copywrap" data-id="i@(i - 1)" href="javascript:;">复制</a>]
                                     </p>
                                     <blockquote class="testcase" id="testcase-i@(i - 1)">
-                                        @testcase.Input.TrimEnd('\n')
+                                        @Html.Sanitized(HttpUtility.HtmlEncode(testcase.Input.TrimEnd('\n')).Replace("\n", "<br/>"))
                                     </blockquote>
                                     <p>输出</p>
                                     <blockquote class="testcase">
-                                        @testcase.Output.TrimEnd('\n')
+                                        @Html.Sanitized(HttpUtility.HtmlEncode(testcase.Output.TrimEnd('\n')).Replace("\n", "<br/>"))
                                     </blockquote>
                                 </div>
                             }
@@ -154,6 +154,7 @@ else
                         <a href="/Solution/@Model.ID" class="profile-btn"><img src="/Images/contests.png" alt="查看题解" /></a>
                         @if (IsMaster)
                         {
+                            <a href="/Problem/Edit/@Model.ID" class="profile-btn"><img src="/Images/settings.png" alt="管理题目" /></a>
                             <a href="/Contest/Settings/General/@Model.Contest.ID" class="profile-btn"><img src="/Images/settings.png" alt="管理比赛" /></a>
                         }
                     </div>
@@ -193,11 +194,11 @@ else
                                             [<a class="testcase-copywrap" data-id="i@(i - 1)" href="javascript:;">复制</a>]
                                         </p>
                                         <blockquote class="testcase" id="testcase-i@(i - 1)">
-                                            @testcase.Input.TrimEnd('\n')
+                                            @Html.Sanitized(HttpUtility.HtmlEncode(testcase.Input.TrimEnd('\n')).Replace("\n", "<br/>"))
                                         </blockquote>
                                         <p>输出</p>
                                         <blockquote class="testcase">
-                                            @testcase.Output.TrimEnd('\n')
+                                            @Html.Sanitized(HttpUtility.HtmlEncode(testcase.Output.TrimEnd('\n')).Replace("\n", "<br/>"))
                                         </blockquote>
                                     </div>
                                 }

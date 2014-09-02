@@ -14,10 +14,10 @@
     <!--[if lt IE 9]>
     <link href="/Styles/css-ie.css" rel="stylesheet" type="text/css" />
     <![endif]-->
+    <link href="~/Styles/jquery.datetimepicker.css" rel="stylesheet" type="text/css" />
     @if (DateTime.Now >= DateTime.Now.Date.AddHours(21) || DateTime.Now < DateTime.Now.Date.AddHours(6))
     {
     <link href="~/Styles/css-dark.css" rel="stylesheet" type="text/css" />
-    <link href="~/Styles/jquery.datetimepicker-dark.css" rel="stylesheet" type="text/css" />
     }
     else
     { 
@@ -26,7 +26,9 @@
     <link href="~/Styles/colorbox.css" rel="stylesheet" type="text/css" />
     <link href="~/Styles/codemirror.css" rel="stylesheet" type="text/css" />
     <link href="~/Styles/github.css" rel="stylesheet" type="text/css" />
-    <link href="~/Styles/jquery.datetimepicker.css" rel="stylesheet" type="text/css" />
+    <!--[if lte IE 8]>
+    <script src="/Scripts/json2.js"></script>
+    <![endif]-->
     <script src="~/Scripts/jquery-1.11.1.min.js"></script>
     <script src="~/Scripts/codecomb.basic.js"></script>
     <script src="~/Scripts/codecomb.ajax.js"></script>
@@ -39,12 +41,14 @@
     <script src="~/Scripts/python.js"></script>
     <script src="~/Scripts/ruby.js"></script>
     <script src="~/Scripts/vb.js"></script>
-    <script src="~/Scripts/highlight.pack.js"></script>
     <script src="~/Scripts/jquery.zclip.js"></script>
     <script src="~/Scripts/jquery.datetimepicker.js"></script>
-    <!--[if lt IE 8]>
-    <script src="/Scripts/json2.js"></script>
-    <![endif]-->
+    <!--[if !IE]><!--> 
+        <script src="/Scripts/highlight.pack.js"></script>
+    <!--<![endif]-->
+    <!--[if gte IE 9]>
+        <script src="/Scripts/highlight.pack.js"></script>
+    <!--[if lt IE 9]>
     <!--[if lt IE 9]>
     <script src="/Scripts/jplaceholder.js"></script>
     <script src="/Scripts/iefix.js"></script>

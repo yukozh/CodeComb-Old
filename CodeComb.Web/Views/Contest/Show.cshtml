@@ -42,21 +42,21 @@
                     <div class="post-info"></div>
                     <div class="post-content">
                         <blockquote class="@ViewBag.InfoCss">
-                            <p>Problems: @Model.Problems.Count</p>
-                            <p>Format: @Model.Format.ToString()</p>
-                            <p>Duration: @Html.ToTimeLength(Model.Begin, Model.End)</p>
-                            <p>Start: @Html.ToTimeTip(Model.Begin) (@Model.Begin.ToString("yyyy-MM-dd HH:ss") GMT+800)</p>
+                            <p>题量: @Model.Problems.Count</p>
+                            <p>赛制: @Model.Format.ToString()</p>
+                            <p>时长: @Html.ToTimeLength(Model.Begin, Model.End)</p>
+                            <p>开始: @Html.ToTimeTip(Model.Begin) (@Model.Begin.ToString("yyyy-MM-dd HH:ss") GMT+800)</p>
                             @if (Model.RestBegin != null && Model.RestEnd != null)
                             {
-                                <p>Rest: From @Model.RestBegin.Value.ToString("yyyy-MM-dd HH:ss") To @Model.RestEnd.Value.ToString("yyyy-MM-dd HH:ss")</p>
+                                <p>休息: From @Model.RestBegin.Value.ToString("yyyy-MM-dd HH:ss") To @Model.RestEnd.Value.ToString("yyyy-MM-dd HH:ss")</p>
                             }
                             @if (DateTime.Now >= Model.Begin)
                             {
-                                <p>Joined: @ViewBag.UserCount</p>
+                                <p>参与: @ViewBag.UserCount</p>
                             }
-                            @if (Model.Problems.Sum(x => x.Difficulty) > 0)
+                            @if (Model.Ready)
                             {
-                                <p>Difficulty: From @Model.RatingBegin To @Model.RatingEnd</p>
+                                <p>能力: From @Model.RatingBegin To @Model.RatingEnd</p>
                             }
                         </blockquote>
                         @Html.Sanitized(Model.Content)

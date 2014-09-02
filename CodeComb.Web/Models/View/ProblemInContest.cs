@@ -44,7 +44,7 @@ namespace CodeComb.Web.Models.View
             if (user == null) return;
             var statuses = (from s in problem.Statuses
                             where s.UserID == user.ID
-                            && !Entity.Status.FreeResults.Contains(s.Result)
+                            && !Entity.Status._FreeResults.Contains(s.Result)
                             && s.Time >= problem.Contest.Begin
                             && s.Time < problem.Contest.End
                             orderby s.Time ascending

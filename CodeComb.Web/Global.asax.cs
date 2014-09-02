@@ -5,7 +5,11 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using System.IO;
 using Microsoft.AspNet.SignalR;
+using PushSharp.Apple;
+using PushSharp.Core;
+using PushSharp;
 
 namespace CodeComb.Web
 {
@@ -17,6 +21,8 @@ namespace CodeComb.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            GlobalHost.Configuration.ConnectionTimeout = TimeSpan.FromDays(30);
+            Helpers.Push.push.RegisterAppleService(new ApplePushChannelSettings(File.ReadAllBytes(@"C:\CodeCombCert\ios_push_sandbox.p12"), "CodeComb"));
         }
     }
 }
