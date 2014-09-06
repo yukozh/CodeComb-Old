@@ -17,14 +17,14 @@ namespace CodeComb.Web.Models.View
             AC = problem.Statuses.Where(x => x.ResultAsInt == (int)Entity.JudgeResult.Accepted).Count();
             Submit = problem.Statuses.Count;
             Difficulty = "R";
-            if (problem.Difficulty >= 1500)
+            if (problem.Difficulty >= 1500 && problem.Difficulty < 1700)
                 Difficulty = "L3";
-            else if (problem.Difficulty >= 1700)
+            else if (problem.Difficulty >= 1700 && problem.Difficulty < 2000)
                 Difficulty = "L2";
-            else if (problem.Difficulty >= 2000)
+            else if (problem.Difficulty >= 2000 && problem.Difficulty < 2400)
                 Difficulty = "L1";
             else if (problem.Difficulty >= 2400)
-                Difficulty = "R";
+                Difficulty = "S";
             Flag = "";
             FlagCss = "";
             if (user != null)

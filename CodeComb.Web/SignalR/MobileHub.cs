@@ -97,7 +97,7 @@ namespace CodeComb.Web.SignalR
             DbContext.SaveChanges();
             return true;
         }
-        public List<Mobile.Models.Contest> GetContests(int page)
+        public List<Mobile.Models.Contest> GetContests()
         {
             var user = GetUser();
             if (user == null) return null;
@@ -189,6 +189,18 @@ namespace CodeComb.Web.SignalR
                     Status = clar.StatusAsInt
                 });
             }
+            return true;
+        }
+        public bool BroadCast(string Message)
+        {
+            var user = GetUser();
+            if (user == null) return false;
+            if (CheckRole() < Entity.UserRole.Master)
+                return false;
+            Message = System.Web.HttpUtility.HtmlEncode(Message).Replace("\n", "<br/>");
+            SignalR.CodeCombHub.context.Clients.All.onBroadCast(Helpers.HtmlFilter.Instance.SanitizeHtml(Message));
+            SignalR.MobileHub.PushToAll(HttpUtility.HtmlDecode(Message));
+            SignalR.MobileHub.context.Clients.All.onBroadCast(HttpUtility.HtmlDecode(Message));
             return true;
         }
     }

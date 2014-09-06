@@ -99,6 +99,7 @@ Code Comb Node");
             });
             HubConnection.TraceLevel = TraceLevels.Events;
             HubConnection.TraceWriter = Console.Out;
+            HubConnection.TransportConnectTimeout = TimeSpan.FromDays(30);
             HubConnection.Start().Wait();
             HubConnection.Reconnected += HubConnection_Reconnected;
             hubJudge.Invoke("Auth", Username, Password, MaxThreads).Wait();

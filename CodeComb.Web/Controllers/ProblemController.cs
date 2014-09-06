@@ -212,14 +212,14 @@ namespace CodeComb.Web.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public ActionResult ChangeTestCase(int id)
+        public ActionResult ChangeTestCaseType(int tid, int type)
         {
-            var testcase = DbContext.TestCases.Find(id);
+            var testcase = DbContext.TestCases.Find(tid);
             var contest = testcase.Problem.Contest;
             var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
             if (user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
                 return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
-            testcase.TypeAsInt = (testcase.TypeAsInt + 1) % Enum.GetNames(typeof(Entity.TestCaseType)).Count();
+            testcase.TypeAsInt = type;
             DbContext.SaveChanges();
             return RedirectToAction("TestCases", "Problem", new { id = testcase.ProblemID });
         }

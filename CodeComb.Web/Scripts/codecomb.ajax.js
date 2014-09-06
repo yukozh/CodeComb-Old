@@ -18,6 +18,7 @@ function Load()
     LoadSolutionTags();
     LoadStandings();
     LoadProblems();
+    LoadHacks();
 }
 
 function LoadRatings()
@@ -116,7 +117,7 @@ function LoadContests() {
             if (contests.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
             for (var i in contests) {
                 $("#lstContests").addClass("shadow");
-                var Private = "<span class='label red'>私有赛</span>";
+                var Private = "<span class='label gray'>私有赛</span>";
                 $("#lstContests").append('<div class="post-item post-item-zip">'
                                                  + '    <div class="post-title"><h3><a href="/Contest/' + contests[i].ID + '">' + contests[i].Title + '</a></h3></div>'
                                                  + '    <div class="post-info">'+(contests[i].Private?Private:"")+contests[i].Rating+'题量: ' + contests[i].ProblemCount + ', 赛制: ' + contests[i].Format + ', 时长: ' + contests[i].TimeLength + ', 开始: ' + contests[i].Time + '参与: '+contests[i].UserCount+', 举办: '+ contests[i].Managers +'</div>'
@@ -192,11 +193,38 @@ function LoadProblems()
             for (var i in problems) {
                 $("#lstProblems").append('<tr><td style="text-align:center" class="' + problems[i].FlagCss + '">' + problems[i].Flag + '</td>'
                                                  + '<td><a href="/Problem/' + problems[i].ID + '">P' + problems[i].ID + ' ' + problems[i].Title + '</a>'
-                                                 + '<a style="float:right" href="/Contest/' + problems[i].ContestID + '"><span class="label '+css[i%5]+'">' + problems[i].ContestTitle + '</span></a></td>'
+                                                 + '<a style="float:right" href="/Contest/' + problems[i].ContestID + '"><span class="label ' + css[problems[i].ContestID % 5] + '">' + problems[i].ContestTitle + '</span></a></td>'
                                                  + '<td style="text-align:center">' + problems[i].AC + '</td>'
                                                  + '<td style="text-align:center">' + problems[i].Submit + '</td>'
                                                  + '<td style="text-align:center">' + problems[i].Difficulty + '</td>'
                                                  + '</td>');
+            }
+            lock = false;
+            page++;
+            $("#iconLoading").hide();
+        });
+    }
+}
+function LoadHacks()
+{
+    if ($("#lstHacks").length > 0) {
+        $.getJSON("/Hack/GetHacks", {
+            page: page,
+            hacker: hacker,
+            defender: defender,
+            result: result,
+            contest_id: contest_id,
+            problem_id: problem_id,
+            user_id: user_id,
+            rnd: Math.random()
+        }, function (hacks) {
+            if (page == 0 && hacks.length == 0) {
+                $("#lstHacks").removeClass('shadow');
+                $("#lstHacks").append('<p>没有符合条件的结果</p>');
+            }
+            if (hacks.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
+            for (var i in hacks) {
+                BuildStatus(hacks[i]);
             }
             lock = false;
             page++;
@@ -235,33 +263,35 @@ function BuildStatus(status) {
         $("#lstStatuses").append('<a id=s_' + status.ID + ' class="status-item" href="/Status/' + status.ID + '">' + html + '</a>');
     }
 }
-function BuildStatus(status) {
+function BuildHack(hack) {
     var html = '<div class="status-item-wrap">'
-                  + '<div class="status-face">' + status.Gravatar + '</div>'
-                  + '<div class="status-cont"><div class="status-name"><h2>' + status.Nickname + '</h2></div></div>'
-                  + '<div class="status-info">' + status.ProblemTitle + ' @' + status.TimeTip + '</div>'
-                  + '<div class="status-status">' + status.Result + (status.PointCount > 1 ? ' (' + status.Statistics[0] + '/' + status.PointCount + ')' : "") + '</div>'
-                  + '</div><div class="status-points">';
-    var per = parseInt(100 / status.PointCount);
-    var fill = 100 - per * (status.PointCount);
-    var filled = false;
-    for (var i = 0; i < status.Statistics.length; i++) {
-        var p = per * status.Statistics[i];
-        if (!filled && status.Statistics[i] > 0) {
-            p += fill;
-            filled = true;
-        }
-        if (status.Statistics[i] > 0)
-            html += '<div class="status-point-item status-point-' + StatusCss[i] + '" style="width:' + p + '%"><div class="status-point-desc">' + StatusDisplay[i] + (status.PointCount > 1 ? ' : ' + status.Statistics[i] : "") + '</div></div>';
-    }
+                  + '<div class="status-face">' + hack.Gravatar + '</div>'
+                  + '<div class="status-cont"><div class="status-name"><h2>' + hack.Nickname + '</h2></div></div>'
+                  + '<div class="status-info">Defender: ' + lstHacks[i].Defender + ' / Status: ' + lstHacks[i].ID + '/ ' + lstHacks[i].Problem + ' @' + lstHacks[i].Time + '</div>'
+                  + '<div class="status-status">' + hack.Result + (hack.PointCount > 1 ? ' (' + hack.Statistics[0] + '/' + hack.PointCount + ')' : "") + '</div>';
     html += '</div>';
-    if ($("#s_" + status.ID).length > 0) {
-        $("#s_" + status.ID).html(html);
+    if ($("#h_" + hack.ID).length > 0) {
+        $("#h_" + hack.ID).html(html);
     }
     else {
-        $("#lstStatuses").append('<a id=s_' + status.ID + ' class="status-item" href="/Status/' + status.ID + '">' + html + '</a>');
+        $("#lstHacks").append('<a id=h_' + hack.ID + ' class="status-item" href="/Hack/' + hack.ID + '">' + html + '</a>');
     }
 }
+function BuildNewHack(hack) {
+    var html = '<div class="status-item-wrap">'
+                  + '<div class="status-face">' + hack.Gravatar + '</div>'
+                  + '<div class="status-cont"><div class="status-name"><h2>' + hack.Nickname + '</h2></div></div>'
+                  + '<div class="status-info">Defender: ' + lstHacks[i].Defender + ' / Status: ' + lstHacks[i].ID + '/ ' + lstHacks[i].Problem + ' @' + lstHacks[i].Time + '</div>'
+                  + '<div class="status-status">' + hack.Result + (hack.PointCount > 1 ? ' (' + hack.Statistics[0] + '/' + hack.PointCount + ')' : "") + '</div>';
+    html += '</div>';
+    if ($("#h_" + hack.ID).length > 0) {
+        $("#h_" + hack.ID).html(html);
+    }
+    else {
+        $("#lstHacks").prepend('<a id=h_' + hack.ID + ' class="status-item" href="/Hack/' + hack.ID + '">' + html + '</a>');
+    }
+}
+
 function BuildNewStatus(status) {
     var html = '<div class="status-item-wrap">'
                   + '<div class="status-face">' + status.Gravatar + '</div>'

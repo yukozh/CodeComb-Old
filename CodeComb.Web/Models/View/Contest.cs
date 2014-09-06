@@ -33,7 +33,7 @@ namespace CodeComb.Web.Models.View
             Rating = "";
             if (contest.Ready)
             {
-                Rating = string.Format("<span class='label blue'>评级赛({0}~{1})</span> ", contest.RatingBegin, contest.RatingEnd);
+                Rating = string.Format("<span class='label gray'>评级赛({0}~{1})</span> ", contest.RatingBegin, contest.RatingEnd);
             }
             if (string.IsNullOrEmpty(contest.Password))
             {

@@ -256,6 +256,11 @@ namespace CodeComb.Web.Controllers
             return Json(standings, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult Hack()
+        {
+            return View();
+        }
+
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]

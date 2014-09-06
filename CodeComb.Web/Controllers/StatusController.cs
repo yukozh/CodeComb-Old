@@ -282,7 +282,7 @@ namespace CodeComb.Web.Controllers
                 catch { }
             }
             SignalR.CodeCombHub.context.Clients.All.onStatusCreated(new Models.View.Status(status));//推送新状态
-            if (contest.Format == Entity.ContestFormat.OI)
+            if (contest.Format == Entity.ContestFormat.OI && DateTime.Now >= contest.Begin && DateTime.Now < contest.End)
                 return Content("OI");
             return Content(status.ID.ToString());
         }

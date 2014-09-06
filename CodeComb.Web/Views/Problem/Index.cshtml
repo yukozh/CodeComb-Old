@@ -8,7 +8,8 @@
     <div class="cont-wrap">
     <div class="grid_12">
         <div class="problem-pager shadow">
-            <p>快速翻页：
+            <p style="margin-top:9px;">
+                快速翻页：
                 @{
                     var pages = (List<CodeComb.Web.Models.View.ProblemPager>)ViewBag.Pager;
                     var i = 0;
@@ -16,11 +17,11 @@
                     {
                         if (++i == pages.Count)
                         {
-                        <a href="javascript:Jump(@item.MoreThan, @item.LessThan)">@item.Display</a>
+                            <a href="javascript:Jump(@item.MoreThan, @item.LessThan)">@item.Display</a>
                         }
                         else
-                        { 
-                        <a href="javascript:Jump(@item.MoreThan, @item.LessThan)">@item.Display</a> @("~")
+                        {
+                            <a href="javascript:Jump(@item.MoreThan, @item.LessThan)">@item.Display</a> @("~")
                         }
                     }
                 }

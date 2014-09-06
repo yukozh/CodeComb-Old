@@ -461,7 +461,7 @@ body, button, input, select, textarea {
 
 p {
     margin: 1em 0;
-    line-height: 1.2em;
+    line-height: 1.8em;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -2464,7 +2464,7 @@ div.CodeMirror-selected {
     _background: #000;
     border-radius:8px;
     font-size: 18px;
-    font-family: 'Microsoft Yahei',微软雅黑;
+    font-family: 'Microsoft Yahei UI','Microsoft Yahei',微软雅黑;
     text-align: center;
     line-height: 40px;
     padding: 20px;
@@ -2557,4 +2557,7 @@ div.CodeMirror-selected {
 .xdsoft_datetimepicker  .xdsoft_label > .xdsoft_select > div > .xdsoft_option:hover{
 	color: #555!important;
     background: #11371c!important;
+}
+#cboxLoadedContent p {
+    line-height: 1.2em;
 }

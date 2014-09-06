@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "Hack状态";
+    ViewBag.BannerTitle = "Hack状态";
+}
+
+<div class="status-body">
+    <div class="cont-wrap">
+        <div class="grid_9">
+            <div id="lstHacks"></div>
+            <div><div class="loading" id="iconLoading"></div></div>
+        </div><div class="grid_3">
+            <div class="post-module">
+                <h3>Filter</h3>
+                <div class="post-module-content post-module-status-filter">
+                    <div class="post-cate-item"><input id="txtHacker" type="text" placeholder="进攻方昵称" class="textbox"></div>
+                    <div class="post-cate-item"><input id="txtDefender" type="text" placeholder="防守方昵称" class="textbox"></div>
+                    <div class="post-cate-item"><input id="txtProblemID" type="text" placeholder="题目编号" class="textbox"></div>
+                    <div class="post-cate-item">
+                        <select id="lstResult">
+                            <option value="">全部状态</option>
+                            @for (int i = 0; i < CodeComb.Entity.CommonEnums.HackResultDisplay.Count(); i++)
+                            { 
+                                <option value="@i">@CodeComb.Entity.CommonEnums.HackResultDisplay[i]</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="post-cate-item"><input id="btnFilter" type="button" class="button button-def" value="查询"></div>
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>
+<script>
+    var hacker,defender, result, contest_id, problem_id, user_id;
+    contest_id = @(ViewContext.RouteData.Values["id"] ?? "null");
+    problem_id = @(ViewContext.RouteData.Values["pid"]?? "null");
+    user_id = @(ViewContext.RouteData.Values["uid"]?? "null");
+    $("#btnFilter").click(function () {
+        hacker = $("#txtHacker").val();
+        defender=  $("#txtDefender").val();
+        problem_id = parseInt($("#txtProblemID").val());
+        result = $("#lstResult").val();
+        page = 0;
+        $("#lstHacks").html("");
+        lock = false;
+        Load();
+    });
+</script>

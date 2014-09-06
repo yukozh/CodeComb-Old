@@ -23,6 +23,12 @@
                     <div class="post-info"></div>
                     <div class="post-content">
                         <p><a href="javascript:$.colorbox({ inline: true, width: 'auto', href: '#TestCaseUpload'});">上传打包数据</a> <a href="javascript:$.colorbox({ inline: true, width: 'auto', href: '#TestCaseTextUpload'});">上传手打数据</a></p>
+                        @using (Html.BeginForm("ChangeTestCaseType", "Problem", null, FormMethod.Post, new { id="frmChangeType"}))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="tid" id="TestCaseID" />
+                            <input type="hidden" name="type" id="TestCaseType" />
+                        }
                         <table>
                             <thead>
                                 <tr>
@@ -38,8 +44,25 @@
                                     <tr>
                                         <td>@(item.Input.Length / 1024) KiB</td>
                                         <td>@(item.Output.Length / 1024) KiB</td>
-                                        <td><span class="label @Css[(int)item.Type]" >@item.Type</span></td>
-                                        <td><a href="javascript:EditTestCase(@item.ID)">编辑</a> <a href="javascript:$('#ChangeID').val(@item.ID);$('#frmChangeTestCase').submit();">更改类型</a> <a href="javascript:$('#DeleteID').val(@item.ID);$('#frmDeleteTestCase').submit();">删除</a> </td>
+                                        <td>
+                                            <select class="lstTestCaseType" tid="@item.ID">
+                                                @{
+                                                    var names = Enum.GetNames(typeof(CodeComb.Entity.TestCaseType));
+                                                    for (var i = 0; i < names.Count(); i++)
+                                                    {
+                                                        if (item.TypeAsInt == i)
+                                                        { 
+                                                            <option value="@i" selected>@names[i]</option>
+                                                        }
+                                                        else
+                                                        { 
+                                                            <option value="@i">@names[i]</option>
+                                                        }
+                                                    }
+                                                }
+                                            </select>
+                                        </td>
+                                        <td><a href="javascript:EditTestCase(@item.ID)">编辑</a> <a href="javascript:$('#DeleteID').val(@item.ID);$('#frmDeleteTestCase').submit();">删除</a> </td>
                                     </tr>
                                 }
                             </tbody>
@@ -48,11 +71,6 @@
                         { 
                             @Html.AntiForgeryToken()
                             <input type="hidden" id="DeleteID" name="id" />
-                        }
-                        @using (Html.BeginForm("ChangeTestCase", "Problem", null, FormMethod.Post, new { id = "frmChangeTestCase" }))
-                        {
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" id="ChangeID" name="id" />
                         }
                     </div>
                 </div>
@@ -119,3 +137,13 @@
     </div>
 </div>
     
+<script>
+    $(".lstTestCaseType").change(function () {
+        var tid = $(this).attr("tid");
+        $("#TestCaseID").val(tid);
+        $("#TestCaseType").val($(this).val());
+        $.post("/Problem/ChangeTestCaseType/", $("#frmChangeType").serialize(), function () {
+            CastMsg("测试数据类型已修改！");
+        });
+    });
+</script>

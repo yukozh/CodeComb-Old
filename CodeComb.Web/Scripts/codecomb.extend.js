@@ -322,6 +322,22 @@ $(document).ready(function () {
         else
             $("#lstJudgers").prepend('<p id="j_' + judger.ID + '">' + html + '<p id="j_' + judger.ID + '">');
     }
+    CodeCombHub.client.onHackCreated = function (hack) {
+        if ($("#lstStatuses").length > 0) {
+            if (contest_id != null && hack.ContestID != contest_id) return;
+            if (nickname != null && hack._Nickname.indexOf(nickname) < 0) return;
+            if (defender != null && hack._Nickname.indexOf(defender) < 0) return;
+            if (problem_id != null && problem_id != 0 && status.ProblemID != problem_id) return;
+            BuildNewHack(status);
+        }
+    };
+    CodeCombHub.client.onHackChanged = function (hack) {
+        if ($("#lstHacks").length > 0) {
+            if ($("#h_" + status.ID).length > 0) {
+                BuildStatus(status);
+            }
+        }
+    }
     $.connection.hub.start().done(function () {
         if ($("#lstJudgers").length > 0) {
             CodeCombHub.server.joinJudgeList();
