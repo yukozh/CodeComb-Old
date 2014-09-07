@@ -220,86 +220,7 @@ textarea {
     src: local('Exo Thin'),local('Exo-Thin'),url(../fonts/exo-thin.eot) format('embedded-opentype'),url(../fonts/exo-thin.woff) format('woff'),url(../fonts/exo-thin.ttf) format('truetype');
 }
 
-@media (max-width:775px) {
-    .cont-wrap {
-        width: 100%;
-    }
-
-    .grid_1, .grid_10, .grid_11, .grid_12, .grid_2, .grid_3, .grid_4, .grid_5, .grid_6, .grid_7, .grid_8, .grid_9 {
-        display: block;
-        margin-left: 10px;
-        margin-right: 10px;
-    }
-}
-
-@media (min-width:776px) {
-    body {
-        min-width: 756px;
-    }
-
-    .cont-wrap {
-        margin-left: auto;
-        margin-right: auto;
-        width: 756px;
-    }
-
-    .grid_1, .grid_10, .grid_11, .grid_12, .grid_2, .grid_3, .grid_4, .grid_5, .grid_6, .grid_7, .grid_8, .grid_9 {
-        display: inline;
-        float: left;
-        margin-left: 10px;
-        margin-right: 10px;
-    }
-
-    .grid_1 {
-        width: 43px;
-    }
-
-    .grid_2 {
-        width: 106px;
-    }
-
-    .grid_3 {
-        width: 169px;
-    }
-
-    .grid_4 {
-        width: 232px;
-    }
-
-    .grid_5 {
-        width: 295px;
-    }
-
-    .grid_6 {
-        width: 358px;
-    }
-
-    .grid_7 {
-        width: 421px;
-    }
-
-    .grid_8 {
-        width: 484px;
-    }
-
-    .grid_9 {
-        width: 547px;
-    }
-
-    .grid_10 {
-        width: 610px;
-    }
-
-    .grid_11 {
-        width: 673px;
-    }
-
-    .grid_12 {
-        width: 736px;
-    }
-}
-
-@media (min-width:980px) {
+@media (max-width:1219px) {
     body {
         min-width: 960px;
     }
@@ -613,6 +534,7 @@ a, a:visited {
     -webkit-transition: border-color .2s linear,background .2s linear;
     transition: border-color .2s linear,background .2s linear;
     background: #f2f2f2;
+    max-width:100%;
 }
 
     .textbox:hover {
@@ -2453,10 +2375,13 @@ input[type="checkbox"]:focus {
 
 dd{
     word-wrap: break-word; 
-　　word-break: normal;
-　　width:90%;
+　word-break: normal;
+　width:90%;
 }
 
 #cboxLoadedContent p{
     line-height: 1.2em;
+}
+select {
+    max-width:100%;
 }
