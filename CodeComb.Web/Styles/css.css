@@ -755,6 +755,7 @@ a.page-header-item, a.page-header-item:active, a.page-header-item:visited {
 
 body {
     background: #f2f2f2;
+    background-image:url(/Images/bg.jpg);
 }
 
 .loading {
