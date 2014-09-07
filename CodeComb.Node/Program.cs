@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Configuration;
 using CodeComb.Judge.Models;
 using Microsoft.AspNet.SignalR.Client;
-using System.Configuration;
 
 namespace CodeComb.Node
 {
@@ -97,18 +96,19 @@ Code Comb Node");
             {
                 Console.WriteLine("{0} {1}", DateTime.Now.ToString("HH:mm:ss"), "本评测机帐号在异地登陆，导致本节点连接终止，如果不是您本人操作，请及时修改密码！");
             });
-            HubConnection.TraceLevel = TraceLevels.Events;
+            HubConnection.TraceLevel = TraceLevels.All;
             HubConnection.TraceWriter = Console.Out;
             HubConnection.TransportConnectTimeout = TimeSpan.FromDays(30);
             HubConnection.Start().Wait();
-            HubConnection.Reconnected += HubConnection_Reconnected;
+            HubConnection.Closed += HubConnection_Closed;
             hubJudge.Invoke("Auth", Username, Password, MaxThreads).Wait();
             System.Threading.Thread t = new System.Threading.Thread(KeepAlive);
             t.Start();
         }
 
-        static void HubConnection_Reconnected()
+        static void HubConnection_Closed()
         {
+            HubConnection.Start().Wait();
             hubJudge.Invoke("Auth", Username, Password, MaxThreads);
         }
     }
