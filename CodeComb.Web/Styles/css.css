@@ -616,8 +616,9 @@ a, a:visited {
 }
 
 .page-header {
-    position: fixed !important;
-    position: absolute;
+    position: fixed;
+    *position: absolute;
+    _position: absolute;
     left: 0;
     top: 0;
     width: 100%;

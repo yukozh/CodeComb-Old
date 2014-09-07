@@ -237,6 +237,7 @@ var StatusCss = ["ac", "pe", "wa", "ole", "tle", "mle", "rte", "ce", "se", "hack
 var StatusDisplay = ["Accepted", "Presentation Error", "Wrong Answer", "Output Limit Exceeded", "Time Limit Exceeded", "Memory Limit Exceeded", "Runtime Error", "Compile Error", "System Error", "Hacked", "Running", "Pending","Hidden"];
 
 function BuildStatus(status) {
+    if (status == null) return;
     var html = '<div class="status-item-wrap">'
                   + '<div class="status-face">' + status.Gravatar + '</div>'
                   + '<div class="status-cont"><div class="status-name"><h2>' + status.Nickname + '</h2></div></div>'
@@ -246,14 +247,17 @@ function BuildStatus(status) {
     var per = parseInt(100 / status.PointCount);
     var fill = 100 - per * (status.PointCount);
     var filled = false;
-    for (var i = 0; i < status.Statistics.length; i++) {
-        var p = per * status.Statistics[i];
-        if (!filled && status.Statistics[i] > 0) {
-            p += fill;
-            filled = true;
+    if (status.Statistics != null)
+    {
+        for (var i = 0; i < status.Statistics.length; i++) {
+            var p = per * status.Statistics[i];
+            if (!filled && status.Statistics[i] > 0) {
+                p += fill;
+                filled = true;
+            }
+            if (status.Statistics[i] > 0)
+                html += '<div class="status-point-item status-point-' + StatusCss[i] + '" style="width:' + p + '%"><div class="status-point-desc">' + StatusDisplay[i] + (status.PointCount > 1 ? ' : ' + status.Statistics[i] : "") + '</div></div>';
         }
-        if (status.Statistics[i] > 0)
-            html += '<div class="status-point-item status-point-' + StatusCss[i] + '" style="width:' + p + '%"><div class="status-point-desc">' + StatusDisplay[i] + (status.PointCount > 1 ? ' : ' + status.Statistics[i] : "") + '</div></div>';
     }
     html += '</div>';
     if ($("#s_" + status.ID).length > 0) {
