@@ -65,7 +65,7 @@ namespace CodeComb.Web.Controllers
             var problem = DbContext.Problems.Find(id);
             var contest = problem.Contest;
             var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
-            if (DateTime.Now < contest.Begin && user.Role < Entity.UserRole.Master && (from m in contest.Managers select m.ID).ToList().Contains(user.ID))
+            if (DateTime.Now < contest.Begin && user.Role < Entity.UserRole.Master && !(from m in contest.Managers select m.ID).ToList().Contains(user.ID))
                 return RedirectToAction("Message", "Shared", new { msg = "您无权查看该题目！" });
             var Problems = new List<Models.View.StatusSnapshot>();
             foreach (var p in problem.Contest.Problems.OrderBy(x=>x.Credit))
@@ -414,6 +414,7 @@ namespace CodeComb.Web.Controllers
             var now = DateTime.Now;
             IEnumerable<Entity.Problem> _problems = (from p in DbContext.Problems
                              where p.Title.Contains(title)
+                             && !p.Hide
                              && DateTime.Now >= p.Contest.End
                              select p);
             if (tag_ids.Count > 0)
@@ -460,6 +461,19 @@ namespace CodeComb.Web.Controllers
             });
             DbContext.SaveChanges();
             return Content("您已成功锁定" + HttpUtility.HtmlEncode(problem.Title) + "!");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public ActionResult Hide(int id, bool hide)
+        {
+            if (ViewBag.CurrentUser.Role < Entity.UserRole.Master)
+                return Content("NO");
+            var problem = DbContext.Problems.Find(id);
+            problem.Hide = hide;
+            DbContext.SaveChanges();
+            return Content("OK");
         }
 	}   
 }

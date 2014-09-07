@@ -43,6 +43,9 @@ namespace CodeComb.Entity
         [Column("special_judge_language")]
         public int SpecialJudgeLanguageAsInt { get; set; }
 
+        [Column("hide")]
+        public bool Hide { get; set; }
+
         [NotMapped]
         public Language SpecialJudgeLanguage
         {

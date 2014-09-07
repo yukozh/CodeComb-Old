@@ -25,6 +25,12 @@
                         {
                             @Html.AntiForgeryToken()
                         }
+                        @using (Html.BeginForm("Hide", "Problem", new { id = Model.ID }, FormMethod.Post, new { id="frmHideProblem"}))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" id="ProblemID" />
+                            <input type="hidden" name="hide" id="Hide" />
+                        }
                         <table>
                             <thead>
                                 <tr>
@@ -32,6 +38,10 @@
                                     <th>题目名称</th>
                                     <th>分值</th>
                                     <th>能力值</th>
+                                    @if (ViewBag.CurrentUser.Role >= CodeComb.Entity.UserRole.Master) 
+                                    {
+                                        <th>状态</th>
+                                    }
                                     <th>操作</th>
                                 </tr>
                             </thead>
@@ -44,6 +54,15 @@
                                             <td>@Html.ActionLink(item.Title, "Show", "Problem", new { id = item.ID }, null)</td>
                                             <td>@item.Credit</td>
                                             <td>@item.Difficulty</td>
+                                            @if (ViewBag.CurrentUser.Role >= CodeComb.Entity.UserRole.Master) 
+                                            {
+                                                <td>
+                                                    <select class="lstHide" pid="@item.ID">
+                                                        <option value="false" @(!item.Hide?"selected":"")>在列表显示</option>
+                                                        <option value="true" @(item.Hide ? "selected" : "") > 在列表隐藏</option>
+                                                    </select>
+                                                </td>
+                                            }
                                             <td>@Html.ActionLink("编辑", "Edit", "Problem", new { id = item.ID }, null) <a href="javascript:$('#ProblemID').val(@item.ID);$('#frmDeleteProblem').submit();">删除</a></td>
                                         </tr>
                                     }
@@ -61,3 +80,17 @@
         </div><div class="clear"></div>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $(".lstHide").change(function () {
+            $("#ProblemID").val($(this).attr("pid"));
+            $("#Hide").val($(this).val());
+            $.post("/Problem/Hide", $("#frmHideProblem").serialize(), function (result) {
+                if (result == "OK")
+                    CastMsg("设置成功！");
+                else
+                    CastMsg("只有管理员可执行本操作！");
+            });
+        });
+    });
+</script>

@@ -101,9 +101,15 @@ Code Comb Node");
             HubConnection.TransportConnectTimeout = TimeSpan.FromDays(30);
             HubConnection.Start().Wait();
             HubConnection.Closed += HubConnection_Closed;
+            HubConnection.Reconnected += HubConnection_Reconnected;
             hubJudge.Invoke("Auth", Username, Password, MaxThreads).Wait();
             System.Threading.Thread t = new System.Threading.Thread(KeepAlive);
             t.Start();
+        }
+
+        static void HubConnection_Reconnected()
+        {
+            hubJudge.Invoke("Auth", Username, Password, MaxThreads);
         }
 
         static void HubConnection_Closed()
