@@ -66,7 +66,8 @@ namespace CodeComb.Web.Controllers
                 Content = model.Content,
                 UserID = ViewBag.CurrentUser.ID,
                 Time = DateTime.Now,
-                Top = false
+                Top = false,
+                LastReply = DateTime.Now
             };
             DbContext.Topics.Add(topic);
             DbContext.SaveChanges();

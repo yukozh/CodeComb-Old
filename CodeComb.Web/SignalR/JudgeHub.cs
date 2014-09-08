@@ -21,6 +21,14 @@ namespace CodeComb.Web.SignalR
                 Groups.Remove(Context.ConnectionId, Online[index].Username);
                 Online.RemoveAt(index);
             }
+            if (Online.Count == 0)
+            { 
+                var ids = (from u in DbContext.Users
+                               where u.RoleAsInt >= (int)Entity.UserRole.Master
+                               select u.ID).ToList();
+                foreach (var id in ids)
+                    SignalR.MobileHub.PushTo(id, "评测机全部离线，请修复。");
+            }
             return base.OnDisconnected(stopCalled);
         }
         public UploadTask GetTestCase(int ID)
