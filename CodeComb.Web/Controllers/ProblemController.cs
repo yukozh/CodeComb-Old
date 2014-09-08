@@ -415,7 +415,7 @@ namespace CodeComb.Web.Controllers
             }
             var now = DateTime.Now;
             IEnumerable<Entity.Problem> _problems = (from p in DbContext.Problems
-                             where p.Title.Contains(title)
+                             where (p.Title.Contains(title) || p.Contest.Title.Contains(title))
                              && !p.Hide
                              && DateTime.Now >= p.Contest.End
                              select p);
