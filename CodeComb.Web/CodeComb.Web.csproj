@@ -228,6 +228,7 @@
     <Compile Include="Helpers\HtmlFilter.cs" />
     <Compile Include="Helpers\Markdown.cs" />
     <Compile Include="Helpers\MvcHtmlHelperExt.cs" />
+    <Compile Include="Helpers\PrivateContest.cs" />
     <Compile Include="Helpers\Push.cs" />
     <Compile Include="Helpers\Rating.cs" />
     <Compile Include="Helpers\Regexes.cs" />
@@ -627,6 +628,7 @@
     <Content Include="Views\Shared\About.cshtml" />
     <Content Include="Views\ContestSettings\More.cshtml" />
     <Content Include="Views\Contest\Hack.cshtml" />
+    <Content Include="Views\Contest\Private.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

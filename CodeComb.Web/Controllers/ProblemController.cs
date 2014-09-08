@@ -64,6 +64,8 @@ namespace CodeComb.Web.Controllers
         {
             var problem = DbContext.Problems.Find(id);
             var contest = problem.Contest;
+            if (!Helpers.PrivateContest.IsUserInPrivateContest(ViewBag.CurrentUser == null ? null : (Entity.User)ViewBag.CurrentUser, contest))
+                return RedirectToAction("Private", "Contest", new { id = id });
             var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
             if (DateTime.Now < contest.Begin && user.Role < Entity.UserRole.Master && !(from m in contest.Managers select m.ID).ToList().Contains(user.ID))
                 return RedirectToAction("Message", "Shared", new { msg = "您无权查看该题目！" });

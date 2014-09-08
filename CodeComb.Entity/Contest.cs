@@ -67,6 +67,8 @@ namespace CodeComb.Entity
 
         public virtual ICollection<ContestManager> Managers { get; set; }
 
+        public virtual ICollection<JoinLog> JoinLogs { get; set; }
+
         public override bool Equals(object obj)
         {
             var data = obj as Contest;

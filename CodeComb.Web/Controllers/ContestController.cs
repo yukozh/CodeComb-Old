@@ -16,7 +16,6 @@ namespace CodeComb.Web.Controllers
             var contests = (from c in DbContext.Contests
                             where DateTime.Now < c.End
                             && c.Problems.Count > 0
-                            && c.Password == null
                             && c.Begin <= time
                             orderby c.Begin ascending
                             select c).ToList();
@@ -42,6 +41,8 @@ namespace CodeComb.Web.Controllers
         public ActionResult Show(int id)
         {
             var contest = DbContext.Contests.Find(id);
+            if (!Helpers.PrivateContest.IsUserInPrivateContest(ViewBag.CurrentUser == null ? null : (Entity.User)ViewBag.CurrentUser, contest))
+                return RedirectToAction("Private", "Contest", new { id = id });
             ViewBag.UserCount = (from s in DbContext.Statuses
                          let pid = (from p in DbContext.Problems
                                     where p.ContestID == contest.ID
@@ -69,6 +70,8 @@ namespace CodeComb.Web.Controllers
         public ActionResult Statistics(int id)
         {
             var contest = DbContext.Contests.Find(id);
+            if (!Helpers.PrivateContest.IsUserInPrivateContest(ViewBag.CurrentUser == null ? null : (Entity.User)ViewBag.CurrentUser, contest))
+                return RedirectToAction("Private", "Contest", new { id = id });
             return View(contest);
         }
 
@@ -79,6 +82,8 @@ namespace CodeComb.Web.Controllers
         public ActionResult Print(int id, string content)
         {
             var contest = DbContext.Contests.Find(id);
+            if (!Helpers.PrivateContest.IsUserInPrivateContest(ViewBag.CurrentUser == null ? null : (Entity.User)ViewBag.CurrentUser, contest))
+                return RedirectToAction("Private", "Contest", new { id = id });
             if (!contest.AllowPrintRequest)
                 return RedirectToAction("Message", "Shared", new { msg = "这场比赛没有开放打印服务！" });
             if(DateTime.Now < contest.Begin || DateTime.Now >= contest.End)
@@ -99,6 +104,8 @@ namespace CodeComb.Web.Controllers
         public ActionResult Print(int id)
         {
             var contest = DbContext.Contests.Find(id);
+            if (!Helpers.PrivateContest.IsUserInPrivateContest(ViewBag.CurrentUser == null ? null : (Entity.User)ViewBag.CurrentUser, contest))
+                return RedirectToAction("Private", "Contest", new { id = id });
             if (!contest.AllowPrintRequest)
                 return RedirectToAction("Message", "Shared", new { msg = "这场比赛没有开放打印服务！" });
             if (DateTime.Now < contest.Begin || DateTime.Now >= contest.End)
@@ -120,6 +127,8 @@ namespace CodeComb.Web.Controllers
 
         public ActionResult Clar(int id)
         {
+            if (!Helpers.PrivateContest.IsUserInPrivateContest(ViewBag.CurrentUser == null ? null : (Entity.User)ViewBag.CurrentUser, DbContext.Contests.Find(id)))
+                return RedirectToAction("Private", "Contest", new { id = id });
             var clarifications = (from c in DbContext.Clarifications
                                   where c.ContestID == id
                                   && c.StatusAsInt == (int)Entity.ClarificationStatus.BroadCast
@@ -153,6 +162,8 @@ namespace CodeComb.Web.Controllers
         {
             //合法性验证
             var contest = DbContext.Contests.Find(id);
+            if (!Helpers.PrivateContest.IsUserInPrivateContest(ViewBag.CurrentUser == null ? null : (Entity.User)ViewBag.CurrentUser, contest))
+                return RedirectToAction("Private", "Contest", new { id = id });
             if (!contest.AllowClarification)
                 return RedirectToAction("Message", "Shared", new { msg = "本场比赛没有开启答疑平台！" });
             var problem = DbContext.Problems.Find(problem_id);
@@ -233,6 +244,8 @@ namespace CodeComb.Web.Controllers
         public ActionResult Standings(int id)
         {
             var contest = DbContext.Contests.Find(id);
+            if (!Helpers.PrivateContest.IsUserInPrivateContest(ViewBag.CurrentUser == null ? null : (Entity.User)ViewBag.CurrentUser, contest))
+                return RedirectToAction("Private", "Contest", new { id = id });
             if (contest.Format == Entity.ContestFormat.OI && DateTime.Now < contest.End && !ViewBag.IsMaster)
                 return RedirectToAction("Message", "Shared", new { msg = "目前不提供比赛排名显示。" });
             ViewBag.AllowHack = false;
@@ -250,13 +263,15 @@ namespace CodeComb.Web.Controllers
         public ActionResult GetStandings(int id)
         {
             var contest = DbContext.Contests.Find(id);
+            if (!Helpers.PrivateContest.IsUserInPrivateContest(ViewBag.CurrentUser == null ? null : (Entity.User)ViewBag.CurrentUser, contest))
+                return RedirectToAction("Private", "Contest", new { id = id });
             if (contest.Format == Entity.ContestFormat.OI && DateTime.Now < contest.End && !ViewBag.IsMaster)
                 return Json(null, JsonRequestBehavior.AllowGet);
             var standings = Helpers.Standings.Build(id);
             return Json(standings, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Hack()
+        public ActionResult Hack(int id)
         {
             return View();
         }
@@ -290,6 +305,75 @@ namespace CodeComb.Web.Controllers
             DbContext.ContestManagers.Add(manager);
             DbContext.SaveChanges();
             return RedirectToAction("General", "ContestSettings", new { id = contest.ID });
+        }
+
+        [Authorize]
+        public ActionResult Private(int id)
+        {
+            var contest = DbContext.Contests.Find(id);
+            if (string.IsNullOrEmpty(contest.Password))
+                return RedirectToAction("Show", "Contest", new { id = id });
+            var user = (Entity.User)ViewBag.CurrentUser;
+            var joinlogs = (from j in DbContext.JoinLogs
+                            where j.UserID == user.ID
+                            && j.ContestID == id
+                            select j).FirstOrDefault();
+            if (joinlogs == null)
+            {
+                if (user.Role >= Entity.UserRole.Master || (from cm in contest.Managers select cm.UserID).Contains(user.ID))
+                {
+                    joinlogs = new Entity.JoinLog
+                    {
+                        UserID = user.ID,
+                        ContestID = id
+                    };
+                    DbContext.JoinLogs.Add(joinlogs);
+                    DbContext.SaveChanges();
+                    return RedirectToAction("Show", "Contest", new { id = id });
+                }
+                else
+                {
+                    ViewBag.ContestTitle = contest.Title;
+                    return View();
+                }
+            }
+            else
+            {
+                return RedirectToAction("Show", "Contest", new { id = id });
+            }
+        }
+
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        [HttpPost]
+        public ActionResult Private(int id, string password)
+        {
+            var contest = DbContext.Contests.Find(id);
+            if (string.IsNullOrEmpty(contest.Password))
+                return RedirectToAction("Show", "Contest", new { id = id });
+            var user = (Entity.User)ViewBag.CurrentUser;
+            var joinlogs = (from j in DbContext.JoinLogs
+                            where j.UserID == user.ID
+                            && j.ContestID == id
+                            select j).FirstOrDefault();
+            if (joinlogs != null)
+                return RedirectToAction("Show", "Contest", new { id = id });
+            if (password == contest.Password)
+            {
+                joinlogs = new Entity.JoinLog
+                {
+                    UserID = user.ID,
+                    ContestID = id
+                };
+                DbContext.JoinLogs.Add(joinlogs);
+                DbContext.SaveChanges();
+                return RedirectToAction("Show", "Contest", new { id = id });
+            }
+            else
+            {
+                return RedirectToAction("Message", "Shared", new { msg="您输入的参赛密码不正确，请返回重试！"});
+            }
         }
 	}
 }

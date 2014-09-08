@@ -190,6 +190,8 @@ namespace CodeComb.Web.Controllers
             if (problem == null)
                 return Content("Problem not existed");
             var contest = problem.Contest;
+            if (!Helpers.PrivateContest.IsUserInPrivateContest(ViewBag.CurrentUser == null ? null : (Entity.User)ViewBag.CurrentUser, contest))
+                return Content("Insufficient permissions");
             Entity.ContestFormat[] SubmitAnyTime = { Entity.ContestFormat.ACM, Entity.ContestFormat.OI, Entity.ContestFormat.OPJOI };
             if (DateTime.Now < contest.Begin && user.Role < Entity.UserRole.Master && !(from m in contest.Managers select m.ID).ToList().Contains(user.ID))
             {
@@ -443,6 +445,8 @@ namespace CodeComb.Web.Controllers
             var user = (Entity.User)ViewBag.CurrentUser;
             var status = DbContext.Statuses.Find(id);
             var contest = status.Problem.Contest;
+            if (!Helpers.PrivateContest.IsUserInPrivateContest(ViewBag.CurrentUser == null ? null : (Entity.User)ViewBag.CurrentUser, contest))
+                return RedirectToAction("Private", "Contest", new { id = id });
             var problem = status.Problem;
             var ret = new Models.View.HackCode();
             if (contest.Format != Entity.ContestFormat.Codeforces && contest.Format != Entity.ContestFormat.TopCoder)

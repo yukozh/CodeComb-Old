@@ -48,7 +48,7 @@
                                     <p>休息结束：@Html.TextBoxFor(x => x.RestEnd, new { @class = "textbox", @id = "restEndTime" })</p>
                                 </div>
                                 <p>比赛适合能力范围：@Html.TextBoxFor(x => x.RatingBegin, new { @class = "textbox" }) 至 @Html.TextBoxFor(x => x.RatingEnd, new { @class = "textbox" })</p>
-                                <p>比赛密码：@Html.TextBoxFor(x => x.Password, new { @class = "textbox" }) (不填写则为公开赛)</p>
+                                <p>比赛密码：@Html.TextBoxFor(x => x.Password, new { @class = "textbox" }) (不填写则为公开赛，修改后所有人需重新验证该密码。)</p>
                                 <p>开放答疑平台：@Html.CheckBoxFor(x => x.AllowClarification)开启</p>
                                 <p>开放打印服务：@Html.CheckBoxFor(x => x.AllowPrintRequest)开启</p>
                                 @if (ViewBag.CurrentUser.Role >= CodeComb.Entity.UserRole.Master)

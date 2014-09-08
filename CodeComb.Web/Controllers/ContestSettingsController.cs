@@ -29,6 +29,15 @@ namespace CodeComb.Web.Controllers
             if (!ViewBag.IsMaster)
                 return RedirectToAction("Message", "Shared", new { msg = "您没有权限对本场比赛进行任何修改！" });
             var contest = DbContext.Contests.Find(id);
+            if (contest.Password != model.Password)
+            {
+                var joinlogs = (from j in DbContext.JoinLogs
+                                where j.ContestID == id
+                                select j).ToList();
+                foreach (var joinlog in joinlogs)
+                    DbContext.JoinLogs.Remove(joinlog);
+                DbContext.SaveChanges();
+            }
             contest.Begin = model.Begin;
             contest.RestBegin = model.RestBegin;
             contest.RestEnd = model.RestEnd;

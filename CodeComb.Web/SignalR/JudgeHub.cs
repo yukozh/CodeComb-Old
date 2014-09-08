@@ -62,7 +62,6 @@ namespace CodeComb.Web.SignalR
                 Client client;
                 if (index >= 0)
                 {
-                    Clients.Group(user.Username).onMessage(String.Format("{0}登录了您的帐号，您已被迫停止评测服务！", user.Username));
                     Groups.Remove(Online[index].Token, Online[index].Username);
                     Online[index].Token = Context.ConnectionId;
                     Groups.Add(Context.ConnectionId, user.Username);

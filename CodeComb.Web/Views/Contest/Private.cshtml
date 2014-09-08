@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "加入比赛 - " + ViewBag.ContestTitle;
+}
+
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="post-detail-wrap">
+                    <h2>@ViewBag.ContestTitle</h2>
+                    @using (Html.BeginForm("Private", "Contest", FormMethod.Post, null))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="form-line">这场比赛为私有赛，请输入正确的参赛密码加入比赛！</div>
+                        <div class="form-line">@Html.TextBox("Password", "",new { @class = "textbox" })<input type="submit" class="button button-def" value="加入比赛" /></div>
+                    }
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>

@@ -69,6 +69,7 @@
     <Compile Include="Forum.cs" />
     <Compile Include="Glance.cs" />
     <Compile Include="Hack.cs" />
+    <Compile Include="JoinLog.cs" />
     <Compile Include="JudgeNode.cs" />
     <Compile Include="JudgeTask.cs" />
     <Compile Include="Lock.cs" />

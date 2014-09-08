@@ -29,8 +29,16 @@
                                     }
                                 }
                                 @if (!string.IsNullOrEmpty(item.Password))
-                                { 
-                                    <span class="label red">私有赛</span>
+                                {
+                                    if (DateTime.Now < item.Begin)
+                                    {
+                                        <span class="label blue">私有赛</span>
+                                    }
+                                    else 
+                                    {
+                                        <span class="label red">私有赛</span>
+                                    }
+                                    
                                 }
                                 题量: @item.Problems.Count, 赛制: @item.Format.ToString(), 时长: @Html.ToVagueTimeLength(item.Begin, item.End),
                                 @Html.ToTimeTip(item.Begin) 开始: @item.Begin.ToString("yyyy-MM-dd HH:mm") 举办:
