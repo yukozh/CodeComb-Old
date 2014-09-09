@@ -138,7 +138,7 @@ namespace CodeComb.Web.Controllers
             {
                 var _problems = (from p in DbContext.Problems
                                  where p.ContestID == id
-                                 orderby p.Credit descending
+                                 orderby p.Credit ascending
                                  select p).ToList();
                 var problems = new List<Models.View.ClarProblem>();
                 foreach (var p in _problems)
