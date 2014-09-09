@@ -405,11 +405,11 @@ string Replace(string Source,string str1,string str2)
 vector&lt;string&gt; Split(string Source,string str)
 {
     vector&lt;string&gt; res;
-    unsigned int p;
+    size_t p;
     while((p = Source.find(str)) != string::npos)
     {
-        res.push_back(str.substr(0, p));
-        str.erase(0, p + str.size());
+        res.push_back(Source.substr(0, p));
+        Source.erase(0, p + str.size());
     }
     res.push_back(str);
     return res;

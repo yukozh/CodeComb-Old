@@ -16,6 +16,7 @@ namespace CodeComb.Web.Models.View
             Nickname = Helpers.ColorName.GetNicknameHtml(hack.Hacker.Nickname, hack.Hacker.Ratings.Sum(x => x.Credit) + 1500);
             Defender = Helpers.ColorName.GetNicknameHtml(hack.Defender.Nickname, hack.Defender.Ratings.Sum(x => x.Credit) + 1500);
             Gravatar = Helpers.Gravatar.GetAvatarURL(hack.Hacker.Gravatar, 180);
+            Time = Helpers.Time.ToTimeTip(hack.Time);
             Result = hack.Result.ToString();
             switch (hack.Result)
             { 
@@ -44,5 +45,6 @@ namespace CodeComb.Web.Models.View
         public string Result { get; set; }
         public string Css { get; set; }
         public string Gravatar { get; set; }
+        public string Time { get; set; }
     }
 }

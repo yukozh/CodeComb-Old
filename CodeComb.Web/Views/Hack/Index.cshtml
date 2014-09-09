@@ -1,0 +1,36 @@
+﻿@model CodeComb.Entity.Hack
+@{
+    ViewBag.Title = "#" + Model.ID + " - Hack状态";
+}
+<div class="post-detail-body">
+    <div class="cont-wrap">
+        <div class="grid_12">
+            <div class="post-detail-wrap-outer">
+                <div class="post-detail-wrap">
+                    <div class="status-detail-wrap">
+                        <h2>Hack - @Model.ID</h2>
+                        <blockquote>
+                            <p>进攻方：<a href="/User/@Model.HackerID">@Html.Nickname(Model.Hacker.Nickname, Model.Hacker.Ratings.Sum(x => x.Credit) + 1500)</a></p>
+                            <p>防守方：<a href="/User/@Model.HackerID">@Html.Nickname(Model.Defender.Nickname, Model.Defender.Ratings.Sum(x => x.Credit) + 1500)</a></p>
+                            <p>题目：<a href="/Problem/@Model.Status.ProblemID">@Model.Status.Problem.Title</a></p>
+                            <p>记录：<a href="/Status/@Model.StatusID">S-@Model.StatusID</a></p>
+                            <p>时间：@Model.Time.ToString()</p>
+                            <p>结果：@Model.Result.ToString()</p>
+                        </blockquote>
+                        <h3>Hack 数据/数据产生器</h3>
+                        @if (string.IsNullOrEmpty(Model.DataMakerCode))
+                        {
+                            <pre>@Model.InputData</pre>
+                        }
+                        else
+                        { 
+                            <pre>@Model.DataMakerCode</pre>
+                        }
+                        <h3>评测机反馈备注</h3>
+                        <p>@Html.Sanitized(Model.Hint)</p>
+                    </div>
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>

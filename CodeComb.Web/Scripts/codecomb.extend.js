@@ -344,13 +344,13 @@ $(document).ready(function () {
             if (nickname != null && hack._Nickname.indexOf(nickname) < 0) return;
             if (defender != null && hack._Nickname.indexOf(defender) < 0) return;
             if (problem_id != null && problem_id != 0 && status.ProblemID != problem_id) return;
-            BuildNewHack(status);
+            BuildNewHack(hack);
         }
     };
     CodeCombHub.client.onHackChanged = function (hack) {
         if ($("#lstHacks").length > 0) {
-            if ($("#h_" + status.ID).length > 0) {
-                BuildStatus(status);
+            if ($("#h_" + hack.ID).length > 0) {
+                BuildHack(hack);
             }
         }
     }

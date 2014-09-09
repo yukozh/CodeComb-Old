@@ -629,11 +629,11 @@
     <Content Include="Views\ContestSettings\More.cshtml" />
     <Content Include="Views\Contest\Hack.cshtml" />
     <Content Include="Views\Contest\Private.cshtml" />
+    <Content Include="Views\Hack\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Temp\" />
-    <Folder Include="Views\Hack\" />
     <Folder Include="Views\Test\" />
   </ItemGroup>
   <ItemGroup>

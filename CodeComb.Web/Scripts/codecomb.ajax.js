@@ -231,7 +231,7 @@ function LoadHacks()
             if (hacks.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
             for (var i = 0; i < hacks.length;i++) {
                 if (hacks[i] == null) continue;
-                BuildStatus(hacks[i]);
+                BuildHack(hacks[i]);
             }
             lock = false;
             page++;
@@ -276,10 +276,10 @@ function BuildStatus(status) {
 }
 function BuildHack(hack) {
     var html = '<div class="status-item-wrap">'
-                  + '<div class="status-face">' + hack.Gravatar + '</div>'
+                  + '<div class="status-face"><img src="' + hack.Gravatar + '"/></div>'
                   + '<div class="status-cont"><div class="status-name"><h2>' + hack.Nickname + '</h2></div></div>'
-                  + '<div class="status-info">Defender: ' + lstHacks[i].Defender + ' / Status: ' + lstHacks[i].ID + '/ ' + lstHacks[i].Problem + ' @' + lstHacks[i].Time + '</div>'
-                  + '<div class="status-status">' + hack.Result + (hack.PointCount > 1 ? ' (' + hack.Statistics[0] + '/' + hack.PointCount + ')' : "") + '</div>';
+                  + '<div class="status-info">Defender: ' + hack.Defender + ' / Status: ' + hack.StatusID + ' / ' + hack.Problem + ' @' + hack.Time + '</div>'
+                  + '<div class="status-status">' + hack.Result+ '</div>';
     html += '</div>';
     if ($("#h_" + hack.ID).length > 0) {
         $("#h_" + hack.ID).html(html);
@@ -290,10 +290,10 @@ function BuildHack(hack) {
 }
 function BuildNewHack(hack) {
     var html = '<div class="status-item-wrap">'
-                  + '<div class="status-face">' + hack.Gravatar + '</div>'
+                  + '<div class="status-face"><img src="' + hack.Gravatar + '"/></div>'
                   + '<div class="status-cont"><div class="status-name"><h2>' + hack.Nickname + '</h2></div></div>'
-                  + '<div class="status-info">Defender: ' + lstHacks[i].Defender + ' / Status: ' + lstHacks[i].ID + '/ ' + lstHacks[i].Problem + ' @' + lstHacks[i].Time + '</div>'
-                  + '<div class="status-status">' + hack.Result + (hack.PointCount > 1 ? ' (' + hack.Statistics[0] + '/' + hack.PointCount + ')' : "") + '</div>';
+                  + '<div class="status-info">Defender: ' + hack.Defender + ' / Status: ' + hack.StatusID + ' / ' + hack.Problem + ' @' + hack.Time + '</div>'
+                  + '<div class="status-status">' + hack.Result + '</div>';
     html += '</div>';
     if ($("#h_" + hack.ID).length > 0) {
         $("#h_" + hack.ID).html(html);
