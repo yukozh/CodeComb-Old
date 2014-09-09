@@ -222,7 +222,9 @@ namespace CodeComb.Web.Models.View
             #endregion
             #region CC赛制逻辑
             else//未实现
-            { }
+            {
+                
+            }
             #endregion
         }
         public int? StatusID { get; set; }

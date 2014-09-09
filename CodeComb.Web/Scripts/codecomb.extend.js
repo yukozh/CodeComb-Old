@@ -30,7 +30,7 @@ function GetContacts()
     var contact_ids = GetCookie();
     $.getJSON("/PrivateMessage/GetContacts", { ids: JSON.stringify(contact_ids), rnd: Math.random() }, function (contacts) {
         var html = "";
-        for (var i in contacts)
+        for (var i = 0; i < contacts.length;i++ )
         {
             AutoAddContact(contacts[i].ID);
             html += '<p><a href="javascript:$(\'#ChatRecords\').html(\'\');GetChatRecords(' + contacts[i].ID + ')">' + contacts[i].Gravatar + contacts[i].Nickname + '</a> ' + (contacts[i].MessageCount > 0 ? ('(' + contacts[i].MessageCount + ')') : '') + '</p>';
@@ -43,7 +43,7 @@ function AddContact(id)
 {
     var contact_ids = GetCookie();
     var existed = false;
-    for (var i in contact_ids) {
+    for (var i = 0; i < contact_ids.length;i++) {
         if (contact_ids[i] == id) {
             existed = true;
             break;
@@ -62,7 +62,7 @@ function AddContact(id)
 function AutoAddContact(id)
 {
     var contact_ids = GetCookie();
-    for (var i in contact_ids)
+    for (var i = 0; i < contact_ids.length;i++)
     {
         if (id == contact_ids[i])
             return true;
@@ -105,7 +105,7 @@ function GetChatRecords(sender_id)
 {
     CurrentContactID = sender_id;
     $.getJSON("/PrivateMessage/GetChatRecords", { sender_id: sender_id, rnd: Math.random() }, function (chatrecords) {
-        for (var i in chatrecords)
+        for (var i = 0; i < chatrecords.length;i++)
         {
             var html = '<dt>' + chatrecords[i].Gravatar + ' <a href="/User/' + chatrecords[i].SenderID + '">' + chatrecords[i].SenderNickname + '</a> ' + chatrecords[i].Time + ' :</dt><dd>' + chatrecords[i].Content + '</dd>';
             if ($("#cr_" + chatrecords[i].ID).length > 0)
@@ -177,6 +177,11 @@ function ClarResponse(id)
     });
 }
 
+function Resize()
+{
+    $.colorbox.resize('Height:auto');
+}
+
 function SetSolutionTag(tid)
 {
     $.post("/Solution/SetTag/" + id, { tid: tid, rnd: Math.random() }, function (data) {
@@ -206,7 +211,7 @@ function EditTestCase(id)
 function GetDetails(id) {
     $.getJSON("/Status/GetStatusDetails/" + id, { rnd: Math.random() }, function (details) {
         var html = "";
-        for (var i in details) {
+        for (var i = 0; i < details.length;i++) {
             html += '<h3><a href="javascript:void(0)" class="btnDetail" did="' + details[i].ID + '">#' + details[i].ID + ': <span class="status-text-' + StatusCss[details[i].Result] + '">' + StatusDisplay[details[i].Result] + '</span> (' + details[i].TimeUsage + 'ms, ' + details[i].MemoryUsage + 'KiB)</a></h3>';
             html += '<div class="status-detail-main" style="display:none" id="d_' + details[i].ID + '"><blockquote>';
             html += details[i].Hint;
@@ -253,13 +258,17 @@ $(document).ready(function () {
             if (RealTimeStatusID != status.ID) return;
             var html_detail = "";
             $.getJSON("/Status/GetStatusDetails/" + status.ID, { rnd: Math.random() }, function (details) {
-                for (var i in details) {
+                for (var i = 0; i < details.length;i++) {
                     html_detail += '<p><a href="javascript:void(0)" class="btnDetail" did="' + details[i].ID + '">#' + details[i].ID + ': <span class="status-text-' + StatusCss[details[i].Result] + '">' + StatusDisplay[details[i].Result] + '</span> (' + details[i].TimeUsage + 'ms, ' + details[i].MemoryUsage + 'KiB)</a></p>';
                     html_detail += '<div class="status-detail-main" style="display:none" id="d_' + details[i].ID + '"><blockquote>';
                     html_detail += details[i].Hint;
                     html_detail += '</blockquote></div></div>';
                 }
-                $.colorbox({ html: '<h3>评测结果</h3><p><span class=status-text-' + StatusCss[status.ResultAsInt] + '>' + status.Result + '</span> Time=' + status.TimeUsage + 'ms, Memory=' + status.MemoryUsage + 'KiB</p><div id="lstDetails">' + html_detail + '</div>', width: '700px' });
+                var html = '<h3>评测结果</h3><p><span class=status-text-' + StatusCss[status.ResultAsInt] + '>' + status.Result + '</span> Time=' + status.TimeUsage + 'ms, Memory=' + status.MemoryUsage + 'KiB</p><div id="lstDetails">' + html_detail + '</div>';
+                if(isIE678)
+                    $.colorbox({ html: "<div id='JudgeResultContent'></div>", width: '700px',height:'500px', onComplete: function () { $("#JudgeResultContent").html(html); }});
+                else
+                    $.colorbox({ html: html, width: '700px'});
                 $(".btnDetail").unbind().click(function () {
                     var did = $(this).attr("did");
                     $("#d_" + did).toggle();
@@ -373,7 +382,8 @@ $(document).ready(function () {
         });
     });
 
-    $('.ckeditor-code').each(function () {
+    $('.ckeditor-code').unbind().each(function () {
+        if (isIE678) return;
         $(this).html('<code>' + $(this).html() + '</code>');
         $(this).removeClass('ckeditor-code');
     });
@@ -467,15 +477,15 @@ $(document).ready(function () {
                 CastMsg("提交成功");
             }
             else {
-                if (isIE678) window.location = "/Status";
                 RealTimeStatusID = parseInt(data);
+                if (isIE6) window.location = "/Status/" + RealTimeStatusID;
                 $.colorbox({ html: '<h3>评测结果</h3><p>正在评测...</p>', width: '700px' });
             }
         });
     });
 
     // 代码高亮插件初始化
-    if (navigator.userAgent.indexOf("MSIE") == -1) {
+    if (!(isIE6 || isIE7 || isIE8)) {
         hljs.initHighlightingOnLoad();
     }
 

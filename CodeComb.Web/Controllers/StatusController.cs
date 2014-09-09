@@ -233,6 +233,7 @@ namespace CodeComb.Web.Controllers
                 var statuses = problem.GetContestStatuses().Where(x => x.UserID == user.ID).ToList();
                 foreach (var s in statuses)
                 {
+                    if (s.JudgeTasks == null) continue;
                     foreach (var jt in s.JudgeTasks)
                     {
                         testcase_ids.Add(jt.TestCaseID);

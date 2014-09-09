@@ -535,6 +535,8 @@ a, a:visited {
     transition: border-color .2s linear,background .2s linear;
     background: #f2f2f2;
     max-width:100%;
+    _width:120px;
+    *width:120px;
 }
 
     .textbox:hover {
@@ -914,7 +916,9 @@ body {
     -webkit-transition: box-shadow .2s linear;
     -webkit-box-shadow: 0 0 10px rgba(0,0,0,.2);
     box-shadow: 0 0 10px rgba(0,0,0,.2);
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
+    /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');*/
+    *border: 8px solid #eee;
+    _border: 8px solid #eee;
     margin: 10px;
     *display: inline;
     zoom: 1;
@@ -929,7 +933,8 @@ body {
             transition: box-shadow .2s linear;
             -webkit-box-shadow: 0 0 15px #ffdf00!important;
             box-shadow: 0 0 15px #ffdf00!important;
-            filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#ffdf00')!important; 
+            *border: 8px solid #fff7b8;
+            _border: 8px solid #fff7b8;
         }
 
 .rank-cont {
@@ -1213,7 +1218,7 @@ body {
     margin-bottom: 30px;
     -webkit-box-shadow: 0 0 10px rgba(0,0,0,.2);
     box-shadow: 0 0 10px rgba(0,0,0,.2);
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
+    /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');*/
 }
 
 .post-module-content {
@@ -1366,7 +1371,8 @@ body {
     -webkit-transition: box-shadow .2s linear;
     -webkit-box-shadow: 0 0 5px rgba(0,0,0,.2);
     box-shadow: 0 0 5px rgba(0,0,0,.2);
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
+    *border: 8px solid #eee;
+    _border: 8px solid #eee;
 }
 
 .status-item-wrap {
@@ -1384,7 +1390,8 @@ body {
          transition: box-shadow .2s linear;
         -webkit-box-shadow: 0 0 15px #ffdf00!important;
         box-shadow: 0 0 15px #ffdf00!important;
-        filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#ffdf00')!important;
+        *border: 8px solid #fff7b8;
+        _border: 8px solid #fff7b8;
     }
 
 .status-name h2 {
@@ -2015,7 +2022,7 @@ tbody tr:hover {
 .shadow {
         -webkit-box-shadow: 0 0 10px rgba(0,0,0,.2);
         box-shadow: 0 0 10px rgba(0,0,0,.2);
-        filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
+        /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');*/
 }
 
 @-webkit-keyframes progress-bar-stripes {
@@ -2385,5 +2392,7 @@ dd{
     line-height: 1.2em;
 }
 select {
+    _width:120px;
+    *width:120px;
     max-width:100%;
 }

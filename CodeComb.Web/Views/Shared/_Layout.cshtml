@@ -11,9 +11,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <title>@ViewBag.Title - CodeComb</title>
-    <!--[if lt IE 9]>
-    <link href="/Styles/css-ie.css" rel="stylesheet" type="text/css" />
-    <![endif]-->
     <link href="~/Styles/jquery.datetimepicker.css" rel="stylesheet" type="text/css" />
     @if (DateTime.Now >= DateTime.Now.Date.AddHours(21) || DateTime.Now < DateTime.Now.Date.AddHours(6))
     {
@@ -26,6 +23,10 @@
     <link href="~/Styles/colorbox.css" rel="stylesheet" type="text/css" />
     <link href="~/Styles/codemirror.css" rel="stylesheet" type="text/css" />
     <link href="~/Styles/github.css" rel="stylesheet" type="text/css" />
+    <!--[if lt IE 9]>
+    <link href="/Styles/css-ie.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+
     <!--[if lte IE 8]>
     <script src="/Scripts/json2.js"></script>
     <![endif]-->
@@ -77,8 +78,8 @@
     <div class="page-header">
         <div class="cont-wrap">
             <div class="grid_12">
-                <div class="float-left">
-                    <a href="/" class="float-left page-header-item"><div class="page-header-item-text" style="height:32px;"><img id="logo" src="/Images/Logo-white.gif" alt="Code Comb" style="height:34px;" /></div><div class="page-header-item-bg"></div></a>
+                <div class="float-left ">
+                    <a href="/" class="float-left page-header-item" style="width:153px;overflow:hidden"><div class="page-header-item-text" style="height:32px;"><img id="logo" src="/Images/Logo-white.gif" alt="Code Comb" style="height:34px;" /></div><div class="page-header-item-bg"></div></a>
                     <a href="/Problem" class="float-left page-header-item"><div class="page-header-item-text">题目</div><div class="page-header-item-bg"></div></a>
                     <a href="/Contest" class="float-left page-header-item"><div class="page-header-item-text">比赛</div><div class="page-header-item-bg"></div></a>
                     <a href="/Status" class="float-left page-header-item"><div class="page-header-item-text">记录</div><div class="page-header-item-bg"></div></a>

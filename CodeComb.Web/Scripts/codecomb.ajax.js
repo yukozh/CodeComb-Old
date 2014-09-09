@@ -29,8 +29,9 @@ function LoadRatings()
             rnd: Math.random()
         }, function (ratings) {
             if (ratings.length == 0) { $("#iconLoading").hide(); lock = true; return;}//尾页锁定
-            for (var i in ratings)
+            for (var i = 0; i < ratings.length;i++)
             {
+                if (ratings[i] == null) continue;
                 $("#lstRatings").append('<a class="rank-item" href="/User/' + ratings[i].UserID + '">'
                                                  + '    <div class="rank-face float-left"><img src="' + ratings[i].Gravatar + '"></div>'
                                                  + '    <div class="rank-cont float-right"><div class="rank-name"><h2>' + ratings[i].Nickname + '</h2></div><div class="rank-value">Credit: ' + ratings[i].Credit + '</div></div>'
@@ -58,7 +59,8 @@ function LoadTopics()
             }
             if (topics.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
            
-            for (var i in topics) {
+            for (var i = 0; i < topics.length;i++) {
+                if (topics[i] == null) continue;
                 $("#lstTopics").append('<div class="post-item forum-post-item ' + (topics[i].Top ? 'forum-post-item-highlight' : '') + '">'
                                                  + '    <div class="post-title"><h3><a href="/Topic/' + topics[i].ID + '">' + topics[i].Title + '</a></h3></div>'
                                                  + '    <div class="post-info"><a href="/User/' + topics[i].UserID + '"' + topics[i].Nickname + '</a> ' + topics[i].Time + ' 发表于 <a href="/Forum/' + topics[i].ForumID + '">' + topics[i].ForumTitle + '</a> ' + (topics[i].HasReply ? '最新回复：<a href="/User/' + topics[i].LastReplyUserID + '">' + topics[i].LastReplyNickname + '</a> @' + topics[i].LastReplyTime : '') + '</div>'
@@ -115,7 +117,8 @@ function LoadContests() {
                 $("#lstContests").append('<p>暂无比赛</p>');
             }
             if (contests.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
-            for (var i in contests) {
+            for (var i = 0; i < contests.length;i++) {
+                if (contests[i] == null) continue;
                 $("#lstContests").addClass("shadow");
                 var Private = "<span class='label gray'>私有赛</span>";
                 $("#lstContests").append('<div class="post-item post-item-zip">'
@@ -145,7 +148,8 @@ function LoadStatuses() {
                 $("#lstStatuses").append('<p>没有符合条件的结果</p>');
             }
             if (statuses.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
-            for (var i in statuses) {
+            for (var i = 0; i < statuses.length;i++) {
+                if (statuses[i] == null) continue;
                 BuildStatus(statuses[i]);
             }
             lock = false;
@@ -161,6 +165,7 @@ function LoadSolutionTags()
         $.getJSON("/Solution/GetTags/" + id, { rnd: Math.random() }, function (tags) {
             for (var i = 0; i < tags.length;i++)
             {
+                if (tags[i] == null) continue;
                 $("#t_" + tags[i]).removeClass("gray");
                 $("#t_" + tags[i]).addClass("orange");
             }
@@ -190,9 +195,10 @@ function LoadProblems()
             rnd: Math.random()
         }, function (problems) {
             if (problems.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
-            for (var i in problems) {
+            for (var i = 0; i < problems.length;i++) {
+                if (problems[i] == null) continue;
                 $("#lstProblems").append('<tr><td style="text-align:center" class="' + problems[i].FlagCss + '">' + problems[i].Flag + '</td>'
-                                                 + '<td><a href="/Problem/' + problems[i].ID + '">P' + problems[i].ID + ' ' + problems[i].Title + '</a>'
+                                                 + '<td><a style="float:left" href="/Problem/' + problems[i].ID + '">P' + problems[i].ID + ' ' + problems[i].Title + '</a>'
                                                  + '<a style="float:right" href="/Contest/' + problems[i].ContestID + '"><span class="label ' + css[problems[i].ContestID % 5] + '">' + problems[i].ContestTitle + '</span></a></td>'
                                                  + '<td style="text-align:center">' + problems[i].AC + '</td>'
                                                  + '<td style="text-align:center">' + problems[i].Submit + '</td>'
@@ -223,7 +229,8 @@ function LoadHacks()
                 $("#lstHacks").append('<p>没有符合条件的结果</p>');
             }
             if (hacks.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
-            for (var i in hacks) {
+            for (var i = 0; i < hacks.length;i++) {
+                if (hacks[i] == null) continue;
                 BuildStatus(hacks[i]);
             }
             lock = false;
@@ -297,6 +304,7 @@ function BuildNewHack(hack) {
 }
 
 function BuildNewStatus(status) {
+    if (status == null) return;
     var html = '<div class="status-item-wrap">'
                   + '<div class="status-face">' + status.Gravatar + '</div>'
                   + '<div class="status-cont"><div class="status-name"><h2>' + status.Nickname + '</h2></div></div>'
@@ -324,6 +332,7 @@ function BuildNewStatus(status) {
     }
 }
 function BuildStatusDetail(status) {
+    if (status == null) return;
     var html = '<div class="status-item-wrap">'
                   + '<div class="status-face">' + status.Gravatar + '</div>'
                   + '<div class="status-cont"><div class="status-name"><h2><a href="/User/' + status.UserID + '">' + status.Nickname + '</a></h2></div></div>'
@@ -353,12 +362,13 @@ function BuildStatusDetail(status) {
 }
 function BuildStandings(rank, data)
 {
+    if (data == null) return "";
     var html = '<td>' + rank + '</td>'
                   + '<td><img src="' + data.Gravatar + '" class="rank-avatar" /></td>'
                   + '<td><a href="/User/' + data.UserID + '">' + data.Nickname + '</a></td>'
                   + '<td>' + data.Display1 + '</td>'
                   + '<td>' + data.Display2 + '</td>';
-    for (var i in data.Details)
+    for (var i = 0; i < data.Details.length;i++)
     {
         if(data.Details[i].Key1 == 0 || !allowhack)
             html += '<td class="' + data.Details[i].Css + '">' + data.Details[i].Display + '</td>';
@@ -370,7 +380,7 @@ function BuildStandings(rank, data)
 function StandingsDisplay()
 {
     var html = "";
-    for (var i in standings)
+    for (var i = 0; i < standings.length;i++)
     {
         html += BuildStandings(parseInt(i) + 1, standings[i]);
     }
@@ -379,7 +389,7 @@ function StandingsDisplay()
 function StandingsUpdate(data)
 {
     var updated = false;
-    for(var i in standings)
+    for (var i = 0; i < standings.length;i++)
     {
         if (standings[i].UserID == data.UserID)
         {

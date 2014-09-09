@@ -650,7 +650,7 @@ a, a:visited {
     box-shadow: 0 0 10px rgb(0,0,0);
     background: rgba(0,0,0,.9);
     filter:Alpha(opacity=90); background:#000;
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
+    /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');*/
 }
 
 .page-header-item {
@@ -929,10 +929,12 @@ body {
     -webkit-transition: box-shadow .2s linear;
     -webkit-box-shadow: 0 0 10px rgb(0,0,0);
     box-shadow: 0 0 10px rgb(0,0,0);
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
+    /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');*/
     margin: 10px;
     *display: inline;
     zoom: 1;
+    *border: 8px solid #222;
+    _border: 8px solid #222;
 }
 
     .rank-item, .rank-item:active, .rank-item:hover, .rank-item:visited {
@@ -944,7 +946,9 @@ body {
             transition: box-shadow .2s linear;
             -webkit-box-shadow: 0 0 15px #ffdf00!important;
             box-shadow: 0 0 15px #ffdf00!important;
-            filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#ffdf00')!important; 
+            /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#ffdf00')!important;*/ 
+            *border: 8px solid #48410e;
+            _border: 8px solid #48410e;
         }
 
 .rank-cont {
@@ -1229,7 +1233,7 @@ body {
     background-color:rgb(37,37,37);
     -webkit-box-shadow: 0 0 10px rgb(0,0,0);
     box-shadow: 0 0 10px rgb(0,0,0);
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#000');
+    /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#000');*/
 }
 
 .post-module-content {
@@ -1380,8 +1384,10 @@ body {
     -webkit-transition: box-shadow .2s linear;
     -webkit-box-shadow: 0 0 7px rgb(0,0,0);
     box-shadow: 0 0 7px rgb(0,0,0);
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');
+    /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');*/
     color:#AAA!important;
+    *border: 8px solid #222;
+    _border: 8px solid #222;
 }
 
 .status-info {
@@ -1402,7 +1408,9 @@ body {
          transition: box-shadow .2s linear;
         -webkit-box-shadow: 0 0 15px #ffdf00!important;
         box-shadow: 0 0 15px #ffdf00!important;
-        filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#ffdf00')!important;
+        /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#ffdf00')!important;*/
+        *border: 8px solid #48410e;
+        _border: 8px solid #48410e;
     }
 
 .status-name h2 {
@@ -1989,7 +1997,7 @@ tbody tr:hover {
 .shadow {
         -webkit-box-shadow: 0 0 10px rgb(0,0,0);
         box-shadow: 0 0 10px rgb(0,0,0);
-        filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#000');
+        /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#000');*/
 }
 
 @-webkit-keyframes progress-bar-stripes {
