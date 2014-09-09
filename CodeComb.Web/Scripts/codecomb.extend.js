@@ -11,6 +11,8 @@ var isIE6 = isIE && !window.XMLHttpRequest;
 var isIE8 = isIE && !!document.documentMode;
 var isIE7 = isIE && !isIE6 && !isIE8;
 var isIE678 = isIE6 || isIE7 || isIE8;
+var JudgeResultAsInt;
+var JudgeResult;
 
 function BroadCastBox()
 {
@@ -264,7 +266,12 @@ $(document).ready(function () {
                     html_detail += details[i].Hint;
                     html_detail += '</blockquote></div></div>';
                 }
-                var html = '<h3>评测结果</h3><p><span class=status-text-' + StatusCss[status.ResultAsInt] + '>' + status.Result + '</span> Time=' + status.TimeUsage + 'ms, Memory=' + status.MemoryUsage + 'KiB</p><div id="lstDetails">' + html_detail + '</div>';
+                if (status.ResultAsInt < JudgeResultAsInt)
+                {
+                    JudgeResultAsInt = status.ResultAsInt;
+                    JudgeResult = status.Result;
+                }
+                var html = '<h3>评测结果</h3><p><span class=status-text-' + StatusCss[JudgeResultAsInt] + '>' + JudgeResult + '</span> Time=' + status.TimeUsage + 'ms, Memory=' + status.MemoryUsage + 'KiB</p><div id="lstDetails">' + html_detail + '</div>';
                 if(isIE678)
                     $.colorbox({ html: "<div id='JudgeResultContent'></div>", width: '700px',height:'500px', onComplete: function () { $("#JudgeResultContent").html(html); }});
                 else
@@ -454,6 +461,8 @@ $(document).ready(function () {
         $.colorbox({ html: '<h3>评测结果</h3><p>正在等待系统验证及分配评测资源...</p>', width: '700px' });
         $("#editor").val(editor.getValue());
         $.post("/Status/Create", $("#frmSubmitCode").serialize(), function (data) {
+            JudgeResultAsInt = 100;
+            JudgeResult = "";
             if (data == "Problem not existed")
             {
                 CastMsg("不存在这道题目！");
