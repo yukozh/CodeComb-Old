@@ -172,11 +172,11 @@ namespace CodeComb.Web.SignalR
                 });
                 hack.Status.Result = Entity.JudgeResult.Hacked;
                 DbContext.SaveChanges();
-                SignalR.CodeCombHub.context.Clients.Group(hack.Defender.Username).onHacked(new Models.View.HackResult(hack));
+                SignalR.CodeCombHub.context.Clients.Group(hack.Defender.Username).onHacked(new Models.View.HackResult(hack, true));
                 SignalR.CodeCombHub.context.Clients.Group(hack.Hacker.Username).onHackFinished(new Models.View.HackResult(hack));
 
                 SignalR.CodeCombHub.context.Clients.All.onStatusChanged(new Models.View.Status(hack.Status));
-                if (DateTime.Now >= hack.Status.Problem.Contest.Begin && DateTime.Now < hack.Status.Problem.Contest.End)
+                if (DateTime.Now >= hack.Status.Problem.Contest.Begin)
                 {
                     SignalR.CodeCombHub.context.Clients.All.onStandingsChanged(hack.Status.Problem.Contest.ID, new Models.View.Standing(hack.Defender, hack.Status.Problem.Contest));
                     SignalR.CodeCombHub.context.Clients.All.onStandingsChanged(hack.Status.Problem.Contest.ID, new Models.View.Standing(hack.Hacker, hack.Status.Problem.Contest));

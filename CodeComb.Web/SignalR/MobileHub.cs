@@ -67,7 +67,7 @@ namespace CodeComb.Web.SignalR
             if (user == null)
                 return new CodeComb.Models.WebAPI.Base
                 {
-                    Code = 0,
+                    Code = 500,
                     IsSuccess = false,
                     Info = "AccessToken不正确"
                 };

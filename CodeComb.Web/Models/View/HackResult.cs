@@ -30,6 +30,22 @@ namespace CodeComb.Web.Models.View
             ProblemTitle = hack.Status.Problem.Title;
             StatusID = hack.StatusID;
         }
+        public HackResult(Entity.Hack hack, bool Defender)
+        {
+            ID = hack.ID;
+            HackerID = hack.HackerID;
+            HackerName = Helpers.ColorName.GetNicknameHtml(hack.Hacker.Nickname, hack.Hacker.Ratings.Sum(x => x.Credit) + 1500);
+            HackerGravatar = Helpers.Gravatar.GetAvatarURL(hack.Hacker.Gravatar, 180);
+            DefenderID = hack.DefenderID;
+            DefenderName = Helpers.ColorName.GetNicknameHtml(hack.Defender.Nickname, hack.Defender.Ratings.Sum(x => x.Credit) + 1500);
+            DefenderGravatar = Helpers.Gravatar.GetAvatarURL(hack.Defender.Gravatar, 180);
+            Result ="Hacked";
+            Css = "status-text-wa";
+            ProblemID = hack.Status.ProblemID;
+            ProblemTitle = hack.Status.Problem.Title;
+            StatusID = hack.StatusID;
+        }
+
         public int ID { get; set; }
         public int HackerID { get; set; }
         public string HackerName { get; set; }

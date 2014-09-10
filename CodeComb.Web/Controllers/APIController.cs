@@ -58,7 +58,7 @@ namespace CodeComb.Web.Controllers
                 }
                 catch (Exception e)
                 {
-                    return Json(new Auth { AccessToken = null, Code = 500, IsSuccess = false, Info = e.ToString() });
+                    return Json(new Auth { AccessToken = null, Code = 300, IsSuccess = false, Info = e.ToString() });
                 }
             }
         }
@@ -70,7 +70,7 @@ namespace CodeComb.Web.Controllers
             if (user == null)
                 return Json(new Base
                 {
-                    Code = 0,
+                    Code = 500,
                     IsSuccess = false,
                     Info = "AccessToken不正确"
                 });
@@ -112,7 +112,7 @@ namespace CodeComb.Web.Controllers
                     Motto = null,
                     Rating = -1,
                     Nickname = "",
-                    Code = 0,
+                    Code = 500,
                     IsSuccess = false,
                     Info = "AccessToken不正确"
                 });
@@ -126,7 +126,7 @@ namespace CodeComb.Web.Controllers
                 return Json(new Contests
                 {
                     List = null,
-                    Code = 0,
+                    Code = 500,
                     IsSuccess = false,
                     Info = "AccessToken不正确"
                 });
@@ -160,7 +160,7 @@ namespace CodeComb.Web.Controllers
                 return Json(new Contests
                 {
                     List = null,
-                    Code = 0,
+                    Code = 500,
                     IsSuccess = false,
                     PageCount = -1,
                     Info = "AccessToken不正确"
@@ -198,7 +198,7 @@ namespace CodeComb.Web.Controllers
                 return Json(new Clarifications
                 {
                     List = null,
-                    Code = 0,
+                    Code = 500,
                     IsSuccess = false,
                     Info = "AccessToken不正确"
                 });
@@ -235,7 +235,7 @@ namespace CodeComb.Web.Controllers
             if (user == null)
                 return Json(new Base
                 {
-                    Code = 0,
+                    Code = 500,
                     IsSuccess = false,
                     Info = "AccessToken不正确"
                 });
@@ -289,7 +289,7 @@ namespace CodeComb.Web.Controllers
             if (user == null)
                 return Json(new Base
                 {
-                    Code = 0,
+                    Code = 500,
                     IsSuccess = false,
                     Info = "AccessToken不正确"
                 });
@@ -308,7 +308,7 @@ namespace CodeComb.Web.Controllers
             if (user == null)
                 return Json(new Base
                 {
-                    Code = 0,
+                    Code = 500,
                     IsSuccess = false,
                     Info = "AccessToken不正确"
                 });
@@ -343,7 +343,7 @@ namespace CodeComb.Web.Controllers
                 return Json(new Messages
                 {
                     List = null,
-                    Code = 0,
+                    Code = 500,
                     IsSuccess = false,
                     Info = "AccessToken不正确"
                 });
@@ -376,7 +376,7 @@ namespace CodeComb.Web.Controllers
             if (user == null)
                 return Json(new Base
                 {
-                    Code = 0,
+                    Code = 500,
                     IsSuccess = false,
                     Info = "AccessToken不正确"
                 });
