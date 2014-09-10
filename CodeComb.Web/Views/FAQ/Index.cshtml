@@ -243,30 +243,34 @@ int main(int argc, char* argv[])
                     <p>您可以在数据范围校验器中调用Judge.hpp头文件，该头文件的源代码如下：</p>
                     <pre class="cpp"><code>#ifndef _JUDGE_HPP_
 #define _JUDGE_HPP_
-#include &lt;iostream&gt;
+#include &lt;cstdio&gt;
+#include &lt;cctype&gt;
+#include &lt;climits&gt;
+#include &lt;cstdlib&gt;
 #include &lt;vector&gt;
 #include &lt;string&gt;
-#include &lt;cstdlib&gt;
-#include &lt;fstream&gt;
-#include &lt;cstdio&gt;
-//Other headers
+#include &lt;istream&gt;
+#include &lt;ostream&gt;
+#include &lt;sstream&gt;
+#include &lt;iostream&gt;
 namespace Judge
 {
 using std::string;
 using std::vector;
-using std::fstream;
-string ReadLine();
-string ReadFileLine(fstream);
-void WriteLine(string);
-vector &lt;string&gt; Split(string,string);
-string TrimEnd(string,char);
-string TrimBegin(string,char);
-string Trim(string,char);
-string Replace(string,string,string);
-string ToString(long long);
-string ToString(int);
-string ToString(char*);
-string ToString(double,int);//Int is len and max_len is 100
+using std::istream;
+using std::ostream;
+using std::stringstream;
+string ReadLine(istream&amp;);//读取一行,不写参数默认为标准输入cin
+void WriteLine(string, ostream&amp;);//输出一行,只写第一个参数默认为标准输出cout
+bool IsEof(istream&amp;);//判断是否是文件末,不写参数默认为标准输入cin
+vector&lt;string&gt; Split(string, string);//按第二个字符串分割第一个字符串,默认按空格分割
+string TrimEnd(string, char);
+string TrimBegin(string, char);
+string Trim(string, char);
+string Replace(string, string, string);
+template&lt;class T&gt;
+string ToString(T);
+string ToString(double, int);//Int is len and max_len is 100
 int ToInt32(string);
 unsigned int ToUInt32(string);
 long long ToInt64(string);
@@ -274,145 +278,187 @@ unsigned long long ToUInt64(string);
 double ToDouble(string);
 long double ToLongDouble(string);
 const char* ToCharPtr(string);
-string ReadLine()
+string ReadLine(istream &amp;stream = std::cin)
 {
-    string temp;
-    std::getline(std::cin,temp);
-    return temp;
+	string temp;
+	std::getline(stream, temp);
+	return temp;
 }
-string ReadFileLine(fstream stream)
+void WriteLine(string str, ostream &amp;stream = std::cout)
 {
-    string temp;
-    std::getline(stream,temp);
-    return temp;
+	stream &lt;&lt; str &lt;&lt; std::endl;
 }
-void WriteLine(string str)
+template&lt;class T&gt;
+void readFromStr(string str, T &amp;temp)
 {
-    std::cout &lt;&lt; str &lt;&lt; std::endl;
+	stringstream ss(str);
+	ss &gt;&gt; temp;
+}
+bool isEmpty(string str)
+{
+	if(str.empty()) return 1;
+	for(size_t i=0; i&lt;str.size(); ++i)
+		if(!isspace(str[i]))
+			return 0;
+	return 1;
+}
+bool checkDigit(string str)
+{
+	for(size_t i=0; i&lt;str.size(); ++i)
+		if(!isdigit(str[i]))
+			return 0;
+	return 1;
+}
+bool cmpNumStr(string lhs, string rhs)
+{
+	if(lhs.size() != rhs.size()) return lhs.size() &gt; rhs.size();
+	return lhs &gt; rhs;
+}
+bool IsEof(istream &amp;stream = std::cin)
+{
+	string line;
+	while(!stream.eof())
+	{
+		line = ReadLine(stream);
+		if(!isEmpty(line)) return 0;
+	}
+	return 1;
 }
 int ToInt32(string str)
 {
-    int temp;
-    sscanf(str.c_str(),"%d",&temp);
-    for(unsigned int i = (unsigned int)(str[0] == '-');i &lt; str.size();++i)
-        if(str[i] &lt; '0' || str[i] &gt; '9')
-            exit(-1);
-    return temp;
+	static const string INTMAXSTR = ToString(INT_MAX);
+	static const string INTMINSTR = ToString(INT_MIN);
+	if(isEmpty(str)) exit(-1);
+	bool isNeg = str[0]=='-';
+	if(isNeg &amp;&amp; str.size()==1) exit(-1);
+	if(!checkDigit(str.substr(isNeg))) exit(-1);
+	if(isNeg &amp;&amp; cmpNumStr(str, INTMINSTR)) exit(-1);
+	if(!isNeg &amp;&amp; cmpNumStr(str, INTMAXSTR)) exit(-1);
+	int temp;
+	readFromStr(str, temp);
+	return temp;
 }
 unsigned int ToUInt32(string str)
 {
-    unsigned int temp;
-    sscanf(str.c_str(),"%u",&temp);
-    for(unsigned int i = 0;i &lt; str.size();++i)
-        if(str[i] &lt; '0' || str[i] &gt; '9')
-            exit(-1);
-    return temp;
+	static const string UINTMAXSTR = ToString(UINT_MAX);
+	if(isEmpty(str)) exit(-1);
+	if(!checkDigit(str)) exit(-1);
+	if(cmpNumStr(str, UINTMAXSTR)) exit(-1);
+	unsigned int temp;
+	readFromStr(str, temp);
+	return temp;
 }
 long long ToInt64(string str)
 {
-    long long temp;
-    sscanf(str.c_str(),"%lld",&temp);
-    for(unsigned int i = (unsigned int)(str[0] == '-');i &lt; str.size();++i)
-        if(str[i] &lt; '0' || str[i] &gt; '9')
-            exit(-1);
-    return temp;
+	static const string LLMAXSTR = ToString(LLONG_MAX);
+	static const string LLMINSTR = ToString(LLONG_MIN);
+	if(isEmpty(str)) exit(-1);
+	bool isNeg = str[0]=='-';
+	if(isNeg &amp;&amp; str.size()==1) exit(-1);
+	if(!checkDigit(str.substr(isNeg))) exit(-1);
+	if(isNeg &amp;&amp; cmpNumStr(str, LLMINSTR)) exit(-1);
+	if(!isNeg &amp;&amp; cmpNumStr(str, LLMAXSTR)) exit(-1);
+	long long temp;
+	readFromStr(str, temp);
+	return temp;
+	
 }
 unsigned long long ToUInt64(string str)
 {
-    unsigned long long temp;
-    sscanf(str.c_str(),"%llu",&temp);
-    for(unsigned int i = 0;i &lt; str.size();++i)
-        if(str[i] &lt; '0' || str[i] &gt; '9')
-            exit(-1);
-    return temp;
+	static const string ULLMAXSTR = ToString(ULLONG_MAX);
+	if(isEmpty(str)) exit(-1);
+	if(!checkDigit(str)) exit(-1);
+	if(cmpNumStr(str, ULLMAXSTR)) exit(-1);
+	unsigned long long temp;
+	readFromStr(str, temp);
+	return temp;
 }
 double ToDouble(string str)
 {
-    double temp;
-    sscanf(str.c_str(),"%lf",&temp);
-    for(unsigned int i = (unsigned int)(str[0] == '-');i &lt; str.size();++i)
-        if(str[i] &lt; '0' || str[i] &gt; '9')
-            exit(-1);
-    return temp;
+	if(isEmpty(str)) exit(-1);
+	size_t point = str.find(".");
+	if(point==string::npos &amp;&amp; !checkDigit(str.substr(str[0]=='-'))) exit(-1);
+	if(point!=string::npos &amp;&amp; (!checkDigit(str.substr(point+1)) || !checkDigit(str.substr(str[0]=='-', point-(str[0]=='-'))))) exit(-1);
+	double temp;
+	readFromStr(str, temp);
+	return temp;
 }
 long double ToLongDouble(string str)
 {
-    long double temp;
-    sscanf(str.c_str(),"%Lf",&temp);
-    for(unsigned int i = (unsigned int)(str[0] == '-');i &lt; str.size();++i)
-        if(str[i] &lt; '0' || str[i] &gt; '9')
-            exit(-1);
-    return temp;
+	if(isEmpty(str)) exit(-1);
+	size_t point = str.find(".");
+	if(point==string::npos &amp;&amp; !checkDigit(str.substr(str[0]=='-'))) exit(-1);
+	if(point!=string::npos &amp;&amp; (!checkDigit(str.substr(point+1)) || !checkDigit(str.substr(str[0]=='-', point-(str[0]=='-'))))) exit(-1);
+	long double temp;
+	readFromStr(str, temp);
+	return temp;
 }
-string ToString(long long num)
+template&lt;class T&gt;
+string ToString(T num)
 {
-    char temp[30];
-    sprintf(temp,"%lld",num);
-    return string(temp);
+	stringstream ss;
+	ss &lt;&lt; num;
+	string temp;
+	ss &gt;&gt; temp;
+	return temp;
 }
-string ToString(int num)
+string ToString(double num, int len)
 {
-    char temp[30];
-    sprintf(temp,"%d",num);
-    return string(temp);
-}
-string ToString(double num,int len)
-{
-    char temp[102],s[10];
-    if(len &gt; 100)
-        exit(-1);
-    sprintf(s,"%c.%df",'%',len);
-    sprintf(temp,s,num);
-    return string(temp);
-}
-string ToString(char * ptr)
-{
-    return string(ptr);
+	char temp[102];
+	if(len&lt;0 || len&gt;100) exit(-1);
+	sprintf(temp, "%.*lf", len, num);
+	return string(temp);
 }
 const char* ToCharPtr(string str)
 {
-    return str.c_str();
+	return str.c_str();
 }
-string TrimBegin(string Source, char c)
+string TrimBegin(string Source, char c = ' ')
 {
-    string::iterator it = Source.begin();
-    while(it != Source.end() && *it == c)
-        ++it;
-    Source.erase(Source.begin(),it);
-    return Source;
+	string::iterator it = Source.begin();
+	while(it!=Source.end() &amp;&amp; *it==c)
+		++it;
+	Source.erase(Source.begin(), it);
+	return Source;
 }
-string TrimEnd(string Source, char c)
+string TrimEnd(string Source, char c = ' ')
 {
-    string::iterator it = Source.end();
-    while(it != Source.begin() && *(it - 1) == c)
-        --it;
-    Source.erase(it,Source.end());
-    return Source;
+	string::iterator it = Source.end();
+	while(it!=Source.begin() &amp;&amp; *(it-1)==c)
+		--it;
+	Source.erase(it,Source.end());
+	return Source;
 }
-string Trim(string Source, char c)
+string Trim(string Source, char c = ' ')
 {
-    Source = Judge::TrimBegin(Source,c);
-    Source = Judge::TrimEnd(Source,c);
-    return Source;
+	Source = Judge::TrimBegin(Source, c);
+	Source = Judge::TrimEnd(Source, c);
+	return Source;
 }
-string Replace(string Source,string str1,string str2)
+string Replace(string Source, string str1, string str2)
 {
-    unsigned int pos = 0;
-    while((pos = Source.find(str1,pos)) != string::npos)
-        Source.replace(pos,str1.size(),str2);
-    return Source;
+	string res = "";
+	size_t last = 0, pos = 0, len1 = str1.size();
+	while((pos = Source.find(str1, pos)) != string::npos)
+	{
+		res.append(Source.substr(last, pos-last));
+		res.append(str2);
+		last = pos = pos+len1;
+	}
+	res.append(Source.substr(last));
+	return res;
 }
-vector&lt;string&gt; Split(string Source,string str)
+vector&lt;string&gt; Split(string Source, string str = " ")
 {
-    vector&lt;string&gt; res;
-    size_t p;
-    while((p = Source.find(str)) != string::npos)
-    {
-        res.push_back(Source.substr(0, p));
-        Source.erase(0, p + str.size());
-    }
-    res.push_back(str);
-    return res;
+	vector&lt;string&gt; res;
+	size_t last = 0, pos = 0, len = str.size();
+	while((pos = Source.find(str, pos)) != string::npos)
+	{
+		res.push_back(Source.substr(last, pos-last));
+		last = pos = pos+len;
+	}
+	res.push_back(Source.substr(last));
+	return res;
 }
 }
 #endif // _JUDGE_HPP_

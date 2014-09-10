@@ -188,9 +188,23 @@ namespace CodeComb.Web.Controllers
                                              select id).ToList()
                            where u.RoleAsInt >= (int)Entity.UserRole.Master
                            || master_ids.Contains(u.ID)
-                           select u.Username).ToList();
+                           select u).ToList();
             foreach (var master in masters)
-                SignalR.CodeCombHub.context.Clients.Group(master).onClarificationsRequested(clar.ID);
+            {
+                SignalR.CodeCombHub.context.Clients.Group(master.Username).onClarificationsRequested(clar.ID);
+                SignalR.MobileHub.PushTo(master.ID, clar.ProblemID == null ? "General" : clar.Problem.Title + ":" + clar.Question);
+                SignalR.MobileHub.context.Clients.Group(master.Username).onClarificationsRequested(new CodeComb.Models.WebAPI.Clarification 
+                {
+                    ClarID = clar.ID,
+                    Question = clar.Question,
+                    Answer = clar.Answer,
+                    Category = clar.ProblemID == null?"General":clar.Problem.Title,
+                    Status = clar.Status.ToString(),
+                    StatusAsInt = clar.StatusAsInt,
+                    ContestID = clar.Problem.ContestID,
+                    Time = clar.Time
+                });
+            }
 
             //重新载入Model
             var clarifications = (from c in DbContext.Clarifications

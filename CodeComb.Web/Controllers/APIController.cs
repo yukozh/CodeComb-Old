@@ -27,7 +27,7 @@ namespace CodeComb.Web.Controllers
             var pwd = Helpers.Security.SHA1(Password);
             var user = (from u in DbContext.Users
                         where u.Username == Username
-                        && u.Password == Password
+                        && u.Password == pwd
                         select u).SingleOrDefault();
             if (user == null)
             {
@@ -98,7 +98,7 @@ namespace CodeComb.Web.Controllers
                     UserID = user.ID, 
                     AvatarURL = Helpers.Gravatar.GetAvatarURL(user.Email,180),
                     Motto = user.Motto,
-                    Rating = user.Ratings.Sum(x=>x.Credit),
+                    Rating = user.Ratings.Sum(x=>x.Credit)+1500,
                     Nickname = user.Nickname,
                     Code = 0,
                     IsSuccess = true,
