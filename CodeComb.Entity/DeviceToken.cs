@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CodeComb.Entity
 {
-    [Table("device_token")]
+    [Table("device_tokens")]
     public class DeviceToken
     {
         [Column("id")]
@@ -32,5 +32,5 @@ namespace CodeComb.Entity
             set { TypeAsInt = (int)value; }
         }
     }
-    public enum DeviceType { SignalR, iOS, Android, WindowsPhone, Windows };
+    public enum DeviceType { SignalR, iOS, Android, WindowsPhone, Windows, System };
 }

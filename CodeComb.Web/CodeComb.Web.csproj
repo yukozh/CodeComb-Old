@@ -199,6 +199,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Controllers\APIController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CKEditorController.cs" />
     <Compile Include="Controllers\ContestBaseController.cs" />
@@ -634,6 +635,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Temp\" />
+    <Folder Include="Views\API\" />
     <Folder Include="Views\Test\" />
   </ItemGroup>
   <ItemGroup>
@@ -651,6 +653,10 @@
     <ProjectReference Include="..\CodeComb.Mobile.Models\CodeComb.Mobile.Models.csproj">
       <Project>{728587ef-3299-4417-bc57-171dfcb3730a}</Project>
       <Name>CodeComb.Mobile.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CodeComb.Models.WebAPI\CodeComb.Models.WebAPI.csproj">
+      <Project>{84b8f533-4a4f-470e-9444-7342a5328282}</Project>
+      <Name>CodeComb.Models.WebAPI</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

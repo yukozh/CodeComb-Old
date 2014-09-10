@@ -72,6 +72,21 @@ namespace CodeComb.Web.Controllers
             var name2 = DbContext.Users.Find(message.SenderID).Username;
             SignalR.CodeCombHub.context.Clients.Group(name1).onMessageReceived(message.ID);
             SignalR.CodeCombHub.context.Clients.Group(name2).onMessageReceived(message.ID);
+            SignalR.MobileHub.context.Clients.Group(name1).onMessageReceived(new CodeComb.Models.WebAPI.Message 
+            { 
+                Content = message.Content,
+                Time = message.Time,
+                SenderID = message.SenderID,
+                ReceiverID = message.ReceiverID
+            });
+            SignalR.MobileHub.context.Clients.Group(name2).onMessageReceived(new CodeComb.Models.WebAPI.Message
+            {
+                Content = message.Content,
+                Time = message.Time,
+                SenderID = message.SenderID,
+                ReceiverID = message.ReceiverID
+            });
+            SignalR.MobileHub.PushTo(message.ReceiverID, message.Content);
             return Content("OK");
         }
 	}

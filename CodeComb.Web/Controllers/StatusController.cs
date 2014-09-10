@@ -30,6 +30,8 @@ namespace CodeComb.Web.Controllers
                 Showable = true;
             if (contest.Format == Entity.ContestFormat.Codeforces && (from l in status.Problem.Locks where l.UserID == user.ID select l).Count() > 0)
                 Showable = true;
+            if (status.UserID == user.ID)
+                Showable = true;
             if (DateTime.Now >= contest.End && !status.Public)
                 Showable = false;
             ViewBag.Showable = Showable;

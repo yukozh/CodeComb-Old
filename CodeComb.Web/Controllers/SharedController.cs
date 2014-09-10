@@ -48,8 +48,8 @@ namespace CodeComb.Web.Controllers
             if (user.Role < Entity.UserRole.Master)
                 return Content("NO");
             SignalR.CodeCombHub.context.Clients.All.onBroadCast(Helpers.HtmlFilter.Instance.SanitizeHtml(content));
-            SignalR.MobileHub.context.Clients.All.onBroadCast(HttpUtility.HtmlDecode(content));
-            SignalR.MobileHub.PushToAll(HttpUtility.HtmlDecode(content));
+            SignalR.MobileHub.context.Clients.All.onBroadCast(Helpers.String.CleanHTML(content));
+            SignalR.MobileHub.PushToAll(Helpers.String.CleanHTML(content));
             return Content("OK");
         }
 	}
