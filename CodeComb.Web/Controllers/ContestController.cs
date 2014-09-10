@@ -185,14 +185,14 @@ namespace CodeComb.Web.Controllers
             var masters = (from u in DbContext.Users
                            let master_ids = (from m in DbContext.ContestManagers
                                              where m.ContestID == contest.ID
-                                             select id).ToList()
+                                             select m.UserID).ToList()
                            where u.RoleAsInt >= (int)Entity.UserRole.Master
                            || master_ids.Contains(u.ID)
-                           select u).ToList();
+                           select u).Distinct().ToList();
             foreach (var master in masters)
             {
                 SignalR.CodeCombHub.context.Clients.Group(master.Username).onClarificationsRequested(clar.ID);
-                SignalR.MobileHub.PushTo(master.ID, clar.ProblemID == null ? "General" : clar.Problem.Title + ":" + clar.Question);
+                SignalR.MobileHub.PushTo(master.ID, (clar.ProblemID == null ? "General" : clar.Problem.Title) + ":" + clar.Question);
                 SignalR.MobileHub.context.Clients.Group(master.Username).onClarificationsRequested(new CodeComb.Models.WebAPI.Clarification 
                 {
                     ClarID = clar.ID,
@@ -201,7 +201,7 @@ namespace CodeComb.Web.Controllers
                     Category = clar.ProblemID == null?"General":clar.Problem.Title,
                     Status = clar.Status.ToString(),
                     StatusAsInt = clar.StatusAsInt,
-                    ContestID = clar.Problem.ContestID,
+                    ContestID = clar.ContestID,
                     Time = clar.Time
                 });
             }

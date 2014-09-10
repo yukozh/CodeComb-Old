@@ -33,8 +33,13 @@ namespace CodeComb.Web.Controllers
             {
                 return Json(new Auth { AccessToken = null, Code = 400, IsSuccess = false, Info = "用户名或密码错误！" });
             }
-            else
+            else 
             {
+                var _t = (from t in DbContext.DeviceTokens where t.UserID == user.ID && t.TypeAsInt == (int)Entity.DeviceType.System select t).FirstOrDefault();
+                if (_t != null)
+                {
+                    return Json(new Auth { AccessToken = _t.Token, Code = 0, IsSuccess = true, Info = "" });
+                }
                 try
                 {
                     string token;
@@ -74,6 +79,21 @@ namespace CodeComb.Web.Controllers
                     IsSuccess = false,
                     Info = "AccessToken不正确"
                 });
+            var _dt = (from dt in DbContext.DeviceTokens
+                      where dt.Token == DeviceToken
+                      && dt.TypeAsInt == (int)Entity.DeviceType.iOS
+                      select dt).FirstOrDefault();
+            if (_dt != null)
+            {
+                _dt.UserID = user.ID;
+                DbContext.SaveChanges();
+                return Json(new Base
+                {
+                    Code = 0,
+                    IsSuccess = true,
+                    Info = ""
+                });
+            }
             DbContext.DeviceTokens.Add(new Entity.DeviceToken
             {
                 Token = DeviceToken,
