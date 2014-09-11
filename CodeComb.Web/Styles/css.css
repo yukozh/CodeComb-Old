@@ -2396,3 +2396,6 @@ select {
     *width:120px;
     max-width:100%;
 }
+#BarCode td, .BarCode td {
+        padding:0!important;
+    }

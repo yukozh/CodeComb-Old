@@ -249,9 +249,37 @@ namespace CodeComb.Web.Controllers
             clar.Answer = answer;
             DbContext.SaveChanges();
             if (broadcast)
+            {
                 SignalR.CodeCombHub.context.Clients.All.onClarificationsResponsed(new Models.View.Clar(clar));
+                SignalR.MobileHub.context.Clients.All.onClarificationsResponsed(new CodeComb.Models.WebAPI.Clarification 
+                { 
+                    Answer = clar.Answer,
+                    ClarID = clar.ID,
+                    Category = clar.ProblemID==null?"General":clar.Problem.Title,
+                    Time = clar.Time,
+                    ContestID = clar.ContestID,
+                    Question = clar.Question,
+                    Status = clar.Status.ToString(),
+                    StatusAsInt = clar.StatusAsInt
+                });
+                SignalR.MobileHub.PushToAll((clar.ProblemID == null ? "General" : clar.Problem.Title) + ":" + clar.Answer);
+            }
             else
+            {
                 SignalR.CodeCombHub.context.Clients.Group(clar.User.Username).onClarificationsResponsed(new Models.View.Clar(clar));
+                SignalR.MobileHub.context.Clients.Group(clar.User.Username).onClarificationsResponsed(new CodeComb.Models.WebAPI.Clarification
+                {
+                    Answer = clar.Answer,
+                    ClarID = clar.ID,
+                    Category = clar.ProblemID == null ? "General" : clar.Problem.Title,
+                    Time = clar.Time,
+                    ContestID = clar.ContestID,
+                    Question = clar.Question,
+                    Status = clar.Status.ToString(),
+                    StatusAsInt = clar.StatusAsInt
+                });
+                SignalR.MobileHub.PushTo(clar.UserID, (clar.ProblemID == null ? "General" : clar.Problem.Title) + ":" + clar.Answer);
+            }
             return Content("Yes");
         }
 

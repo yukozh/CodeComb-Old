@@ -2505,3 +2505,12 @@ div.CodeMirror-selected {
 select {
     max-width:100%;
 }
+
+#BarCode, .BarCode {
+    -webkit-box-shadow: 0 0 30px #119eea;
+    box-shadow: 0 0 30px #119eea;
+    border:5px solid #119eea;
+}
+    #BarCode td, .BarCode td {
+        padding:0!important
+    }

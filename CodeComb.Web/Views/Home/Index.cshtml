@@ -19,14 +19,33 @@
     <link href="~/Styles/css-ie.css" rel="stylesheet" type="text/css" charset="UTF-8" />
     <![endif]-->
     <link href="~/Styles/css.css" rel="stylesheet" type="text/css" charset="UTF-8" />
+    <!--[if lte IE 8]>
+    <script src="/Scripts/json2.js"></script>
+    <![endif]-->
     <script src="~/Scripts/jquery-1.11.1.min.js"></script>
     <script src="~/Scripts/codecomb.basic.js"></script>
     <script src="~/Scripts/codecomb.ajax.js"></script>
     <script src="~/Scripts/jquery.colorbox.js"></script>
-    <!--[if lt IE 8]>
-    <script src="/Scripts/json2.js"></script>
-    <![endif]-->
+    <script src="~/Scripts/jquery.cookie.js"></script>
+    <script src="~/Scripts/codecomb.extend.js"></script>
+    <script src="~/Scripts/codemirror.js"></script>
+    <script src="~/Scripts/clike.js"></script>
+    <script src="~/Scripts/pascal.js"></script>
+    <script src="~/Scripts/python.js"></script>
+    <script src="~/Scripts/ruby.js"></script>
+    <script src="~/Scripts/vb.js"></script>
+    <script src="~/Scripts/jquery.zclip.js"></script>
+    <script src="~/Scripts/jquery.datetimepicker.js"></script>
+    <script src="~/Scripts/jquery.qrcode.js"></script>
+    <script src="~/Scripts/qrcode.js"></script>
+    <!--[if !IE]><!-->
+    <script src="/Scripts/highlight.pack.js"></script>
+    <!--<![endif]-->
+    <!--[if gte IE 9]>
+        <script src="/Scripts/highlight.pack.js"></script>
+    <!--<![endif]-->
     <!--[if lt IE 9]>
+    <script type="text/javascript" src="/Scripts/excanvas.js"></script>
     <script src="/Scripts/jplaceholder.js"></script>
     <script src="/Scripts/iefix.js"></script>
     <![endif]-->
@@ -35,6 +54,7 @@
     <![endif]-->
     <script src="~/Scripts/jquery.signalR-2.1.1.js"></script>
     <script src="~/signalr/hubs"></script>
+    <script type="text/javascript" src="~/Scripts/ckeditor/ckeditor.js"></script>
 </head>
 <body class="page-index">
     <!-- header -->
@@ -59,10 +79,17 @@
                         @using (Html.BeginForm("Login", "User", null, FormMethod.Post, null))
                         {
                             @Html.AntiForgeryToken()
-                            <div class="form-line"><label>用户名</label><input id="Username" name="Username" type="text" class="textbox role-login-user" /></div>
-                            <div class="form-line"><label>密　码</label><input id="Password" name="Password" type="password" class="textbox role-login-pass" /></div>
-                            <div class="form-line"><input type="submit" class="button button-def" value="登录" /> <input type="checkbox" id="Remember" name="Remember" value="false" />记住我</div>
-                        }
+                            <div id="NormalLogin">
+                                @Html.AntiForgeryToken()
+                                <div class="form-line"><label>用户名</label><input name="Username" type="text" class="textbox role-login-user" /></div>
+                                <div class="form-line"><label>密　码</label><input name="Password" type="password" class="textbox role-login-pass" /></div>
+                                <div class="form-line"><input type="submit" class="button button-def" value="登录" /> @Html.CheckBox("Remember", false)记住我 <a href="javascript:BarCode();">二维码登录</a></div>
+                            </div>
+                            <div id="BarCodeLogin" style="display:none;width:239px;">
+                                <div class="form-line" style="text-align:center">扫描下方的二维码登录</div>
+                                <div class="form-line"><div id="BarCode" style="margin:0 auto;width:100px;height:100px;"></div></div>
+                                <div class="form-line" style="text-align:center"><a href="javascript:$('#BarCodeLogin').hide();$('#NormalLogin').fadeIn();">切换到传统模式</a></div>
+                            </div>                        }
                     </div>
                     }
                     else

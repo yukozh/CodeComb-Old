@@ -23,6 +23,22 @@ namespace CodeComb.Web.Controllers
         }
 
         [HttpPost]
+        public ActionResult LoginByToken(string token)
+        {
+            if (SignalR.CodeCombHub.LoginTokens[token] == null)
+                return RedirectToAction("Message", "Shared", new { msg = "登录失败" });
+            var user = DbContext.Users.Find((int)SignalR.CodeCombHub.LoginTokens[token]);
+            SignalR.CodeCombHub.LoginTokens[token] = null;
+            FormsAuthentication.SetAuthCookie(user.Username, true);
+            user.Online = true;
+            DbContext.SaveChanges();
+            if (Request.UrlReferrer == null)
+                return Redirect("/");
+            else
+                return Redirect(Request.UrlReferrer.ToString());
+        }
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Login(Login model)
         {

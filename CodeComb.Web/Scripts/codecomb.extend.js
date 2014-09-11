@@ -13,6 +13,7 @@ var isIE7 = isIE && !isIE6 && !isIE8;
 var isIE678 = isIE6 || isIE7 || isIE8;
 var JudgeResultAsInt;
 var JudgeResult;
+var BarCodeToken;
 
 function BroadCastBox()
 {
@@ -90,6 +91,12 @@ function SetCookie(ids)
             ret += ids[i] + ",";
     ret = ret.substr(0, ret.length - 1);
     $.cookie("c_" + username, ret, { path: "/" });
+}
+
+function BarCode()
+{
+    $("#NormalLogin").hide();
+    $("#BarCodeLogin").fadeIn();
 }
 
 function PrivateMessageDispay()
@@ -284,6 +291,25 @@ $(document).ready(function () {
             });
         }
     };
+    CodeCombHub.client.onBarCodeToken = function (token) {
+        $("#BarCode").html("");
+        BarCodeToken = token;
+        if (!isIE678) {
+            jQuery('#BarCode').qrcode({
+                text: BarCodeToken,
+                width: 100,
+                height: 100
+            });
+        }
+        else {
+            jQuery('#BarCode').qrcode({
+                render: "table",
+                text: BarCodeToken,
+                width: 100,
+                height: 100
+            });
+        }
+    }
     CodeCombHub.client.onStatusCreated = function (status) {
         if ($("#lstStatuses").length > 0) {
             if (contest_id != null && status.ContestID != contest_id) return;
@@ -337,6 +363,10 @@ $(document).ready(function () {
             $("#j_" + judger.ID).html(html);
         else
             $("#lstJudgers").prepend('<p id="j_' + judger.ID + '">' + html + '<p id="j_' + judger.ID + '">');
+    }
+    CodeCombHub.client.onLoginToken = function (token)
+    {
+        $.post("/User/LoginByToken", { token: token }, function () { location.reload(true); });
     }
     CodeCombHub.client.onHackCreated = function (hack) {
         if ($("#lstStatuses").length > 0) {

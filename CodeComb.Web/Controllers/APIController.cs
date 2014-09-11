@@ -338,6 +338,7 @@ namespace CodeComb.Web.Controllers
             users.Union((from pm in DbContext.Messages
                          where pm.SenderID == user.ID
                          select pm.Receiver).ToList());
+            users.Distinct();
             var ret = new Contacts() { IsSuccess = true, Code = 0, Info = "", List=new List<Contact>()};
             foreach (var u in users)
             {
@@ -435,6 +436,50 @@ namespace CodeComb.Web.Controllers
                 IsSuccess = false,
                 Info = ""
             });
+        }
+
+        [HttpPost]
+        public ActionResult LoginByBarCode(string Token, string BarCode)
+        {
+            var user = CheckUser(Token);
+            if (user == null)
+                return Json(new Base
+                {
+                    Code = 500,
+                    IsSuccess = false,
+                    Info = "AccessToken不正确"
+                });
+            if (SignalR.CodeCombHub.BarCode[BarCode] == null)
+            {
+                return Json(new Base
+                {
+                    Code = 700,
+                    IsSuccess = false,
+                    Info = "二维码不正确"
+                });
+            }
+            var conn_id = (string)SignalR.CodeCombHub.BarCode[BarCode];
+            string token;
+            bool existed;
+            do
+            {
+                token = Helpers.String.RandomString(32);
+                if (SignalR.CodeCombHub.LoginTokens[token] == null)
+                {
+                    SignalR.CodeCombHub.LoginTokens[token] = user.ID;
+                    existed = false;
+                }
+                else
+                    existed = true;
+            }
+            while(existed);
+            SignalR.CodeCombHub.context.Clients.Client(conn_id).onLoginToken(token);
+            return Json(new Base
+                {
+                    Code = 0,
+                    IsSuccess = true,
+                    Info = ""
+                });
         }
     }
 }

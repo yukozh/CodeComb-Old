@@ -44,13 +44,16 @@
     <script src="~/Scripts/vb.js"></script>
     <script src="~/Scripts/jquery.zclip.js"></script>
     <script src="~/Scripts/jquery.datetimepicker.js"></script>
+    <script src="~/Scripts/jquery.qrcode.js"></script>
+    <script src="~/Scripts/qrcode.js"></script>
     <!--[if !IE]><!--> 
         <script src="/Scripts/highlight.pack.js"></script>
     <!--<![endif]-->
     <!--[if gte IE 9]>
         <script src="/Scripts/highlight.pack.js"></script>
+    <!--<![endif]-->
     <!--[if lt IE 9]>
-    <!--[if lt IE 9]>
+    <script type="text/javascript" src="/Scripts/excanvas.js"></script>
     <script src="/Scripts/jplaceholder.js"></script>
     <script src="/Scripts/iefix.js"></script>
     <![endif]-->
@@ -94,10 +97,17 @@
                         <a href="/User/Register" class="float-left page-header-item"><div class="page-header-item-text">注册</div><div class="page-header-item-bg"></div></a>
                         using (Html.BeginForm("Login", "User", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { style = "display:none;color:gray;", @class = "login-form" }))
                         {
-                            @Html.AntiForgeryToken()
-                            <div class="form-line"><label>用户名</label><input name="Username" type="text" class="textbox role-login-user" /></div>
-                            <div class="form-line"><label>密　码</label><input name="Password" type="password" class="textbox role-login-pass" /></div>
-                            <div class="form-line"><input type="submit" class="button button-def" value="登录" /> @Html.CheckBox("Remember", false)记住我</div>
+                            <div id="NormalLogin">
+                                @Html.AntiForgeryToken()
+                                <div class="form-line"><label>用户名</label><input name="Username" type="text" class="textbox role-login-user" /></div>
+                                <div class="form-line"><label>密　码</label><input name="Password" type="password" class="textbox role-login-pass" /></div>
+                                <div class="form-line"><input type="submit" class="button button-def" value="登录" /> @Html.CheckBox("Remember", false)记住我 <a href="javascript:BarCode();">二维码登录</a></div>
+                            </div>
+                            <div id="BarCodeLogin" style="display:none;width:239px;">
+                                <div class="form-line" style="text-align:center">扫描下方的二维码登录</div>
+                                <div class="form-line"><div id="BarCode" style="margin:0 auto;width:100px;height:100px;"></div></div>
+                                <div class="form-line" style="text-align:center"><a href="javascript:$('#BarCodeLogin').hide();$('#NormalLogin').fadeIn();">切换到传统模式</a></div>
+                            </div>
                         }
                     }
                     else

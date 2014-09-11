@@ -543,6 +543,7 @@
     <Content Include="Scripts\jquery.datetimepicker.js" />
     <Content Include="Scripts\jquery.flot.js" />
     <Content Include="Scripts\jquery.flot.time.js" />
+    <Content Include="Scripts\jquery.qrcode.js" />
     <Content Include="Scripts\jquery.signalR-2.1.1.js" />
     <Content Include="Scripts\jquery.signalR-2.1.1.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
