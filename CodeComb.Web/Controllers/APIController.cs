@@ -332,13 +332,13 @@ namespace CodeComb.Web.Controllers
                     IsSuccess = false,
                     Info = "AccessToken不正确"
                 });
-            var users = (from pm in DbContext.Messages
+            IEnumerable<Entity.User> users = (from pm in DbContext.Messages
                          where pm.ReceiverID == user.ID
                          select pm.Sender).ToList();
             users.Union((from pm in DbContext.Messages
                          where pm.SenderID == user.ID
                          select pm.Receiver).ToList());
-            users.Distinct();
+           users = users.Distinct();
             var ret = new Contacts() { IsSuccess = true, Code = 0, Info = "", List=new List<Contact>()};
             foreach (var u in users)
             {
