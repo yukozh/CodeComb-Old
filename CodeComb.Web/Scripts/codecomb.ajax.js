@@ -197,9 +197,14 @@ function LoadProblems()
             if (problems.length == 0) { $("#iconLoading").hide(); lock = true; return; }//尾页锁定
             for (var i = 0; i < problems.length;i++) {
                 if (problems[i] == null) continue;
+                var contest_label = "";
+                if (problems[i].ContestTitle != null && problems[i].ContestTitle!="")
+                {
+                    contest_label = '<span class="label ' + css[problems[i].ContestID % 5] + '">' + problems[i].ContestTitle + '</span>';
+                }
                 $("#lstProblems").append('<tr><td style="text-align:center" class="' + problems[i].FlagCss + '">' + problems[i].Flag + '</td>'
                                                  + '<td><a style="float:left" href="/Problem/' + problems[i].ID + '">P' + problems[i].ID + ' ' + problems[i].Title + '</a>'
-                                                 + '<a style="float:right" href="/Contest/' + problems[i].ContestID + '"><span class="label ' + css[problems[i].ContestID % 5] + '">' + problems[i].ContestTitle + '</span></a></td>'
+                                                 + '<a style="float:right" href="/Contest/' + problems[i].ContestID + '">'+contest_label + '</a></td>'
                                                  + '<td style="text-align:center">' + problems[i].AC + '</td>'
                                                  + '<td style="text-align:center">' + problems[i].Submit + '</td>'
                                                  + '<td style="text-align:center">' + problems[i].Difficulty + '</td>'

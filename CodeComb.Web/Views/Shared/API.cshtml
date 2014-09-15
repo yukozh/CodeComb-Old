@@ -1,0 +1,172 @@
+﻿@{
+    ViewBag.Title = "API";
+    ViewBag.BannerTitle = "Code Comb Web API";
+}
+
+<div class="contest-body">
+    <div class="cont-wrap">
+        <div class="grid_9">
+            <div class="contest-main shadow" style="margin-bottom: 30px;" id="section-1">
+                <div class="post-info"><h3>Code Comb Web API简介</h3></div>
+                <h4>Code Comb Web API 申请流程</h4>
+                <blockquote>
+                    <p>欲申请Code Comb Web API需先成为Code Comb会员，登录后您可在个人中心中找到我的App选项进入，填写相关信息申请。Code Comb Web API使用OAuth2接口协议，您可向相关接口post数据，并得到一个Json返回值。</p>
+                </blockquote>
+                <h4>Code Comb Web API 接口分级</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>功能</th>
+                            <th>普通应用</th>
+                            <th>高级应用</th>
+                            <th>认证应用</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>申请条件</td>
+                            <td>用户注册30天以上</td>
+                            <td>与Code Comb管理员协商</td>
+                            <td>缴纳500元保证金</td>
+                        </tr>
+                        <tr>
+                            <td>通过授权页获取Access Token</td>
+                            <td>每天最多50次</td>
+                            <td>每天最多200次</td>
+                            <td>支持</td>
+                        </tr>
+                        <tr>
+                            <td>创建临时帐户</td>
+                            <td>不支持</td>
+                            <td>最多50个</td>
+                            <td>无限制</td>
+                        </tr>
+                        <tr>
+                            <td>远程输入Code Comb用户名密码获取Access Token</td>
+                            <td>不支持</td>
+                            <td>不支持</td>
+                            <td>支持</td>
+                        </tr>
+                        <tr>
+                            <td>获取列表类型接口</td>
+                            <td>支持</td>
+                            <td>支持</td>
+                            <td>支持</td>
+                        </tr>
+                        <tr>
+                            <td>获取详细信息类型接口</td>
+                            <td>部分支持</td>
+                            <td>支持</td>
+                            <td>支持</td>
+                        </tr>
+                        <tr>
+                            <td>提交评测/Hack接口</td>
+                            <td>支持</td>
+                            <td>支持</td>
+                            <td>支持</td>
+                        </tr>
+                        <tr>
+                            <td>推送评测/Hack结果</td>
+                            <td>支持</td>
+                            <td>支持</td>
+                            <td>支持</td>
+                        </tr>
+                        <tr>
+                            <td>推送排名变化</td>
+                            <td>支持</td>
+                            <td>支持</td>
+                            <td>支持</td>
+                        </tr>
+                        <tr>
+                            <td>推送答疑结果</td>
+                            <td>支持</td>
+                            <td>支持</td>
+                            <td>支持</td>
+                        </tr>
+                        <tr>
+                            <td>答疑接口</td>
+                            <td>支持</td>
+                            <td>支持</td>
+                            <td>支持</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="contest-main shadow" style="margin-bottom: 30px;" id="section-2">
+                <div class="post-info"><h3>接口文档</h3></div>
+                <h4>Authorize 授权页</h4>
+                <blockquote>
+                    <p>接口地址：http://www.codecomb.net/API/Authorize </p>
+                    <p>传参方式：GET</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>类型</th>
+                                <th>说明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AppID</td>
+                                <td>Uint64</td>
+                                <td>您的Application ID</td>
+                            </tr>
+                            <tr>
+                                <td>CallBack</td>
+                                <td>string</td>
+                                <td>授权成功后跳转URL</td>
+                            </tr>
+                            <tr>
+                                <td>*RequestToken</td>
+                                <td>string</td>
+                                <td>向CallBack地址通过GET方式传递RequestToken</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </blockquote>
+                <h4>获取 Access Token</h4>
+                <blockquote>
+                    <p>接口地址：http://www.codecomb.net/API/GetAccessToken </p>
+                    <p>传参方式：POST</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>类型</th>
+                                <th>说明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ClientSecret</td>
+                                <td>string</td>
+                                <td>您的Application的私钥</td>
+                            </tr>
+                            <tr>
+                                <td>RequestToken</td>
+                                <td>string</td>
+                                <td>通过授权页获得的RequestToken</td>
+                            </tr>
+                            <tr>
+                                <td>*AccessToken</td>
+                                <td>string</td>
+                                <td>该用户的AccessToken</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </blockquote>
+            </div>
+        </div>
+        <div class="grid_3">
+            <div class="post-module">
+                <h3>Navigator</h3>
+                <div class="post-module-content">
+                    <div class="post-cate-item"><a href="#section-1">接口简介</a></div>
+                    <div class="post-cate-item"><a href="#section-2">接口文档</a></div>
+                </div>
+            </div>
+        </div><div class="clear"></div>
+    </div>
+</div>

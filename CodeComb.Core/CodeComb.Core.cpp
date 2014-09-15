@@ -167,14 +167,14 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 			//CreateProcessAsUser(hNewToken, NULL, (LPWSTR)CommondLine.c_str(), NULL, NULL, FALSE, 0, NULL, NULL, (LPSTARTUPINFOW)(&StartupInfo), &ProcessInfo);
 
 			CreateProcess(NULL, (LPWSTR)CommondLine.c_str(), NULL, NULL, TRUE, CREATE_SUSPENDED, NULL, NULL, (LPSTARTUPINFOW)(&StartupInfo), &ProcessInfo);
-			if (CString(APIHookPath.c_str()) != CString(""))
-			{
-				BOOL hooked = LoadRemoteDLL(ProcessInfo.dwProcessId, (LPWSTR)APIHookPath.c_str());
-				if (!hooked)
-					wcerr << L"API Hook Failed !" << endl;
-				else
-					wcerr << L"API Hook Succeeded !" << endl;
-			}
+			//if (CString(APIHookPath.c_str()) != CString(""))
+			//{
+			//	BOOL hooked = LoadRemoteDLL(ProcessInfo.dwProcessId, (LPWSTR)APIHookPath.c_str());
+			//	if (!hooked)
+			//		wcerr << L"API Hook Failed !" << endl;
+			//	else
+			//		wcerr << L"API Hook Succeeded !" << endl;
+			//}
 			LPTHREAD_PARAM pData;
 			pData = (LPTHREAD_PARAM)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(THREAD_PARAM));
 			pData->ProcessHandle = ProcessInfo.hProcess;

@@ -25,8 +25,10 @@ namespace CodeComb.Web.Controllers
         [HttpGet]
         public ActionResult GetContests(int page, int? format)
         {
+            var HistroyTime = Convert.ToDateTime("2014-8-1 0:00");
             var _contests = (from c in DbContext.Contests
                             where DateTime.Now >= c.End
+                            && c.End >= HistroyTime
                             && c.Problems.Count > 0
                             select c);
             if (format != null)

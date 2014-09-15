@@ -16,5 +16,6 @@ namespace CodeComb.Models.WebAPI
         public string Nickname { get; set; }
         public int UnreadMessageCount { get; set; }
         public string AvatarURL { get; set; }
+        public string Motto { get; set; }
     }
 }

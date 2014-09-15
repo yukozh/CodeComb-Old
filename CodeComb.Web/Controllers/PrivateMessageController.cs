@@ -86,7 +86,7 @@ namespace CodeComb.Web.Controllers
                 SenderID = message.SenderID,
                 ReceiverID = message.ReceiverID
             });
-            SignalR.MobileHub.PushTo(message.ReceiverID, message.Content);
+            SignalR.MobileHub.PushTo(message.ReceiverID, message.Sender.Nickname + ":" + message.Content);
             return Content("OK");
         }
 	}

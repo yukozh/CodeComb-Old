@@ -44,8 +44,11 @@ namespace CodeComb.Web.Controllers
         // GET: /Problem/
         public ActionResult Index()
         {
-            var problem_count = (from p in DbContext.Problems
-                                 select p).Count();
+            var lastproblem = (from p in DbContext.Problems
+                               orderby p.ID descending
+                               select p).FirstOrDefault();
+            var problem_count = 0;
+            if (lastproblem != null) problem_count = lastproblem.ID;
             var page_count = (int)Math.Ceiling(problem_count / 100.0);
             var pager = new List<Models.View.ProblemPager>();
             for (int i = 1; i <= page_count; i++)

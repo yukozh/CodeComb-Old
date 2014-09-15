@@ -97,8 +97,8 @@
                         <a href="/User/Register" class="float-left page-header-item"><div class="page-header-item-text">注册</div><div class="page-header-item-bg"></div></a>
                         using (Html.BeginForm("Login", "User", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { style = "display:none;color:gray;", @class = "login-form" }))
                         {
+                            @Html.AntiForgeryToken()
                             <div id="NormalLogin">
-                                @Html.AntiForgeryToken()
                                 <div class="form-line"><label>用户名</label><input name="Username" type="text" class="textbox role-login-user" /></div>
                                 <div class="form-line"><label>密　码</label><input name="Password" type="password" class="textbox role-login-pass" /></div>
                                 <div class="form-line"><input type="submit" class="button button-def" value="登录" /> @Html.CheckBox("Remember", false)记住我 <a href="javascript:BarCode();">二维码登录</a></div>

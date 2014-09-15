@@ -52,5 +52,10 @@ namespace CodeComb.Web.Controllers
             SignalR.MobileHub.PushToAll(Helpers.String.CleanHTML(content));
             return Content("OK");
         }
+
+        public ActionResult API() 
+        {
+            return View();
+        }
 	}
 }

@@ -151,7 +151,9 @@ namespace CodeComb.Web.Controllers
                     Info = "AccessToken不正确"
                 });
             if (Page == null) Page = 0;
+            var HistroyTime = Convert.ToDateTime("2014-8-1 0:00");
             var contests = (from c in DbContext.Contests
+                            where c.End >=HistroyTime
                             orderby c.End descending
                             select c).Skip(10 * Page.Value).Take(10).ToList();
             var ret = new Contests() { Code = 0, IsSuccess = true, Info = "", PageCount = Convert.ToInt32(Math.Ceiling(DbContext.Contests.Count() / 10f)), List=new List<Contest>() };
@@ -260,7 +262,7 @@ namespace CodeComb.Web.Controllers
                     Info = "AccessToken不正确"
                 });
             var clar = DbContext.Clarifications.Find(ClarID);
-            var contest = clar.Problem.Contest;
+            var contest = clar.Contest;
             if (user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
                 return Json(new Base { Code = 1001, Info = "权限不足", IsSuccess = false });
             clar.Answer = Answer;
@@ -349,8 +351,43 @@ namespace CodeComb.Web.Controllers
                     Nickname = u.Nickname,
                     UnreadMessageCount = (from m in DbContext.Messages
                                               where m.ReceiverID == user.ID
+                                              && m.SenderID == u.ID
                                               && m.Read == false
-                                              select m).Count()
+                                              select m).Count(),
+                    Motto = u.Motto
+                });
+            }
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public ActionResult FindContacts(string Token, string Nickname)
+        {
+            var user = CheckUser(Token);
+            if (user == null)
+                return Json(new Base
+                {
+                    Code = 500,
+                    IsSuccess = false,
+                    Info = "AccessToken不正确"
+                });
+            var users = (from u in DbContext.Users
+                                              where u.Nickname.Contains(Nickname) || Nickname.Contains(u.Nickname)
+                                              select u).ToList();
+            var ret = new Contacts() { IsSuccess = true, Code = 0, Info = "", List = new List<Contact>() };
+            foreach (var u in users)
+            {
+                ret.List.Add(new Contact
+                {
+                    UserID = u.ID,
+                    AvatarURL = Helpers.Gravatar.GetAvatarURL(u.Gravatar, 180),
+                    Nickname = u.Nickname,
+                    UnreadMessageCount = (from m in DbContext.Messages
+                                          where m.ReceiverID == user.ID
+                                          && m.SenderID == u.ID
+                                          && m.Read == false
+                                          select m).Count(),
+                    Motto = u.Motto
                 });
             }
             return Json(ret);
@@ -369,10 +406,11 @@ namespace CodeComb.Web.Controllers
                     Info = "AccessToken不正确"
                 });
             var messages = (from m in DbContext.Messages
-                                                   where m.ReceiverID == user.ID
-                                                   && m.SenderID == UserID
-                                                   orderby m.Time descending
-                                                   select m).Take(50).ToList();
+                            where (m.ReceiverID == user.ID && m.SenderID == UserID)
+                            || (m.SenderID == UserID && m.ReceiverID == user.ID)
+                            orderby m.Time descending
+                            select m).Take(50).ToList();
+            messages.Reverse(0, messages.Count);
             var ret = new Messages { Code = 0, Info = "", IsSuccess = true, List = new List<Message>() };
             foreach (var message in messages)
             {
@@ -429,11 +467,11 @@ namespace CodeComb.Web.Controllers
                 SenderID = msg.SenderID,
                 ReceiverID = msg.ReceiverID
             });
-            SignalR.MobileHub.PushTo(msg.ReceiverID, msg.Content);
+            SignalR.MobileHub.PushTo(msg.ReceiverID, msg.Sender.Nickname + ":" + msg.Content);
             return Json(new Base
             {
                 Code = 0,
-                IsSuccess = false,
+                IsSuccess = true,
                 Info = ""
             });
         }

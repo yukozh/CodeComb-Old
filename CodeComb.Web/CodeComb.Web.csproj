@@ -632,6 +632,7 @@
     <Content Include="Views\Contest\Hack.cshtml" />
     <Content Include="Views\Contest\Private.cshtml" />
     <Content Include="Views\Hack\Index.cshtml" />
+    <Content Include="Views\Shared\API.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
