@@ -36,6 +36,12 @@ namespace CodeComb.Database
         public DbSet<Solution> Solutions { get; set; }
         public DbSet<DeviceToken> DeviceTokens { get; set; }
         public DbSet<JoinLog> JoinLogs { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<GroupMember> GroupMembers { get; set; }
+        public DbSet<GroupChat> GroupChats { get; set; }
+        public DbSet<GroupHomework> GroupHomeworks { get; set; }
+        public DbSet<GroupHomeworkProblem> GroupHomeworkProblems { get; set; }
+        public DbSet<GroupJoinApplication> GroupJoinApplications { get; set; }
 
         public DB()
             : base("mysqldb")
@@ -71,6 +77,10 @@ namespace CodeComb.Database
             modelBuilder.Entity<User>()
                 .HasMany(u => u.DeviceTokens)
                 .WithRequired(dt => dt.User);
+
+            modelBuilder.Entity<User>()
+               .HasMany(u => u.Groups)
+               .WithRequired(g => g.User);
 
             modelBuilder.Entity<Contest>()
                .HasMany(c => c.Clarifications)
@@ -147,6 +157,22 @@ namespace CodeComb.Database
             modelBuilder.Entity<AlgorithmTag>()
                 .HasMany(a => a.Children)
                 .WithOptional(a => a.Father);
+
+            modelBuilder.Entity<Group>()
+                .HasMany(g => g.GroupChats)
+                .WithOptional(gc => gc.Group);
+
+            modelBuilder.Entity<Group>()
+               .HasMany(g => g.GroupHomeworks)
+               .WithOptional(gh => gh.Group);
+
+            modelBuilder.Entity<Group>()
+               .HasMany(g => g.GroupMembers)
+               .WithOptional(gm => gm.Group);
+
+            modelBuilder.Entity<Group>()
+               .HasMany(g => g.GroupJoinApplications)
+               .WithOptional(ga => ga.Group);
         }
     }
 }

@@ -15,6 +15,7 @@ namespace CodeComb.Web.Controllers
         {
             return View();
         }
+
         public Entity.User CheckUser(string token)
         {
             var user = (from d in DbContext.DeviceTokens
@@ -22,6 +23,7 @@ namespace CodeComb.Web.Controllers
                         select d.User).SingleOrDefault();
             return user;
         }
+
         public ActionResult Auth(string Username, string Password)
         {
             var pwd = Helpers.Security.SHA1(Password);
@@ -518,6 +520,446 @@ namespace CodeComb.Web.Controllers
                     IsSuccess = true,
                     Info = ""
                 });
+        }
+
+        [HttpPost]
+        public ActionResult GetGroups(string Token, int? Page)
+        {
+            var user = CheckUser(Token);
+            if (user == null)
+                return Json(new Groups
+                {
+                    List = null,
+                    Code = 500,
+                    IsSuccess = false,
+                    Info = "AccessToken不正确"
+                });
+            if(Page == null) Page = 0;
+            IEnumerable<Entity.Group> groups = (from g in DbContext.Groups
+                                                where (from m in g.GroupMembers
+                                                       where m.UserID == user.ID
+                                                       select m).Count() > 0
+                                                orderby g.ID ascending
+                                                select g);
+            var ret = new CodeComb.Models.WebAPI.Groups { IsSuccess = true, Code = 0, Info = "", List = new List<Group>(), PageCount = groups.Count() / 10 + 1 };
+            groups = groups.Skip(Page.Value * 10).Take(10).ToList();
+            foreach (var group in groups)
+            {
+                ret.List.Add(new CodeComb.Models.WebAPI.Group 
+                { 
+                    ID = group.ID,
+                    Description = group.Description,
+                    Icon = group.Icon,
+                    MemberCount = group.GroupMembers.Count,
+                    Title = group.Title
+                });
+            }
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public ActionResult CreateGroup(string Token, string Title, string Description, int JoinMethod)
+        {
+            var user = CheckUser(Token);
+            if (user == null)
+                return Json(new Base
+                {
+                    Code = 500,
+                    IsSuccess = false,
+                    Info = "AccessToken不正确"
+                });
+            var group = new Entity.Group 
+            { 
+                Title = Title,
+                Description = Description,
+                Icon = null,
+                JoinMethodAsInt = JoinMethod
+            };
+            DbContext.Groups.Add(group);
+            DbContext.GroupMembers.Add(new Entity.GroupMember
+            {
+                GroupID = group.ID,
+                JoinTime = DateTime.Now,
+                Role = Entity.GroupRole.Root,
+                UserID = user.ID
+            });
+            DbContext.SaveChanges();
+            return Json(new Base
+            {
+                Code = 0,
+                IsSuccess = true,
+                Info = ""
+            });
+        }
+
+        [HttpPost]
+        public ActionResult ModifyGroup(string Token, int GroupID, string Title, string Description, int JoinMethod)
+        {
+            var user = CheckUser(Token);
+            if (user == null)
+                return Json(new Base
+                {
+                    Code = 500,
+                    IsSuccess = false,
+                    Info = "AccessToken不正确"
+                });
+            var group = DbContext.Groups.Find(GroupID);
+            if ((from gm in @group.GroupMembers where gm.UserID == user.ID && gm.RoleAsInt >= (int)Entity.GroupRole.Master select gm).Count() == 0)
+                return Json(new Base
+                {
+                    Code = 802,
+                    IsSuccess = false,
+                    Info = "您不是该群的管理员"
+                });
+            group.Title = Title;
+            group.Description = Description;
+            group.JoinMethodAsInt = JoinMethod;
+            DbContext.SaveChanges();
+            return Json(new Base
+            {
+                Code = 0,
+                IsSuccess = true,
+                Info = ""
+            });
+        }
+
+        [HttpPost]
+        public ActionResult KickGroupMember(string Token, int GroupID, int UserID)
+        {
+            var user = CheckUser(Token);
+            if (user == null)
+                return Json(new Base
+                {
+                    Code = 500,
+                    IsSuccess = false,
+                    Info = "AccessToken不正确"
+                });
+            var group = DbContext.Groups.Find(GroupID);
+            var me = (from gm in @group.GroupMembers where gm.UserID == user.ID && gm.RoleAsInt >= (int)Entity.GroupRole.Master select gm).FirstOrDefault();
+            if (me == null)
+                return Json(new Base
+                {
+                    Code = 802,
+                    IsSuccess = false,
+                    Info = "您不是该群的管理员"
+                });
+            var group_member = (from gm in DbContext.GroupMembers
+                                where gm.GroupID == GroupID
+                                && gm.UserID == UserID
+                                select gm).FirstOrDefault();
+            if (group_member.Role >= me.Role)
+                return Json(new Base
+                {
+                    Code = 807,
+                    IsSuccess = false,
+                    Info = "您的权限不能踢出该用户"
+                });
+            if(group_member == null)
+                return Json(new Base
+                {
+                    Code = 803,
+                    IsSuccess = false,
+                    Info = "该用户不在群中"
+                });
+            DbContext.GroupMembers.Remove(group_member);
+            DbContext.SaveChanges();
+            return Json(new Base
+            {
+                Code = 0,
+                IsSuccess = true,
+                Info = ""
+            });
+        }
+
+        [HttpPost]
+        public ActionResult JoinGroup(string Token, int GroupID, string Message)
+        {
+            var user = CheckUser(Token);
+            if (user == null)
+                return Json(new Base
+                {
+                    Code = 500,
+                    IsSuccess = false,
+                    Info = "AccessToken不正确"
+                });
+            var group = DbContext.Groups.Find(GroupID);
+            if((from gm in @group.GroupMembers where gm.UserID == user.ID && gm.GroupID == GroupID select gm).Count() > 0)
+                return Json(new Base
+                {
+                    Code = 804,
+                    IsSuccess = false,
+                    Info = "已经在群中"
+                });
+            if(group.JoinMethod == Entity.JoinMethod.Forbidden)
+                return Json(new Base
+                {
+                    Code = 805,
+                    IsSuccess = false,
+                    Info = "该群不允许任何人加入"
+                });
+            if (group.JoinMethod == Entity.JoinMethod.Message)
+            { 
+                if((from ga in @group.GroupJoinApplications where ga.UserID == user.ID && ga.GroupID == GroupID select ga).Count() > 0)
+                    return Json(new Base
+                    {
+                        Code = 806,
+                        IsSuccess = false,
+                        Info = "您已经提交过入群申请，请耐心等待审核"
+                    });
+                DbContext.GroupJoinApplications.Add(new Entity.GroupJoinApplication 
+                { 
+                    GroupID = GroupID,
+                    Status = Entity.GroupJoinStatus.Pending,
+                    UserID = user.ID,
+                    Message = Message,
+                    Response = ""
+                });
+                DbContext.SaveChanges();
+                return Json(new Base
+                {
+                    Code = 1,
+                    IsSuccess = true,
+                    Info = "入群申请已提交，请等待管理员审核"
+                });
+            }
+            DbContext.GroupMembers.Add(new Entity.GroupMember 
+            { 
+                Role = Entity.GroupRole.Member,
+                GroupID = GroupID,
+                UserID = user.ID,
+                JoinTime = DateTime.Now
+            });
+            DbContext.SaveChanges();
+            return Json(new Base
+            {
+                Code = 0,
+                IsSuccess = true,
+                Info = ""
+            });
+        }
+
+        [HttpPost]
+        public ActionResult GetGroupApplications(string Token, int GroupID, int? Page)
+        {
+            var user = CheckUser(Token);
+            if (user == null)
+                return Json(new GroupApplications
+                {
+                    Code = 500,
+                    IsSuccess = false,
+                    Info = "AccessToken不正确"
+                });
+            if (Page == null) Page = 0;
+            var group = DbContext.Groups.Find(GroupID);
+            if ((from gm in @group.GroupMembers where gm.UserID == user.ID && gm.RoleAsInt >= (int)Entity.GroupRole.Master select gm).Count() == 0)
+                return Json(new GroupApplications
+                {
+                    Code = 802,
+                    IsSuccess = false,
+                    Info = "您不是该群的管理员"
+                });
+            var group_applications = group.GroupJoinApplications.OrderByDescending(x=>x.Time).Skip(Page.Value * 10).Take(10).ToList();
+            var ret = new CodeComb.Models.WebAPI.GroupApplications { Code = 0, IsSuccess = true, List = new List<GroupApplication>(), Info = "", PageCount = group.GroupJoinApplications.Count / 10 + 1 };
+            foreach (var ga in group_applications)
+            {
+                ret.List.Add(new CodeComb.Models.WebAPI.GroupApplication 
+                { 
+                    ID = ga.ID,
+                    GroupID = ga.GroupID,
+                    Message = ga.Message,
+                    UserID = ga.UserID,
+                    StatusAsInt = ga.StatusAsInt,
+                    Status = ga.Status.ToString(),
+                    Nickname = ga.User.Nickname,
+                    AvatarURL = Helpers.Gravatar.GetAvatarURL(ga.User.Gravatar, 180),
+                    Response = ga.Response
+                });
+            }
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public ActionResult ResponseGroupApplication(string Token, int ApplicationID, int Status, string Response)
+        {
+            var user = CheckUser(Token);
+            if (user == null)
+                return Json(new Base
+                {
+                    Code = 500,
+                    IsSuccess = false,
+                    Info = "AccessToken不正确"
+                });
+            var application = DbContext.GroupJoinApplications.Find(ApplicationID);
+            var group = application.Group;
+            if ((from gm in @group.GroupMembers where gm.UserID == user.ID && gm.RoleAsInt >= (int)Entity.GroupRole.Master select gm).Count() == 0)
+                return Json(new Base
+                {
+                    Code = 802,
+                    IsSuccess = false,
+                    Info = "您不是该群的管理员"
+                });
+            application.Response = Response;
+            application.StatusAsInt = Status;
+            DbContext.SaveChanges();
+            switch (application.Status)
+            { 
+                case Entity.GroupJoinStatus.Accepted:
+                    SignalR.MobileHub.PushTo(application.UserID, group.Title + " 的群管理员接受了您的入群申请");
+                    break;
+                case Entity.GroupJoinStatus.Rejected:
+                    SignalR.MobileHub.PushTo(application.UserID, group.Title + " 的群管理员拒绝了您的入群申请");
+                    break;
+                default: break;
+            }
+            SignalR.MobileHub.context.Clients.Client(application.User.Username).onGroupApplicationResponsed(new CodeComb.Models.WebAPI.GroupApplication 
+            {
+                ID = application.ID,
+                GroupID = application.GroupID,
+                AvatarURL = Helpers.Gravatar.GetAvatarURL(application.User.Gravatar, 180),
+                StatusAsInt = application.StatusAsInt,
+                Status = application.Status.ToString(),
+                Message = application.Message,
+                Response = application.Response,
+                Nickname = application.User.Nickname,
+                UserID = application.UserID
+            });
+            return Json(new Base
+            {
+                Code = 0,
+                IsSuccess = true,
+                Info = ""
+            });
+        }
+
+        [HttpPost]
+        public ActionResult GetGroupChat(string Token, int GroupID, int? Page)
+        {
+            var user = CheckUser(Token);
+            if (user == null)
+                return Json(new GroupChats
+                {
+                    Code = 500,
+                    IsSuccess = false,
+                    Info = "AccessToken不正确"
+                });
+            var group = DbContext.Groups.Find(GroupID);
+            if ((from gm in @group.GroupMembers where gm.UserID == user.ID select gm).Count() == 0)
+                return Json(new Base
+                {
+                    Code = 808,
+                    IsSuccess = false,
+                    Info = "您不是该群的成员"
+                });
+            if (Page == null) Page = 0;
+            var ret = new GroupChats { Code = 0, IsSuccess = true, Info = "", List = new List<GroupChat>(), PageCount = group.GroupChats.Count / 50 + 1 };
+            var chats = group.GroupChats.OrderByDescending(x => x.Time).Skip(Page.Value * 50).Take(50).Reverse();
+            foreach (var chat in chats)
+            {
+                ret.List.Add(new GroupChat 
+                { 
+                    ID = chat.ID,
+                    AvatarURL = Helpers.Gravatar.GetAvatarURL(chat.User.Gravatar, 180),
+                    GroupID = chat.GroupID,
+                    Message = chat.Message,
+                    Nickname = chat.User.Nickname,
+                    Time = chat.Time,
+                    UserID = chat.UserID
+                });
+            }
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public ActionResult SendGroupMessage(string Token, int GroupID, string Message)
+        {
+            var user = CheckUser(Token);
+            if (user == null)
+                return Json(new Base
+                {
+                    Code = 500,
+                    IsSuccess = false,
+                    Info = "AccessToken不正确"
+                });
+            var group = DbContext.Groups.Find(GroupID);
+            if ((from gm in @group.GroupMembers where gm.UserID == user.ID select gm).Count() == 0)
+                return Json(new Base
+                {
+                    Code = 808,
+                    IsSuccess = false,
+                    Info = "您不是该群的成员"
+                });
+            var groupchat = new Entity.GroupChat 
+            { 
+                GroupID = GroupID,
+                Message = Message,
+                Time = DateTime.Now,
+                UserID = user.ID
+            };
+            DbContext.GroupChats.Add(groupchat);
+            DbContext.SaveChanges();
+            var group_users = (from u in DbContext.Users
+                               where (from g in u.Groups
+                                      where g.ID == GroupID
+                                      select g).Count() > 0
+                               select u).ToList();
+            foreach (var u in group_users)
+            {
+                SignalR.MobileHub.context.Clients.Client(u.Username).onGroupMessage(new GroupChat 
+                { 
+                    ID = groupchat.ID,
+                    AvatarURL = Helpers.Gravatar.GetAvatarURL(groupchat.User.Gravatar, 180),
+                    Message = groupchat.Message,
+                    Time = groupchat.Time,
+                    GroupID = groupchat.GroupID,
+                    Nickname = groupchat.User.Nickname,
+                    UserID = groupchat.UserID
+                });
+                //Todo: Push to web
+                SignalR.MobileHub.PushTo(u.ID, groupchat.Group.Title + ": " + Message);
+            }
+            return Json(new Base
+            {
+                Code = 0,
+                IsSuccess = true,
+                Info = ""
+            });
+        }
+
+        [HttpPost]
+        public ActionResult QuitGroup(string Token, int GroupID)
+        {
+            var user = CheckUser(Token);
+            if (user == null)
+                return Json(new Base
+                {
+                    Code = 500,
+                    IsSuccess = false,
+                    Info = "AccessToken不正确"
+                });
+            var group = DbContext.Groups.Find(GroupID);
+            var groupmember = (from gm in @group.GroupMembers where gm.UserID == user.ID select gm).FirstOrDefault();
+            if (groupmember == null)
+                return Json(new Base
+                {
+                    Code = 808,
+                    IsSuccess = false,
+                    Info = "您不是该群的成员"
+                });
+            if(groupmember.Role == Entity.GroupRole.Root)
+                return Json(new Base
+                {
+                    Code = 809,
+                    IsSuccess = false,
+                    Info = "您是群主，不能退出群"
+                });
+            DbContext.GroupMembers.Remove(groupmember);
+            DbContext.SaveChanges();
+            return Json(new Base
+            {
+                Code = 0,
+                IsSuccess = true,
+                Info = ""
+            });
         }
     }
 }

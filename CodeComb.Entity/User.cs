@@ -70,7 +70,10 @@ namespace CodeComb.Entity
         public virtual ICollection<Message> PMSent { get; set; }
 
         public virtual ICollection<Message> PMReceived { get; set; }
+
         public virtual ICollection<DeviceToken> DeviceTokens { get; set; }
+
+        public virtual ICollection<Group> Groups { get; set; }
 
         public override bool Equals(object obj)
         {

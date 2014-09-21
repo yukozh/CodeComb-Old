@@ -40,7 +40,7 @@
                                     { color: '#ccc', lineWidth: 1, yaxis: { from: 0, to: 1000 } },
                                     ];
                                     var line = [
-                                    @foreach (CodeComb.Entity.Rating item in Model.Ratings)
+                                    @foreach (CodeComb.Entity.Rating item in Model.Ratings.OrderBy(x=>x.Time))
                                     {
                                         @:[@Html.ToTimeStamp(item.Time)000, @(Model.Ratings.Where(x => x.Time <= item.Time).Sum(x => x.Credit) + 1500), "@item.Contest.Title",@item.Credit],
                                     }

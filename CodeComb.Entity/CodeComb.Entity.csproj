@@ -68,6 +68,12 @@
     <Compile Include="DeviceToken.cs" />
     <Compile Include="Forum.cs" />
     <Compile Include="Glance.cs" />
+    <Compile Include="Group.cs" />
+    <Compile Include="GroupChat.cs" />
+    <Compile Include="GroupHomework.cs" />
+    <Compile Include="GroupHomeworkProblem.cs" />
+    <Compile Include="GroupJoinApplication.cs" />
+    <Compile Include="GroupMember.cs" />
     <Compile Include="Hack.cs" />
     <Compile Include="JoinLog.cs" />
     <Compile Include="JudgeNode.cs" />

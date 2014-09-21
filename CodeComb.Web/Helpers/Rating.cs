@@ -105,11 +105,11 @@ namespace CodeComb.Web.Helpers
                         if (base_pts < 0) base_pts = 0;
                         if (detail.Key1 > 0)
                         {
-                            user_credits +=  base_pts + (int)((Math.Floor((extend_pts + 1) * 30)) * (problems[num].Credit - detail.Key1));
+                            user_credits +=  base_pts + (int)((Math.Floor((extend_pts + 1) / 30)) * (problems[num].Credit - detail.Key1));
                         }
                         else
                         {
-                            user_credits += base_pts + (int)((Math.Floor((extend_pts + 1) * 25)));
+                            user_credits += base_pts + (int)((Math.Floor((extend_pts + 1) / 25)));
                         }
                     }
                     #endregion
