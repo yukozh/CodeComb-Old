@@ -44,6 +44,11 @@
     <Compile Include="Clarification.cs" />
     <Compile Include="Contact.cs" />
     <Compile Include="Contest.cs" />
+    <Compile Include="Group.cs" />
+    <Compile Include="GroupApplication.cs" />
+    <Compile Include="GroupChat.cs" />
+    <Compile Include="GroupHomework.cs" />
+    <Compile Include="GroupHomeworkStandings.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Profile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

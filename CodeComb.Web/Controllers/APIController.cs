@@ -158,7 +158,7 @@ namespace CodeComb.Web.Controllers
                             where c.End >=HistroyTime
                             orderby c.End descending
                             select c).Skip(10 * Page.Value).Take(10).ToList();
-            var ret = new Contests() { Code = 0, IsSuccess = true, Info = "", PageCount = Convert.ToInt32(Math.Ceiling(DbContext.Contests.Count() / 10f)), List=new List<Contest>() };
+            var ret = new Contests { Code = 0, IsSuccess = true, Info = "", PageCount = DbContext.Contests.Count() / 10 + 1 , List = new List<Contest>() };
             foreach (var contest in contests)
             {
                 ret.List.Add(new Contest 
@@ -898,8 +898,9 @@ namespace CodeComb.Web.Controllers
             DbContext.GroupChats.Add(groupchat);
             DbContext.SaveChanges();
             var group_users = (from u in DbContext.Users
-                               where (from g in u.Groups
+                               where (from g in DbContext.GroupMembers
                                       where g.ID == GroupID
+                                      && g.UserID == u.ID
                                       select g).Count() > 0
                                select u).ToList();
             foreach (var u in group_users)
@@ -963,7 +964,7 @@ namespace CodeComb.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetGroupHomeworks(string Token, int GroupID)
+        public ActionResult GetGroupHomeworks(string Token, int GroupID, int? Page)
         {
             var user = CheckUser(Token);
             if (user == null)
@@ -982,7 +983,122 @@ namespace CodeComb.Web.Controllers
                     IsSuccess = false,
                     Info = "您不是该群的成员"
                 });
+            if (Page == null) Page = 0;
+            var ret = new GroupHomeworks { Code = 0, Info = "", IsSuccess = true, List = new List<GroupHomework>(), PageCount = group.GroupHomeworks.Count / 10 + 1 };
+            var homeworks = group.GroupHomeworks.OrderByDescending(x => x.Begin).Skip(Page.Value * 10).Take(10).ToList();
+            foreach (var h in homeworks)
+            {
+                var homework = new GroupHomework 
+                { 
+                    Begin = h.Begin,
+                    End = h.End,
+                    Description = h.Description,
+                    Title = h.Title,
+                    GroupID = h.GroupID,
+                    Problems = new List<GroupHomeworkProblem>()
+                };
+                var problems = h.GroupHomeworkProblems.OrderBy(x => x.Priority);
+                foreach (var p in problems)
+                {
+                    var problem = new GroupHomeworkProblem 
+                    { 
+                        ProblemID = p.ID,
+                        Title = p.Problem.Title,
+                        Code = ""
+                    };
+                    var status = (from s in DbContext.Statuses
+                                  where h.Begin <= s.Time
+                                  && s.Time < h.End
+                                  && s.UserID == user.ID
+                                  orderby s.Time descending
+                                  select s).FirstOrDefault();
+                    if (status == null)
+                        problem.Status = "未完成";
+                    else
+                    {
+                        problem.Points = status.JudgeTasks.Where(x => x.Result == Entity.JudgeResult.Accepted).Count() * 100 / status.JudgeTasks.Count;
+                        problem.Status = problem + "分";
+                        problem.Code = status.Code;
+                    }
+                    homework.Problems.Add(problem);
+                }
+                ret.List.Add(homework);
+            }
+            return Json(ret);
+        }
 
+        [HttpPost]
+        public ActionResult GetGroupHomeworkStandings(string Token, int GroupHomeworkID, int? Page)
+        {
+            var user = CheckUser(Token);
+            if (user == null)
+                return Json(new Base
+                {
+                    Code = 500,
+                    IsSuccess = false,
+                    Info = "AccessToken不正确"
+                });
+            var homework = DbContext.GroupHomeworks.Find(GroupHomeworkID);
+            var group = homework.Group;
+            var groupmember = (from gm in @group.GroupMembers where gm.UserID == user.ID select gm).FirstOrDefault();
+            if (groupmember == null)
+                return Json(new GroupHomeworkStandings
+                {
+                    Code = 808,
+                    IsSuccess = false,
+                    Info = "您不是该群的成员"
+                });
+            if (Page == null) Page = 0;
+            var groupmembers = (from u in @group.GroupMembers
+                                select groupmember.User).ToList();
+            var groupmember_ids = (from u in groupmembers
+                                   select u.ID).ToList();
+            var statuses = (from s in DbContext.Statuses
+                            where homework.Begin <= s.Time
+                            && s.Time < homework.End
+                            && groupmember_ids.Contains(s.UserID)
+                            select s).ToList();
+            var ret = new GroupHomeworkStandings { Code = 0, IsSuccess = true, Info = "", List = new List<GroupHomeworkStandingsItem>() };
+            var problems = homework.GroupHomeworkProblems.OrderBy(x => x.Priority).ToList();
+            foreach (var u in groupmembers)
+            {
+                var s = new GroupHomeworkStandingsItem 
+                { 
+                    UserID = u.ID,
+                    AvatarURL = Helpers.Gravatar.GetAvatarURL(u.Gravatar, 180),
+                    GroupID = group.ID,
+                    Nickname = u.Nickname,
+                    Problems = new List<GroupHomeworkProblem>(),
+                    TotalPoints = 0
+                };
+                foreach (var problem in problems)
+                {
+                    var p = new GroupHomeworkProblem 
+                    { 
+                        Code = null,
+                        ProblemID = problem.ProblemID,
+                        Title = problem.Problem.Title,
+                        Status = "未完成",
+                        Points = 0
+                    };
+                    var status = statuses
+                        .Where(x => x.UserID == u.ID
+                        && x.ProblemID == problem.ProblemID)
+                        .OrderByDescending(x => x.Time)
+                        .FirstOrDefault();
+                    if (status != null)
+                    {
+                        p.Points = status.JudgeTasks.Where(x => x.Result == Entity.JudgeResult.Accepted).Count() * 100 / status.JudgeTasks.Count;
+                        p.Status = problem + "分";
+                        if (groupmember.Role >= Entity.GroupRole.Master)
+                            p.Code = status.Code;
+                    }
+                    s.Problems.Add(p);
+                }
+                s.TotalPoints = s.Problems.Sum(x => x.Points);
+                ret.List.Add(s);
+            }
+            return Json(ret);
         }
     }
 }

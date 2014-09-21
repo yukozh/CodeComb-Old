@@ -27,5 +27,6 @@ namespace CodeComb.Models.WebAPI
         public string Title { get; set; }
         public string Status { get; set; }
         public string Code { get; set; }
+        public int Points { get; set; }
     }
 }

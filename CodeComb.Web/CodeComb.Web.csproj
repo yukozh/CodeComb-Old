@@ -652,10 +652,6 @@
       <Project>{d41692bb-5e4f-4c1d-ac40-b530d8e17bef}</Project>
       <Name>CodeComb.Judge</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CodeComb.Mobile.Models\CodeComb.Mobile.Models.csproj">
-      <Project>{728587ef-3299-4417-bc57-171dfcb3730a}</Project>
-      <Name>CodeComb.Mobile.Models</Name>
-    </ProjectReference>
     <ProjectReference Include="..\CodeComb.Models.WebAPI\CodeComb.Models.WebAPI.csproj">
       <Project>{84b8f533-4a4f-470e-9444-7342a5328282}</Project>
       <Name>CodeComb.Models.WebAPI</Name>

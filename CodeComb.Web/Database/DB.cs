@@ -78,10 +78,6 @@ namespace CodeComb.Database
                 .HasMany(u => u.DeviceTokens)
                 .WithRequired(dt => dt.User);
 
-            modelBuilder.Entity<User>()
-               .HasMany(u => u.Groups)
-               .WithRequired(g => g.User);
-
             modelBuilder.Entity<Contest>()
                .HasMany(c => c.Clarifications)
                .WithRequired(c => c.Contest);
@@ -160,19 +156,19 @@ namespace CodeComb.Database
 
             modelBuilder.Entity<Group>()
                 .HasMany(g => g.GroupChats)
-                .WithOptional(gc => gc.Group);
+                .WithRequired(gc => gc.Group);
 
             modelBuilder.Entity<Group>()
                .HasMany(g => g.GroupHomeworks)
-               .WithOptional(gh => gh.Group);
+               .WithRequired(gh => gh.Group);
 
             modelBuilder.Entity<Group>()
                .HasMany(g => g.GroupMembers)
-               .WithOptional(gm => gm.Group);
+               .WithRequired(gm => gm.Group);
 
             modelBuilder.Entity<Group>()
                .HasMany(g => g.GroupJoinApplications)
-               .WithOptional(ga => ga.Group);
+               .WithRequired(ga => ga.Group);
         }
     }
 }
