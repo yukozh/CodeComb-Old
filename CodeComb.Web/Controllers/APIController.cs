@@ -961,5 +961,28 @@ namespace CodeComb.Web.Controllers
                 Info = ""
             });
         }
+
+        [HttpPost]
+        public ActionResult GetGroupHomeworks(string Token, int GroupID)
+        {
+            var user = CheckUser(Token);
+            if (user == null)
+                return Json(new Base
+                {
+                    Code = 500,
+                    IsSuccess = false,
+                    Info = "AccessToken不正确"
+                });
+            var group = DbContext.Groups.Find(GroupID);
+            var groupmember = (from gm in @group.GroupMembers where gm.UserID == user.ID select gm).FirstOrDefault();
+            if (groupmember == null)
+                return Json(new Base
+                {
+                    Code = 808,
+                    IsSuccess = false,
+                    Info = "您不是该群的成员"
+                });
+
+        }
     }
 }

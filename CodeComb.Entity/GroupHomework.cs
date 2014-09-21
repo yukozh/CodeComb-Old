@@ -27,8 +27,11 @@ namespace CodeComb.Entity
 
         public ICollection<GroupHomeworkProblem> GroupHomeworkProblems { get; set; }
 
-        [Column("time")]
-        public DateTime Time { get; set; }
+        [Column("begin")]
+        public DateTime Begin { get; set; }
+
+        [Column("end")]
+        public DateTime End { get; set; }
 
         [Column("user_id")]
         [ForeignKey("User")]
