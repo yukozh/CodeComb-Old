@@ -339,7 +339,7 @@ namespace CodeComb.Web.Controllers
             IEnumerable<Entity.User> users = (from pm in DbContext.Messages
                          where pm.ReceiverID == user.ID
                          select pm.Sender).ToList();
-            users.Union((from pm in DbContext.Messages
+            users = users.Union((from pm in DbContext.Messages
                          where pm.SenderID == user.ID
                          select pm.Receiver).ToList());
            users = users.Distinct();
@@ -409,7 +409,7 @@ namespace CodeComb.Web.Controllers
                 });
             var messages = (from m in DbContext.Messages
                             where (m.ReceiverID == user.ID && m.SenderID == UserID)
-                            || (m.SenderID == UserID && m.ReceiverID == user.ID)
+                            || (m.ReceiverID == UserID && m.SenderID == user.ID)
                             orderby m.Time descending
                             select m).Take(50).ToList();
             messages.Reverse(0, messages.Count);
