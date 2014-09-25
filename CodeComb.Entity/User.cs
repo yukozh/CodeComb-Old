@@ -73,8 +73,6 @@ namespace CodeComb.Entity
 
         public virtual ICollection<DeviceToken> DeviceTokens { get; set; }
 
-        public virtual ICollection<Group> Groups { get; set; }
-
         public override bool Equals(object obj)
         {
             var data = obj as User;

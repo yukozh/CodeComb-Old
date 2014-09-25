@@ -23,7 +23,7 @@ namespace CodeComb.Entity
         public int JoinMethodAsInt { get; set; }
 
         [Column("icon")]
-        public byte[] Icon { get; set; }
+        public string Icon { get; set; }
 
         [NotMapped]
         public JoinMethod JoinMethod 
@@ -39,6 +39,7 @@ namespace CodeComb.Entity
         public virtual ICollection<GroupChat> GroupChats { get; set; }
 
         public virtual ICollection<GroupJoinApplication> GroupJoinApplications { get; set; }
+
         public override bool Equals(object obj)
         {
             var data = obj as Group;

@@ -549,7 +549,7 @@ namespace CodeComb.Web.Controllers
                 { 
                     ID = group.ID,
                     Description = group.Description,
-                    Icon = group.Icon,
+                    Icon = Helpers.Gravatar.GetAvatarURL(group.Icon, 180),
                     MemberCount = group.GroupMembers.Count,
                     Title = group.Title
                 });
@@ -1028,7 +1028,7 @@ namespace CodeComb.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetGroupHomeworkStandings(string Token, int GroupHomeworkID, int? Page)
+        public ActionResult GetGroupHomeworkStandings(string Token, int GroupHomeworkID)
         {
             var user = CheckUser(Token);
             if (user == null)
@@ -1048,7 +1048,6 @@ namespace CodeComb.Web.Controllers
                     IsSuccess = false,
                     Info = "您不是该群的成员"
                 });
-            if (Page == null) Page = 0;
             var groupmembers = (from u in @group.GroupMembers
                                 select groupmember.User).ToList();
             var groupmember_ids = (from u in groupmembers
@@ -1098,6 +1097,82 @@ namespace CodeComb.Web.Controllers
                 s.TotalPoints = s.Problems.Sum(x => x.Points);
                 ret.List.Add(s);
             }
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public ActionResult GetGroupMembers(string Token, int GroupID)
+        {
+            var user = CheckUser(Token);
+            if (user == null)
+                return Json(new GroupMembers
+                {
+                    Code = 500,
+                    IsSuccess = false,
+                    Info = "AccessToken不正确"
+                });
+            var group = DbContext.Groups.Find(GroupID);
+            if ((from gm in @group.GroupMembers where gm.UserID == user.ID select gm).Count() == 0)
+                return Json(new GroupMembers
+                {
+                    Code = 808,
+                    IsSuccess = false,
+                    Info = "您不是该群的成员"
+                });
+            var members = group.GroupMembers;
+            var ret = new GroupMembers { Code = 0, IsSuccess = true, Info = "", List = new List<GroupMember>() };
+            foreach (var member in members)
+            {
+                ret.List.Add(new GroupMember
+                {
+                    AvatarURL = Helpers.Gravatar.GetAvatarURL(member.User.Gravatar, 180),
+                    Nickname = member.User.Nickname,
+                    Role = member.Role.ToString(),
+                    RoleAsInt = member.RoleAsInt
+                });
+            }
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public ActionResult GetGroupProfile(string Token, int GroupID)
+        {
+            var user = CheckUser(Token);
+            if (user == null)
+                return Json(new GroupMembers
+                {
+                    Code = 500,
+                    IsSuccess = false,
+                    Info = "AccessToken不正确"
+                });
+            var group = DbContext.Groups.Find(GroupID);
+            if (group == null)
+            {
+                return Json(new GroupMembers
+                {
+                    Code = 404,
+                    IsSuccess = false,
+                    Info = GroupID+" 该ID不存在"
+                });
+            }
+            if ((from gm in @group.GroupMembers where gm.UserID == user.ID select gm).Count() == 0)
+                return Json(new GroupProfile
+                {
+                    Code = 808,
+                    IsSuccess = false,
+                    Info = "您不是该群的成员"
+                });
+            var ret = new GroupProfile 
+            { 
+                Code = 0,
+                IsSuccess= true,
+                Info="",
+                Description = group.Description,
+                Icon = Helpers.Gravatar.GetAvatarURL(group.Icon == null ? "": group.Icon, 180),
+                MemberCount = group.GroupMembers.Count,
+                Title = group.Title,
+                ID = group.ID
+            };
             return Json(ret);
         }
     }
