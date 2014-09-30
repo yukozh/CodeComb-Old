@@ -23,7 +23,7 @@ namespace CodeComb.Web
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             GlobalHost.Configuration.ConnectionTimeout = TimeSpan.FromHours(24);
             GlobalHost.Configuration.TransportConnectTimeout = TimeSpan.FromHours(24);
-            Helpers.Push.push.RegisterAppleService(new ApplePushChannelSettings(File.ReadAllBytes(@"C:\CodeCombCert\ios_push_sandbox.p12"), "CodeComb"));
+            //Helpers.Push.push.RegisterAppleService(new ApplePushChannelSettings(File.ReadAllBytes(@"C:\CodeCombCert\ios_push_sandbox.p12"), "CodeComb"));
         }
     }
 }

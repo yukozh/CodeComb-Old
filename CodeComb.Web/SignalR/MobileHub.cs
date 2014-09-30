@@ -50,13 +50,13 @@ namespace CodeComb.Web.SignalR
         }
         public static void iOS_PushTo(string device, string msg)
         {
-            Helpers.Push.push.QueueNotification(
-                new AppleNotification()
-                    .ForDeviceToken(device)
-                    .WithAlert(msg)
-                    .WithBadge(1)
-                    .WithSound("default")
-            );
+            //Helpers.Push.push.QueueNotification(
+            //    new AppleNotification()
+            //        .ForDeviceToken(device)
+            //        .WithAlert(msg)
+            //        .WithBadge(1)
+            //        .WithSound("default")
+            //);
         }
         #endregion
         public CodeComb.Models.WebAPI.Base RegisterSignalR(string token)
