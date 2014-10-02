@@ -63,7 +63,7 @@
                                                     </select>
                                                 </td>
                                             }
-                                            <td>@Html.ActionLink("编辑", "Edit", "Problem", new { id = item.ID }, null) <a href="javascript:$('#ProblemID').val(@item.ID);$('#frmDeleteProblem').submit();">删除</a></td>
+                                            <td>@Html.ActionLink("编辑", "Edit", "Problem", new { id = item.ID }, null) <a href="javascript:$('#DeleteProblemID').val(@item.ID);$('#frmDeleteProblem').submit();">删除</a></td>
                                         </tr>
                                     }
                                 }
@@ -72,7 +72,7 @@
                         @using (Html.BeginForm("Delete", "Problem", FormMethod.Post, new { id="frmDeleteProblem"}))
                         {
                             @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" id="ProblemID" value="0" />
+                            <input type="hidden" name="ProblemID" id="DeleteProblemID" value="0" />
                         }
                     </div>
                 </div>
