@@ -74,6 +74,42 @@ namespace CodeComb.Web.Controllers
             var contest = DbContext.Contests.Find(id);
             if (!Helpers.PrivateContest.IsUserInPrivateContest(ViewBag.CurrentUser == null ? null : (Entity.User)ViewBag.CurrentUser, contest))
                 return RedirectToAction("Private", "Contest", new { id = id });
+            var statistics = new int[contest.Problems.Count, 9];
+            var i = 0;
+            foreach (var p in contest.Problems.OrderBy(x => x.Credit))
+            {
+                var statuses = p.GetContestStatuses();
+                if (contest.Format == Entity.ContestFormat.OI)
+                {
+                    var user_ids = (from s in statuses
+                                 select s.UserID).Distinct();
+                    foreach (var uid in user_ids)
+                    {
+                        var last_status = statuses.Where(x => x.UserID == uid).LastOrDefault();
+                        if (last_status != null)
+                        {
+                            if(last_status.ResultAsInt < 8)
+                                statistics[i, last_status.ResultAsInt]++;
+                            else
+                                statistics[i, 8]++;
+                        }
+                    }
+                }
+                else
+                { 
+                    statistics[i,0] = statuses.Where(x => x.Result == Entity.JudgeResult.Accepted).Count();
+                    statistics[i,1] = statuses.Where(x => x.Result == Entity.JudgeResult.PresentationError).Count();
+                    statistics[i,2] = statuses.Where(x => x.Result == Entity.JudgeResult.WrongAnswer).Count();
+                    statistics[i,3] = statuses.Where(x => x.Result == Entity.JudgeResult.OutputLimitExceeded).Count();
+                    statistics[i,4] = statuses.Where(x => x.Result == Entity.JudgeResult.TimeLimitExceeded).Count();
+                    statistics[i,5] = statuses.Where(x => x.Result == Entity.JudgeResult.MemoryLimitExceeded).Count();
+                    statistics[i,6] = statuses.Where(x => x.Result == Entity.JudgeResult.RuntimeError).Count();
+                    statistics[i,7] = statuses.Where(x => x.Result == Entity.JudgeResult.CompileError).Count();
+                    statistics[i,8] = statuses.Where(x => x.Result == Entity.JudgeResult.Hacked).Count();
+                }
+                i++;
+            }
+            ViewBag.Statistics = statistics;
             return View(contest);
         }
 
