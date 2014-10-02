@@ -202,11 +202,16 @@ namespace CodeComb.Web.Controllers
             var user = DbContext.Users.Find(id);
             if (user.ID != ViewBag.CurrentUser.ID && ViewBag.CurrentUser.Role < Entity.UserRole.Master || ViewBag.CurrentUser.Role == UserRole.Temporary)
                 return RedirectToAction("Message", "Shared", new { msg = "您没有权限这样做！" });
-            if(Helpers.Security.SHA1(OldPassword) != user.Password && ViewBag.CurrentUser.Role < Entity.UserRole.Master)
-                return RedirectToAction("Message", "Shared", new { msg = "旧密码输入不正确！" });
+            if (ViewBag.CurrentUser.Role < Entity.UserRole.Master)
+            {
+                if (string.IsNullOrEmpty(OldPassword))
+                    return RedirectToAction("Message", "Shared", new { msg = "请输入旧密码！" });
+                if (Helpers.Security.SHA1(OldPassword) != user.Password && ViewBag.CurrentUser.Role < Entity.UserRole.Master)
+                    return RedirectToAction("Message", "Shared", new { msg = "旧密码输入不正确！" });
+            }
             if (NewPassword.Length < 4)
                 return RedirectToAction("Message", "Shared", new { msg = "密码长度至少为4！" });
-            if(NewPassword !=RepeatPassword)
+            if (NewPassword != RepeatPassword)
                 return RedirectToAction("Message", "Shared", new { msg = "两次密码输入不一致！" });
             user.Password = Helpers.Security.SHA1(RepeatPassword);
             DbContext.SaveChanges();
