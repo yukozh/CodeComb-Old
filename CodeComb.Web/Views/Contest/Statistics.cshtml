@@ -61,25 +61,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @{var num = 'A';}
+                                @{var num = 'A'; int i = 0;}
                                 @foreach (var item in Model.Problems.OrderBy(x => x.Credit))
                                 { 
                                     <tr>
                                         <td>@(num++)</td>
                                         <td>@item.Title</td>
-                                        <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.Accepted).Count()</td>
-                                        <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.PresentationError).Count()</td>
-                                        <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.WrongAnswer).Count()</td>
-                                        <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.OutputLimitExceeded).Count()</td>
-                                        <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.TimeLimitExceeded).Count()</td>
-                                        <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.MemoryLimitExceeded).Count()</td>
-                                        <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.RuntimeError).Count()</td>
-                                        <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.CompileError).Count()</td>
+                                        <td>@ViewBag.Statistics[i, 0]</td>
+                                        <td>@ViewBag.Statistics[i, 1]</td>
+                                        <td>@ViewBag.Statistics[i, 2]</td>
+                                        <td>@ViewBag.Statistics[i, 3]</td>
+                                        <td>@ViewBag.Statistics[i, 4]</td>
+                                        <td>@ViewBag.Statistics[i, 5]</td>
+                                        <td>@ViewBag.Statistics[i, 6]</td>
+                                        <td>@ViewBag.Statistics[i, 7]</td>
                                         @if (Model.Format == ContestFormat.Codeforces || Model.Format == ContestFormat.TopCoder)
                                         {
-                                            <td>@item.GetContestStatuses().Where(x => x.Result == JudgeResult.Hacked).Count()</td>
+                                            <td>@ViewBag.Statistics[i, 8]</td>
                                         }
                                     </tr>
+                                    { i++;}
                                 }
                             </tbody>
                         </table>
