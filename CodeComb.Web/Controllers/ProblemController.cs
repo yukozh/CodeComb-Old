@@ -140,7 +140,8 @@ namespace CodeComb.Web.Controllers
         public ActionResult Delete(int id)
         {
             var problem = DbContext.Problems.Find(id);
-            if (!ViewBag.IsMaster)
+            var user = ViewBag.CurrentUser == null ? new Entity.User() : (Entity.User)ViewBag.CurrentUser;
+            if (user.Role < Entity.UserRole.Master && !(from cm in contest.Managers select cm.UserID).Contains(user.ID))
                 return RedirectToAction("Message", "Shared", new { msg = "您无权执行本操作！" });
             DbContext.Problems.Remove(problem);
             DbContext.SaveChanges();
