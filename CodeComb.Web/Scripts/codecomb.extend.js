@@ -513,6 +513,7 @@ $(document).ready(function () {
                 CastMsg("评测机离线！当有可用评测资源时将评测本记录。");
             }
             else if (data == "OI") {
+                $.colorbox.close();
                 CastMsg("提交成功");
             }
             else {
