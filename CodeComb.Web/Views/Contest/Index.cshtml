@@ -7,53 +7,55 @@
     <div class="cont-wrap">
         <div class="grid_9">
             <h2>Recent Contests</h2>
-            <div class="shadow">
+            
+    @{
+        foreach (var item in Model)
+        {
+            <div class="shadow" style="margin-bottom:30px">
                 @{
-                    foreach (var item in Model)
-                    {
-                        var css = "contest-item-pending";
-                        var status = "";
-                        if (DateTime.Now >= item.Begin) { css = "contest-item-highlight"; status = "<span style='color:#ff8080'>[Live]</span>"; }
-                        <div class="post-item post-item-zip @css">
-                            <div class="post-title"><h2>@Html.Sanitized(status)@Html.ActionLink(item.Title, "Show", "Contest", new { id = item.ID }, null)</h2></div>
-                            <div class="post-info">
-                                @if (item.Ready)
-                                {
-                                    if (DateTime.Now < item.Begin)
-                                    { 
-                                        @Html.Sanitized(string.Format("<span class='label blue'>评级赛({0}~{1})</span>", item.RatingBegin, item.RatingEnd))
-                                    }
-                                    else
-                                    { 
-                                        @Html.Sanitized(string.Format("<span class='label red'>评级赛({0}~{1})</span>", item.RatingBegin, item.RatingEnd))
-                                    }
-                                }
-                                @if (!string.IsNullOrEmpty(item.Password))
-                                {
-                                    if (DateTime.Now < item.Begin)
-                                    {
-                                        <span class="label blue">私有赛</span>
-                                    }
-                                    else 
-                                    {
-                                        <span class="label red">私有赛</span>
-                                    }
-                                    
-                                }
-                                题量: @item.Problems.Count, 赛制: @item.Format.ToString(), 时长: @Html.ToVagueTimeLength(item.Begin, item.End),
-                                @Html.ToTimeTip(item.Begin) 开始: @item.Begin.ToString("yyyy-MM-dd HH:mm") 举办:
-                                @foreach (var manager in item.Managers)
-                                {
-                                    <a href="/User/@manager.UserID">@Html.Nickname(manager.User.Nickname, manager.User.Ratings.Sum(x=>x.Credit)+1500)</a>
-                                }
-                            </div>
-                            <div class="post-content">
-                                @Html.Sanitized(item.Content)
-                                <p>@Html.ActionLink("查看详情", "Show", "Contest", new { id = item.ID }, null)</p>
-                            </div>
-                        </div>
-                    }}
+                var css = "contest-item-pending";
+                var status = "";
+                if (DateTime.Now >= item.Begin) { css = "contest-item-highlight"; status = "<span style='color:#ff8080'>[Live]</span>"; }
+                <div class="post-item post-item-zip @css">
+                    <div class="post-title"><h2>@Html.Sanitized(status)@Html.ActionLink(item.Title, "Show", "Contest", new { id = item.ID }, null)</h2></div>
+                    <div class="post-info">
+                        @if (item.Ready)
+                        {
+                            if (DateTime.Now < item.Begin)
+                            {
+                                @Html.Sanitized(string.Format("<span class='label blue'>评级赛({0}~{1})</span>", item.RatingBegin, item.RatingEnd))
+                            }
+                            else
+                            {
+                                @Html.Sanitized(string.Format("<span class='label red'>评级赛({0}~{1})</span>", item.RatingBegin, item.RatingEnd))
+                            }
+                        }
+                        @if (!string.IsNullOrEmpty(item.Password))
+                        {
+                            if (DateTime.Now < item.Begin)
+                            {
+                                <span class="label blue">私有赛</span>
+                            }
+                            else
+                            {
+                                <span class="label red">私有赛</span>
+                            }
+                        }
+                        题量: @item.Problems.Count, 赛制: @item.Format.ToString(), 时长: @Html.ToVagueTimeLength(item.Begin, item.End),
+                        @Html.ToTimeTip(item.Begin) 开始: @item.Begin.ToString("yyyy-MM-dd HH:mm") 举办:
+                        @foreach (var manager in item.Managers)
+                        {
+                            <a href="/User/@manager.UserID">@Html.Nickname(manager.User.Nickname, manager.User.Ratings.Sum(x => x.Credit) + 1500)</a>
+                        }
+                    </div>
+                    <div class="post-content">
+                        @Html.Sanitized(item.Content)
+                        <p>@Html.ActionLink("查看详情", "Show", "Contest", new { id = item.ID }, null)</p>
+                    </div>
+                </div>
+        }
             </div>
+        }}
             @if (Model.Count() == 0)
             { 
                 <p>暂无比赛</p>
