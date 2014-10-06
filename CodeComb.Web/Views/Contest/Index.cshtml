@@ -62,6 +62,12 @@
             <div id="lstContests" class="shadow"></div>
             <div><div class="loading" id="iconLoading"></div></div>
         </div><div class="grid_3">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="post-module">
+                @Html.ActionLink("我要举办比赛","Contest","User",new{id=ViewBag.CurrentUser.ID},null)
+            </div>
+        }
             <div class="post-module">
                 <h3>Filter by Format</h3>
                 <div class="post-module-content">

@@ -93,10 +93,11 @@ namespace CodeComb.Web.Controllers
                 _statuses = _statuses.Where(x => x.User.Nickname.Contains(nickname));
             if (result != null) 
             {
-                if (result == 0)
-                    _statuses = _statuses.Where(x => x.ResultAsInt == 0);
-                else
-                    _statuses = _statuses.Where(x => (from jt in x.JudgeTasks select jt.ResultAsInt).ToList().Contains(result.Value));
+                _statuses = _statuses.Where(x => x.ResultAsInt == result.Value);
+                //if (result == 0)
+                //    _statuses = _statuses.Where(x => x.ResultAsInt == 0);
+                //else
+                //    _statuses = _statuses.Where(x => (from jt in x.JudgeTasks select jt.ResultAsInt).ToList().Contains(result.Value));
             }
             if (contest_id != null)
                 _statuses = _statuses.Where(x => x.Problem.ContestID == contest_id && x.Time >= x.Problem.Contest.Begin && x.Time < x.Problem.Contest.End);
