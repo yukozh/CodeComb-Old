@@ -444,7 +444,7 @@ $(document).ready(function () {
                 editor.setOption('mode', 'text/x-c++src');
                 break;
             case 3:
-                eeditor.setOption('mode', 'text/x-java');
+                editor.setOption('mode', 'text/x-java');
                 break;
             case 4:
                 editor.setOption('mode', 'text/x-pascal');

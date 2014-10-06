@@ -1,54 +1,54 @@
 ﻿@model CodeComb.Entity.Contest
 @{
-    ViewBag.Title = @Model.Title;
+    ViewBag.Title = Model.Title;
+    ViewBag.BannerTitle = "打印服务 - " + Model.Title;
     var IsMaster = (bool)ViewBag.IsMaster;
     var IsCreator = (bool)ViewBag.IsCreator;
 }
-<div class="post-detail-body">
+<div class="contest-body">
     <div class="cont-wrap">
-        <div class="grid_12">
-            <div class="post-detail-wrap-outer">
-                <div class="profile-actions">
-                    <a href="/Contest/@Model.ID" class="profile-btn"><img src="/Images/description.png" alt="比赛介绍" /></a>
+        <div class="grid_9">
+            <div class="contest-main shadow">
+                <p>请将您需要打印的材料粘贴到下面的编辑框内</p>
+                    @using (Html.BeginForm("Print", "Contest", FormMethod.Post, new { id = "frmPrint" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("id", Model.ID);
+                        <textarea name="content" style="width:100%;height:280px;" class="textbox"></textarea>
+                        <p><input type="submit" class="button button-def" value="提交打印" /></p>
+                    }
+            </div>
+        </div>
+        <div class="grid_3">
+            <div class="post-module">
+                <h3>Navigator</h3>
+                <div class="post-module-content">
+                    <div class="post-cate-item">@Html.ActionLink("比赛介绍", "Show", "Contest", new { id = Model.ID }, null)</div>
                     @if (Model.Format != ContestFormat.OI && DateTime.Now >= Model.Begin || IsMaster)
                     {
-                        <a href="/Contest/Standings/@Model.ID" class="profile-btn"><img src="/Images/standings.png" alt="比赛排名" /></a>
-                        <a href="/Contest/Statistics/@Model.ID" class="profile-btn"><img src="/Images/statistics.png" alt="数据统计" /></a>
-
+                        <div class="post-cate-item">@Html.ActionLink("比赛排名", "Standings", "Contest", new { id = Model.ID }, null)</div>
+                        <div class="post-cate-item">@Html.ActionLink("数据统计", "Statistics", "Contest", new { id = Model.ID }, null)</div>
                     }
                     @if (DateTime.Now >= Model.Begin)
                     {
-                        <a href="/Contest/Status/@Model.ID" class="profile-btn"><img src="/Images/status.png" alt="评测状态" /></a>
+                        <div class="post-cate-item">@Html.ActionLink("评测状态", "Status", "Contest", new { id = Model.ID }, null)</div>
                         if (Model.Format == ContestFormat.Codeforces || Model.Format == ContestFormat.TopCoder)
                         {
-                            <a href="/Contest/Hack/@Model.ID" class="profile-btn"><img src="/Images/hack.png" alt="Hack状态" /></a>
+                            <div class="post-cate-item">@Html.ActionLink("Hack状态", "Hack", "Contest", new { id = Model.ID }, null)</div>
                         }
                         if (Model.AllowClarification)
                         {
-                            <a href="/Contest/Clar/@Model.ID" class="profile-btn"><img src="/Images/clar.png" alt="答疑平台" /></a>
+                            <div class="post-cate-item">@Html.ActionLink("答疑平台", "Clar", "Contest", new { id = Model.ID }, null)</div>
                         }
                         if (Model.AllowPrintRequest)
                         {
-                            <a href="/Contest/Print/@Model.ID" class="profile-btn"><img src="/Images/print.png" alt="打印服务" /></a>
+                            <div class="post-cate-item">@Html.ActionLink("打印服务", "Print", "Contest", new { id = Model.ID }, null)</div>
                         }
                     }
                     @if (IsMaster)
                     {
-                        <a href="/Contest/Settings/General/@Model.ID" class="profile-btn"><img src="/Images/settings.png" alt="管理比赛" /></a>
+                        <div class="post-cate-item">@Html.ActionLink("管理比赛", "General", "ContestSettings", new { id = Model.ID }, null)</div>
                     }
-                </div>
-                <div class="post-detail-wrap">
-                    <div class="post-title"><h2>打印服务 - @Model.Title</h2></div>
-                    <div class="post-info"></div>
-                    <div class="post-content">
-                        @using (Html.BeginForm("Print", "Contest", FormMethod.Post, new { id = "frmPrint" }))
-                        { 
-                            @Html.AntiForgeryToken()
-                            @Html.Hidden("id", Model.ID);
-                            <textarea name="content" style="width:100%;height:280px;" class="textbox"></textarea>
-                            <p><input type="submit" class="button button-def" value="提交打印" /></p>
-                        }
-                    </div>
                 </div>
             </div>
         </div><div class="clear"></div>

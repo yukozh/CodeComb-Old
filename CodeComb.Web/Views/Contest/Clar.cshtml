@@ -2,110 +2,110 @@
 @{
     CodeComb.Entity.Contest contest = ViewBag.CurrentContest;
     ViewBag.Title = "答疑平台";
+    ViewBag.BannerTitle = "答疑 - "+contest.Title;
     var IsMaster = (bool)ViewBag.IsMaster;
     var IsCreator = (bool)ViewBag.IsCreator;
 }
-
-<div class="post-detail-body">
+<div class="contest-body">
     <div class="cont-wrap">
-        <div class="grid_12">
-            <div class="post-detail-wrap-outer">
-                <div class="profile-actions">
-                    <a href="/Contest/@contest.ID" class="profile-btn"><img src="/Images/description.png" alt="比赛介绍" /></a>
-                    @if (contest.Format != ContestFormat.OI && DateTime.Now >= contest.Begin || IsMaster)
-                    {
-                        <a href="/Contest/Standings/@contest.ID" class="profile-btn"><img src="/Images/standings.png" alt="比赛排名" /></a>
-                        <a href="/Contest/Statistics/@contest.ID" class="profile-btn"><img src="/Images/statistics.png" alt="数据统计" /></a>
-
-                    }
-                    @if (DateTime.Now >= contest.Begin)
-                    {
-                        <a href="/Contest/Status/@contest.ID" class="profile-btn"><img src="/Images/status.png" alt="评测状态" /></a>
-                        if (contest.Format == ContestFormat.Codeforces || contest.Format == ContestFormat.TopCoder)
+        <div class="grid_9">
+            <table class="shadow">
+                <thead>
+                    <tr>
+                        <th>Clar Id</th>
+                        <th>分类</th>
+                        <th>问题</th>
+                        <th>回答</th>
+                        <th>状态</th>
+                        @if (IsMaster)
                         {
-                            <a href="/Contest/Hack/@contest.ID" class="profile-btn"><img src="/Images/hack.png" alt="Hack状态" /></a>
+                            <th>操作</th>
                         }
-                        if (contest.AllowClarification)
-                        {
-                            <a href="/Contest/Clar/@contest.ID" class="profile-btn"><img src="/Images/clar.png" alt="答疑平台" /></a>
-                        }
-                        if (contest.AllowPrintRequest)
-                        {
-                            <a href="/Contest/Print/@contest.ID" class="profile-btn"><img src="/Images/print.png" alt="打印服务" /></a>
-                        }
-                    }
-                    @if (IsMaster)
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
                     {
-                        <a href="/Contest/Settings/General/@contest.ID" class="profile-btn"><img src="/Images/settings.png" alt="管理比赛" /></a>
-                    }
-                </div>
-                <div class="post-detail-wrap">
-                    <div class="post-title"><h2>答疑平台 - @contest.Title</h2></div>
-                    <div class="post-info"></div>
-                    <div class="post-content">
-                        <h3>答疑记录</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Clar Id</th>
-                                    <th>分类</th>
-                                    <th>问题</th>
-                                    <th>回答</th>
-                                    <th>状态</th>
-                                    @if (IsMaster)
-                                    {
-                                        <th>操作</th>
-                                    }
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model)
-                                {
-                                    <tr>
-                                        <td>@item.ID</td>
-                                        <td>@(item.ProblemID == null ? "General" : item.Problem.Title)</td>
-                                        <td><a href="javascript:ShowClar(@item.ID)">@(item.Question.Length >= 20 ? item.Question.Substring(0, 17) + "..." : item.Question)</a></td>
-                                        <td><a href="javascript:ShowClar(@item.ID)">@(item.Answer.Length >= 20 ? item.Answer.Substring(0, 17) + "..." : item.Answer)</a></td>
-                                        <td>@item.Status.ToString()</td>
-                                        @if (IsMaster)
-                                        {
-                                            <td><a href="javascript:ClarResponse(@item.ID)">回复</a></td>
-                                        }
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                        <br />
-                        <h3>提交问题</h3>
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            using (Html.BeginForm("Clar", "Contest", FormMethod.Post, new { id = "frmCreateClar" }))
+                        <tr>
+                            <td>@item.ID</td>
+                            <td>@(item.ProblemID == null ? "General" : item.Problem.Title)</td>
+                            <td><a href="javascript:ShowClar(@item.ID)">@(item.Question.Length >= 20 ? item.Question.Substring(0, 17) + "..." : item.Question)</a></td>
+                            <td><a href="javascript:ShowClar(@item.ID)">@(item.Answer.Length >= 20 ? item.Answer.Substring(0, 17) + "..." : item.Answer)</a></td>
+                            <td>@item.Status.ToString()</td>
+                            @if (IsMaster)
                             {
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" value="@ViewContext.RouteData.Values["id"]" />
-                                <textarea style="width:100%" name="question" class="textbox"></textarea>
-                                <p>
-                                    <input type="submit" value="提交问题" class="button button-def" />
-                                    <select name="problem_id">
-                                        <option value="">General</option>
-                                        @{
-                                            var i = 'A';
-                                            foreach (CodeComb.Web.Models.View.ClarProblem item in ViewBag.Problems)
-                                            {
-                                                <option value="@item.ID">@(i++): @item.Title</option>
-                                            }
-                                        }
-                                    </select>
-                                </p>
+                                <td><a href="javascript:ClarResponse(@item.ID)">回复</a></td>
                             }
-                        }
-                        else
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="contest-main shadow" style="margin-top:25px">
+                    <div>
+                        <h3>提交问题</h3>
+                        @using (Html.BeginForm("Clar", "Contest", FormMethod.Post, new { id = "frmCreateClar" }))
                         {
-                            <p>登录后可以通过答疑平台向裁判发起问题。</p>
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@ViewContext.RouteData.Values["id"]" />
+                            <textarea style="width:100%" name="question" class="textbox"></textarea>
+                            <p>
+                                <input type="submit" value="提交问题" class="button button-def" />
+                                <select name="problem_id">
+                                    <option value="">General</option>
+                                    @{
+                            var i = 'A';
+                            foreach (CodeComb.Web.Models.View.ClarProblem item in ViewBag.Problems)
+                            {
+                                <option value="@item.ID">@(i++): @item.Title</option>
+                            }
+                                    }
+                                </select>
+                            </p>
                         }
                     </div>
                 </div>
-            </div>
-        </div><div class="clear"></div>
+            }
+            else
+            {
+                <p>登录后可以通过答疑平台向裁判发起问题。</p>
+            }
+
+        </div>
     </div>
+    <div class="grid_3">
+        <div class="post-module">
+            <h3>Navigator</h3>
+            <div class="post-module-content">
+                <div class="post-cate-item">@Html.ActionLink("比赛介绍", "Show", "Contest", new { id = contest.ID }, null)</div>
+                @if (contest.Format != ContestFormat.OI && DateTime.Now >= contest.Begin || IsMaster)
+                {
+                    <div class="post-cate-item">@Html.ActionLink("比赛排名", "Standings", "Contest", new { id = contest.ID }, null)</div>
+                    <div class="post-cate-item">@Html.ActionLink("数据统计", "Statistics", "Contest", new { id = contest.ID }, null)</div>
+                }
+                @if (DateTime.Now >= contest.Begin)
+                {
+                    <div class="post-cate-item">@Html.ActionLink("评测状态", "Status", "Contest", new { id = contest.ID }, null)</div>
+                    if (contest.Format == ContestFormat.Codeforces || contest.Format == ContestFormat.TopCoder)
+                    {
+                        <div class="post-cate-item">@Html.ActionLink("Hack状态", "Hack", "Contest", new { id = contest.ID }, null)</div>
+                    }
+                    if (contest.AllowClarification)
+                    {
+                        <div class="post-cate-item">@Html.ActionLink("答疑平台", "Clar", "Contest", new { id = contest.ID }, null)</div>
+                    }
+                    if (contest.AllowPrintRequest)
+                    {
+                        <div class="post-cate-item">@Html.ActionLink("打印服务", "Print", "Contest", new { id = contest.ID }, null)</div>
+                    }
+                }
+                @if (IsMaster)
+                {
+                    <div class="post-cate-item">@Html.ActionLink("管理比赛", "General", "ContestSettings", new { id = contest.ID }, null)</div>
+                }
+            </div>
+        </div>
+    </div><div class="clear"></div>
 </div>

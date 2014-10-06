@@ -1,76 +1,80 @@
 ﻿@model CodeComb.Entity.Contest
 @{
     ViewBag.Title = @Model.Title;
+    ViewBag.BannerTitle = @Model.Title;
     var IsMaster = (bool)ViewBag.IsMaster;
     var IsCreator = (bool)ViewBag.IsCreator;
 }
-<div class="post-detail-body">
+
+<div class="contest-body">
     <div class="cont-wrap">
-        <div class="grid_12">
-            <div class="post-detail-wrap-outer">
-                <div class="profile-actions">
-                    <a href="/Contest/@Model.ID" class="profile-btn"><img src="/Images/description.png" alt="比赛介绍" /></a>
-                    @if (Model.Format != ContestFormat.OI && DateTime.Now >= Model.Begin || IsMaster)
+        <div class="grid_9">
+            <div class="contest-main shadow">
+                <div><h2>比赛介绍</h2></div>
+                <blockquote class="@ViewBag.InfoCss">
+                    <p>题量: @Model.Problems.Count</p>
+                    <p>赛制: @Model.Format.ToString()</p>
+                    <p>时长: @Html.ToTimeLength(Model.Begin, Model.End)</p>
+                    <p>开始: @Html.ToTimeTip(Model.Begin) (@Model.Begin.ToString("yyyy-MM-dd HH:ss") GMT+800)</p>
+                    @if (Model.RestBegin != null && Model.RestEnd != null)
                     {
-                        <a href="/Contest/Standings/@Model.ID" class="profile-btn"><img src="/Images/standings.png" alt="比赛排名" /></a>
-                        <a href="/Contest/Statistics/@Model.ID" class="profile-btn"><img src="/Images/statistics.png" alt="数据统计" /></a>
+                        <p>休息: From @Model.RestBegin.Value.ToString("yyyy-MM-dd HH:ss") To @Model.RestEnd.Value.ToString("yyyy-MM-dd HH:ss")</p>
                     }
                     @if (DateTime.Now >= Model.Begin)
                     {
-                        <a href="/Contest/Status/@Model.ID" class="profile-btn"><img src="/Images/status.png" alt="评测状态" /></a>
+                        <p>参与: @ViewBag.UserCount</p>
+                    }
+                    @if (Model.Ready)
+                    {
+                        <p>能力: From @Model.RatingBegin To @Model.RatingEnd</p>
+                    }
+                </blockquote>
+                @Html.Sanitized(Model.Content)
+                </div>
+                @if (DateTime.Now >= Model.Begin)
+                {
+                    <div class="contest-main shadow" style="margin-top:25px">
+                    <div><h2>Problems</h2></div>
+                    <div class="post-content">
+                        @{var num = 'A';}
+                        @foreach (CodeComb.Web.Models.View.ProblemInContest problem in ViewBag.Problems)
+                        {
+                            <p class="contest-problem-item">@Html.ActionLink(num++ + ": " + problem.Title, "Show", "Problem", new { id = problem.ID }, null)@Html.Sanitized(problem.Credits)@Html.Sanitized(problem.Status)@Html.Sanitized(problem.Lock)</p>
+                        }
+                    </div>
+            </div>
+                }
+            </div>
+        <div class="grid_3">
+            <div class="post-module">
+                <h3>Navigator</h3>
+                <div class="post-module-content">
+                    <div class="post-cate-item">@Html.ActionLink("比赛介绍", "Show", "Contest", new { id = Model.ID }, null)</div>
+                    @if (Model.Format != ContestFormat.OI && DateTime.Now >= Model.Begin || IsMaster)
+                    {
+                        <div class="post-cate-item">@Html.ActionLink("比赛排名", "Standings", "Contest", new { id = Model.ID }, null)</div>
+                        <div class="post-cate-item">@Html.ActionLink("数据统计", "Statistics", "Contest", new { id = Model.ID }, null)</div>
+                    }
+                    @if (DateTime.Now >= Model.Begin)
+                    {
+                        <div class="post-cate-item">@Html.ActionLink("评测状态", "Status", "Contest", new { id = Model.ID }, null)</div>
                         if (Model.Format == ContestFormat.Codeforces || Model.Format == ContestFormat.TopCoder)
                         {
-                            <a href="/Contest/Hack/@Model.ID" class="profile-btn"><img src="/Images/hack.png" alt="Hack状态" /></a>
+                            <div class="post-cate-item">@Html.ActionLink("Hack状态", "Hack", "Contest", new { id = Model.ID }, null)</div>
                         }
                         if (Model.AllowClarification)
                         {
-                            <a href="/Contest/Clar/@Model.ID" class="profile-btn"><img src="/Images/clar.png" alt="答疑平台" /></a>
+                            <div class="post-cate-item">@Html.ActionLink("答疑平台", "Clar", "Contest", new { id = Model.ID }, null)</div>
                         }
                         if (Model.AllowPrintRequest)
                         {
-                            <a href="/Contest/Print/@Model.ID" class="profile-btn"><img src="/Images/print.png" alt="打印服务" /></a>
+                            <div class="post-cate-item">@Html.ActionLink("打印服务", "Print", "Contest", new { id = Model.ID }, null)</div>
                         }
                     }
                     @if (IsMaster)
                     {
-                        <a href="/Contest/Settings/General/@Model.ID" class="profile-btn"><img src="/Images/settings.png" alt="管理比赛" /></a>
+                        <div class="post-cate-item">@Html.ActionLink("管理比赛", "General", "ContestSettings", new { id = Model.ID }, null)</div>
                     }
-                </div>
-                <div class="post-detail-wrap">
-                    <div class="post-title"><h2>@Model.Title</h2></div>
-                    <div class="post-info"></div>
-                    <div class="post-content">
-                        <blockquote class="@ViewBag.InfoCss">
-                            <p>题量: @Model.Problems.Count</p>
-                            <p>赛制: @Model.Format.ToString()</p>
-                            <p>时长: @Html.ToTimeLength(Model.Begin, Model.End)</p>
-                            <p>开始: @Html.ToTimeTip(Model.Begin) (@Model.Begin.ToString("yyyy-MM-dd HH:ss") GMT+800)</p>
-                            @if (Model.RestBegin != null && Model.RestEnd != null)
-                            {
-                                <p>休息: From @Model.RestBegin.Value.ToString("yyyy-MM-dd HH:ss") To @Model.RestEnd.Value.ToString("yyyy-MM-dd HH:ss")</p>
-                            }
-                            @if (DateTime.Now >= Model.Begin)
-                            {
-                                <p>参与: @ViewBag.UserCount</p>
-                            }
-                            @if (Model.Ready)
-                            {
-                                <p>能力: From @Model.RatingBegin To @Model.RatingEnd</p>
-                            }
-                        </blockquote>
-                        @Html.Sanitized(Model.Content)
-                        @if (DateTime.Now >= Model.Begin)
-                        {
-                            <div><h2>Problems</h2></div>
-                            <div class="post-content">
-                                @{var num = 'A';}
-                                @foreach (CodeComb.Web.Models.View.ProblemInContest problem in ViewBag.Problems)
-                                {
-                                    <p class="contest-problem-item">@Html.ActionLink(num++ + ": " + problem.Title, "Show", "Problem", new { id = problem.ID }, null)@Html.Sanitized(problem.Credits)@Html.Sanitized(problem.Status)@Html.Sanitized(problem.Lock)</p>
-                                }
-                            </div>
-                        }
-                    </div>
                 </div>
             </div>
         </div><div class="clear"></div>
