@@ -53,7 +53,7 @@
                         <div class="form-line"><label class="reg-label">登录用户名: </label>@Html.TextBoxFor(x => x.Username, new { @class = "textbox" }) 4~16个字符<span id="UsernameInfo" class="reg-desc" style="color:red"></span></div>
                         <div class="form-line"><label class="reg-label">登录密码: </label>@Html.PasswordFor(x => x.Password, new { @class = "textbox" }) 至少4位</div>
                         <div class="form-line"><label class="reg-label">重复密码: </label>@Html.Password("repeat", "", new { @class = "textbox" })<span id="RepeatInfo" class="reg-desc">请重复输入密码</span></div>
-                        <div class="form-line"><label class="reg-label">昵称: </label>@Html.TextBoxFor(x => x.Nickname, new { @class = "textbox" })<span class="reg-desc">4~16个字符，用于显示给别人</span></div>
+                        <div class="form-line"><label class="reg-label">昵称: </label>@Html.TextBoxFor(x => x.Nickname, new { @class = "textbox" })<span class="reg-desc">4~12个字符，用于显示给别人</span></div>
                         <div class="form-line"><input type="submit" class="button button-def" value="完成注册"></div>
                     }
                 </div>

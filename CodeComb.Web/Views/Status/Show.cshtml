@@ -12,7 +12,7 @@
                         <div class="status-item" id="s_@Model.ID"></div>
                         <div class="status-content" id="lstDetails">
                         </div>
-                        @if (ViewBag.Showable)
+                        @if (ViewBag.Showable || ViewBag.IsMaster)
                         { 
                             <div class="status-code">
                                 <h3>Source</h3>
