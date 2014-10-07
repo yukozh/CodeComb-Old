@@ -525,6 +525,7 @@ a, a:visited {
         -webkit-box-shadow: 0 0 5px #ffdf00;
         box-shadow: 0 0 5px #ffdf00;
         outline: 1px solid #ffdf00;
+        behavior: url(/Styles/PIE.htc);
     }
 
     a.dark, a.dark:visited {
@@ -551,6 +552,10 @@ a, a:visited {
     transition: border-color .2s linear,background .2s linear;
     background: rgb(44,44,44);
     color:#AAA;
+     _width:120px;
+    *width:120px;
+     _margin-left:-25px;
+    *margin-left:-25px;
 }
 
     .textbox:hover {
@@ -565,6 +570,7 @@ a, a:visited {
         box-shadow: 0 0 10px #ffdf00;
         -webkit-transition:  box-shadow .2s linear,background .2s linear;
         transition:  box-shadow .2s linear,background .2s linear;
+        behavior: url(/Styles/PIE.htc);
     }
 
 .button {
@@ -587,6 +593,7 @@ a, a:visited {
     color:#fff;
     -webkit-transition: background-color .2s linear,-webkit-box-shadow .2s linear;
     transition: background-color .2s linear,box-shadow .2s linear;
+    behavior: url(/Styles/PIE.htc);
 }
 
     .button:hover {
@@ -597,6 +604,7 @@ a, a:visited {
         -webkit-box-shadow: 0 0 5px #ffdf00;
         box-shadow: 0 0 5px #ffdf00;
         outline: 1px solid #ffdf00;
+        behavior: url(/Styles/PIE.htc);
     }
 
     .button:active {
@@ -643,13 +651,14 @@ a, a:visited {
     -webkit-transition: -webkit-box-shadow .1s linear,background .1s linear;
     transition: box-shadow .1s linear,background .1s linear;
     z-index: 65536;
+    behavior: url(/Styles/PIE.htc);
 }
 
 .page-header-fixed {
     -webkit-box-shadow: 0 0 10px rgb(0,0,0);
     box-shadow: 0 0 10px rgb(0,0,0);
     background: rgba(0,0,0,.9);
-    filter:Alpha(opacity=90); background:#000;
+    behavior: url(/Styles/PIE.htc);
     /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');*/
 }
 
@@ -691,6 +700,7 @@ a.page-header-item, a.page-header-item:active, a.page-header-item:visited {
     border: 2px solid #fff;
     margin-right: 5px;
     vertical-align: middle;
+    behavior: url(/Styles/PIE.htc);
 }
 
 .page-header-item-bg {
@@ -731,6 +741,7 @@ a.page-header-item, a.page-header-item:active, a.page-header-item:visited {
     -webkit-box-shadow: none;
     box-shadow: none;
     top: 30px;
+    behavior: url(/Styles/PIE.htc);
 }
 
 .page-index .page-header-item-bg {
@@ -815,6 +826,7 @@ body {
     padding: 10px;
     font-size: .9em;
     color:white;
+    behavior: url(/Styles/PIE.htc);
 }
 
     .login-form label {
@@ -929,12 +941,10 @@ body {
     -webkit-transition: box-shadow .2s linear;
     -webkit-box-shadow: 0 0 10px rgb(0,0,0);
     box-shadow: 0 0 10px rgb(0,0,0);
-    /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');*/
     margin: 10px;
     *display: inline;
     zoom: 1;
-    *border: 8px solid #222;
-    _border: 8px solid #222;
+    behavior: url(/Styles/PIE.htc);
 }
 
     .rank-item, .rank-item:active, .rank-item:hover, .rank-item:visited {
@@ -946,9 +956,7 @@ body {
             transition: box-shadow .2s linear;
             -webkit-box-shadow: 0 0 15px #ffdf00!important;
             box-shadow: 0 0 15px #ffdf00!important;
-            /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#ffdf00')!important;*/ 
-            *border: 8px solid #48410e;
-            _border: 8px solid #48410e;
+            behavior: url(/Styles/PIE.htc);
         }
 
 .rank-cont {
@@ -960,6 +968,7 @@ body {
     width: 100px;
     height: 100px;
     border-radius: 50%;
+    behavior: url(/Styles/PIE.htc);
 }
 
 .rank-name h2 {
@@ -1224,6 +1233,7 @@ body {
     height: 20px;
     border-radius: 50%;
     margin-right: 5px;
+    behavior: url(/Styles/PIE.htc);
 }
 
 .post-module {
@@ -1233,7 +1243,7 @@ body {
     background-color:rgb(37,37,37);
     -webkit-box-shadow: 0 0 10px rgb(0,0,0);
     box-shadow: 0 0 10px rgb(0,0,0);
-    /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#000');*/
+    behavior: url(/Styles/PIE.htc);
 }
 
 .post-module-content {
@@ -1302,6 +1312,7 @@ body {
     width: 70px;
     height: 70px;
     border-radius: 50%;
+    behavior: url(/Styles/PIE.htc);
 }
 
 .forum-post-item-highlight .forum-post-face img {
@@ -1343,6 +1354,7 @@ body {
     left: -25px;
     top: 1px;
     border-radius: 50%;
+    behavior: url(/Styles/PIE.htc);
 }
 
 .comment-item {
@@ -1358,6 +1370,7 @@ body {
     width: 50px;
     height: 50px;
     border-radius: 50%;
+    behavior: url(/Styles/PIE.htc);
 }
 
 .comment-info {
@@ -1384,10 +1397,7 @@ body {
     -webkit-transition: box-shadow .2s linear;
     -webkit-box-shadow: 0 0 7px rgb(0,0,0);
     box-shadow: 0 0 7px rgb(0,0,0);
-    /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');*/
-    color:#AAA!important;
-    *border: 8px solid #222;
-    _border: 8px solid #222;
+    behavior: url(/Styles/PIE.htc);
 }
 
 .status-info {
@@ -1408,9 +1418,7 @@ body {
          transition: box-shadow .2s linear;
         -webkit-box-shadow: 0 0 15px #ffdf00!important;
         box-shadow: 0 0 15px #ffdf00!important;
-        /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#ffdf00')!important;*/
-        *border: 8px solid #48410e;
-        _border: 8px solid #48410e;
+        behavior: url(/Styles/PIE.htc);
     }
 
 .status-name h2 {
@@ -1432,6 +1440,7 @@ body {
     height: 70px;
     width: 70px;
     border-radius: 50%;
+    behavior: url(/Styles/PIE.htc);
 }
 
 .status-points {
@@ -1899,9 +1908,7 @@ table {
 	line-height:28px;
 	font-size:12px;
     border:1px solid rgb(58,58,58);
-    /*-webkit-box-shadow: 0 0 10px rgb(0,0,0);
-    box-shadow: 0 0 10px rgb(0,0,0);
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#cccccc');*/
+    behavior: url(/Styles/PIE.htc);
 }
 
 thead {
@@ -1997,7 +2004,7 @@ tbody tr:hover {
 .shadow {
         -webkit-box-shadow: 0 0 10px rgb(0,0,0);
         box-shadow: 0 0 10px rgb(0,0,0);
-        /*filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135,Color='#000');*/
+        behavior: url(/Styles/PIE.htc);
 }
 
 @-webkit-keyframes progress-bar-stripes {
@@ -2063,6 +2070,7 @@ tbody tr:hover {
   -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
      -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
           box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+          behavior: url(/Styles/PIE.htc);
 }
 
 .progress .bar {
@@ -2091,12 +2099,14 @@ tbody tr:hover {
      -moz-transition: width 0.6s ease;
        -o-transition: width 0.6s ease;
           transition: width 0.6s ease;
+          behavior: url(/Styles/PIE.htc);
 }
 
 .progress .bar + .bar {
   -webkit-box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
      -moz-box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
           box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+          behavior: url(/Styles/PIE.htc);
 }
 
 .progress-striped .bar {
@@ -2213,6 +2223,8 @@ tbody tr:hover {
     height: 40px;
     border-radius: 50%;
     border: 2px solid #fff;
+    *border: none;
+    _border: none;
     margin-right: 5px;
     vertical-align: middle;
 }
@@ -2269,6 +2281,7 @@ select:focus{
     box-shadow: 0 0 10px #ffdf00;
     -webkit-transition: -webkit-box-shadow .1s linear,background .1s linear;
     transition: box-shadow .1s linear,background .1s linear;
+    behavior: url(/Styles/PIE.htc);
 }
 
 select,
@@ -2464,6 +2477,7 @@ div.CodeMirror-selected {
 	box-shadow: #178FE5 0px 1px 3px 0px inset;
 	color:#fff;
 	font-weight: 700;
+    behavior: url(/Styles/PIE.htc);
 }
 .xdsoft_datetimepicker  .xdsoft_calendar td,.xdsoft_datetimepicker  .xdsoft_calendar th{
 	background: #F5F5F5;
@@ -2502,6 +2516,8 @@ div.CodeMirror-selected {
     line-height: 1.2em;
 }
 select {
+    _width:120px;
+    *width:120px;
     max-width:100%;
 }
 
@@ -2509,7 +2525,12 @@ select {
     -webkit-box-shadow: 0 0 30px #119eea;
     box-shadow: 0 0 30px #119eea;
     border:5px solid #119eea;
+    behavior: url(/Styles/PIE.htc);
 }
     #BarCode td, .BarCode td {
         padding:0!important
     }
+
+    img {
+    max-width:100%;
+}

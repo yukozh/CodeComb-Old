@@ -45,7 +45,7 @@
                     <h2>Complete Your Register</h2>
                     @using (Html.BeginForm("RegisterDetail", "User", FormMethod.Post, new
                     {
-                        onsubmit = "frmCheck();"
+                        onsubmit = "return frmCheck();"
                     }))
                     {
                         @Html.AntiForgeryToken()
