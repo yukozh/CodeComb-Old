@@ -8,7 +8,6 @@
         $("#UsernameInfo").html("");
         $("#RepeatInfo").html("");
         if (!CheckPassword()) return false;
-        if (!CheckUsername()) return false;
         if ($("#Nickname").val().length < 4 || $("#Nickname").val().length > 16)
         {
             CastMsg("昵称长度需在4~16个字符之间");

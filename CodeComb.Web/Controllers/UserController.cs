@@ -135,8 +135,10 @@ namespace CodeComb.Web.Controllers
         {
             if (Session["Email"] == null)
                 return RedirectToAction("Message", "Shared", new { msg = "非法访问。" });
-            if (!Regex.IsMatch(model.Username, @"^\w+$") || model.Username.Length < 4 || model.Username.Length > 16)
+            if (!Regex.IsMatch(model.Username, @"^\w+$") || Helpers.String.StringLen(model.Username) < 4 || Helpers.String.StringLen(model.Username) > 16)
                 return RedirectToAction("Message", "Shared", new { msg = "用户名不合法，用户名长度必须为4~16个字符，同时只允许使用英文字母、数字和下划线" });
+            if (Helpers.String.StringLen(model.Nickname) < 4 || Helpers.String.StringLen(model.Nickname) > 16)
+                return RedirectToAction("Message", "Shared", new { msg = "昵称不合法，昵称长度必须为4~16个字符，中文计2个字符" });
             var user = (from u in DbContext.Users
                         where u.Username == model.Username
                         select u).SingleOrDefault();
@@ -213,6 +215,7 @@ namespace CodeComb.Web.Controllers
                 return RedirectToAction("Message", "Shared", new { msg = "密码长度至少为4！" });
             if (NewPassword != RepeatPassword)
                 return RedirectToAction("Message", "Shared", new { msg = "两次密码输入不一致！" });
+
             user.Password = Helpers.Security.SHA1(RepeatPassword);
             DbContext.SaveChanges();
             return RedirectToAction("Settings", "User", new { id = user.ID });
@@ -226,7 +229,7 @@ namespace CodeComb.Web.Controllers
             var user = DbContext.Users.Find(id);
             if (user.ID != ViewBag.CurrentUser.ID && ViewBag.CurrentUser.Role < Entity.UserRole.Master || ViewBag.CurrentUser.Role == UserRole.Temporary)
                 return RedirectToAction("Message", "Shared", new { msg = "您没有权限这样做！" });
-            if (Nickname.Length < 4 || Nickname.Length > 16) return RedirectToAction("Message", "Shared", new { msg = "昵称长度应为4~16个字符！" });
+            if (Helpers.String.StringLen(Nickname) < 4 || Helpers.String.StringLen(Nickname) > 16) return RedirectToAction("Message", "Shared", new { msg = "昵称长度应为4~16个字符！" });
             if (Motto.Length > 255) return RedirectToAction("Message", "Shared", new { msg = "个性签名长度应为0~255个字符！" });
             user.Nickname = Nickname;
             user.Gravatar = Gravatar;
