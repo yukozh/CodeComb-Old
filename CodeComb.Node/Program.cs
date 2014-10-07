@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Configuration;
 using CodeComb.Judge.Models;
 using Microsoft.AspNet.SignalR.Client;
+using System.Timers;
+using System.Diagnostics;
 
 namespace CodeComb.Node
 {
@@ -105,6 +107,19 @@ Code Comb Node");
             hubJudge.Invoke("Auth", Username, Password, MaxThreads).Wait();
             System.Threading.Thread t = new System.Threading.Thread(KeepAlive);
             t.Start();
+            Timer timer = new Timer();
+            timer.Interval = 10000;
+            timer.Elapsed += timer_Elapsed;
+            timer.Start();
+        }
+
+        static void timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            var p = Process.GetProcessesByName("WerFault");
+            foreach (var proc in p)
+            {
+                proc.Kill();
+            }
         }
 
         static void HubConnection_Reconnected()
