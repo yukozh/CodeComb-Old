@@ -538,8 +538,6 @@ a, a:visited {
     max-width:100%;
     _width:120px;
     *width:120px;
-    _margin-left:-25px;
-    *margin-left:-25px;
 }
 
     .textbox:hover {

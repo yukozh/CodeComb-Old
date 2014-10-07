@@ -64,3 +64,8 @@ body {
 .grid_12 {
 	width: 940px!important;
 }
+
+.status-textbox-fix {
+     _margin-left:-25px;
+    *margin-left:-25px;
+}
