@@ -18,6 +18,7 @@
             CastMsg("至少输入4位密码");
             return false;
         }
+        return true;
     }
     function CheckUsername() {
         $.post("/User/CheckName", {
