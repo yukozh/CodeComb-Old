@@ -75,5 +75,11 @@ namespace CodeComb.Web.Helpers
             var ret = rand.Next(End - Begin + 1);
             return ret + Begin;
         }
+
+        public static int StringLen(string str)
+        {
+            byte[] sarr = System.Text.Encoding.Default.GetBytes(str);
+            return sarr.Length;
+        }
     }
 }
