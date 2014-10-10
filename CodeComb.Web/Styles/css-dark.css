@@ -1047,11 +1047,9 @@ body {
 	margin: 0 auto;
 	padding: 10px;
 	width: 70%;
-    background: #353535;
 	background: rgba(53, 53, 53, 0.5);
-    *background: #353535;
-    _background: #353535;
-    
+    *background-image:url(/Images/outer-dark.png);
+    _background-image:url(/Images/outer-dark.png);
 }
 
 .profile-wrap {
@@ -1272,11 +1270,9 @@ body {
     width: 70%;
     margin: 0 auto;
     padding: 10px;
-    background: #353535;
 	background: rgba(53, 53, 53, 0.5);
-    *background: #353535;
-    _background: #353535;
-    
+    *background-image:url(/Images/outer-dark.png);
+    _background-image:url(/Images/outer-dark.png);
 }
 
 .post-detail-wrap {
@@ -2531,4 +2527,18 @@ select {
 
     img {
     max-width:100%;
+}
+
+.label-ac {
+    float:left;
+    margin-right:5px;
+    margin-bottom:5px;
+    width:60px;
+    text-align:center;
+    border-radius:25px;
+    behavior:url(/Styles/PIE.htc);
+}
+
+.problem-actions p {
+    line-height:0.8em;
 }

@@ -123,7 +123,7 @@ function LoadContests() {
                 var Private = "<span class='label gray'>私有赛</span>";
                 $("#lstContests").append('<div class="post-item post-item-zip">'
                                                  + '    <div class="post-title"><h3><a href="/Contest/' + contests[i].ID + '">' + contests[i].Title + '</a></h3></div>'
-                                                 + '    <div class="post-info">'+(contests[i].Private?Private:"")+contests[i].Rating+'题量: ' + contests[i].ProblemCount + ', 赛制: ' + contests[i].Format + ', 时长: ' + contests[i].TimeLength + ', 开始: ' + contests[i].Time + '参与: '+contests[i].UserCount+', 举办: '+ contests[i].Managers +'</div>'
+                                                 + '    <div class="post-info">' + (contests[i].Private ? Private : "") + contests[i].Rating + '题量: ' + contests[i].ProblemCount + ', 赛制: ' + contests[i].Format + ', 时长: ' + contests[i].TimeLength + ', 开始: ' + contests[i].Time + ', 参与: ' + contests[i].UserCount + ', 举办: ' + contests[i].Managers + '</div>'
                                                  + '</div>');
             }
             lock = false;

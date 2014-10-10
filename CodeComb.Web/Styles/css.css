@@ -1030,11 +1030,9 @@ body {
 	margin: 0 auto;
 	padding: 10px;
 	width: 70%;
-    background: #f2f2f2;
 	background: rgba(255,255,255,0.5);
-    *background: #f2f2f2;
-    _background: #f2f2f2;
-    
+    *background-image:url(/Images/outer.png);
+    _background-image:url(/Images/outer.png);
 }
 
 .profile-wrap {
@@ -1219,7 +1217,7 @@ body {
 .post-module {
     background: #fff;
     padding: 20px;
-    border-top: 5px solid #ededed;
+    border-top: 5px solid #c0e0d4;
     margin-bottom: 30px;
     -webkit-box-shadow: 0 0 10px rgba(0,0,0,.2);
     box-shadow: 0 0 10px rgba(0,0,0,.2);
@@ -1254,9 +1252,9 @@ body {
     width: 70%;
     margin: 0 auto;
     padding: 10px;
-    background: #ffffff;
     background: rgba(255,255,255,.5);
-    
+    *background-image:url(/Images/outer.png);
+    _background-image:url(/Images/outer.png);
 }
 
 .post-detail-wrap {
@@ -2412,4 +2410,18 @@ select {
 
 img {
     max-width:100%;
+}
+
+.label-ac {
+    float:left;
+    margin-right:5px;
+    margin-bottom:5px;
+    width:60px;
+    text-align:center;
+    border-radius:25px;
+    behavior:url(/Styles/PIE.htc);
+}
+
+.problem-actions p {
+    line-height:0.8em;
 }
