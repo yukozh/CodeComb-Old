@@ -570,6 +570,7 @@
     <Content Include="Styles\css.css" />
     <Content Include="Styles\github.css" />
     <Content Include="Styles\jquery.datetimepicker.css" />
+    <Content Include="Styles\PIE.htc" />
     <Content Include="TodoList.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

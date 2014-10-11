@@ -1,54 +1,68 @@
 ﻿@model Problem
 @{
     ViewBag.Title = "特殊比较器 - " + Model.Title;
+    ViewBag.BannerTitle = Model.Title;
     var IsMaster = (bool)ViewBag.IsMaster;
     var IsCreator = (bool)ViewBag.IsCreator;
 }
-
-<div class="post-detail-body">
+<div class="contest-body">
     <div class="cont-wrap">
-        <div class="grid_12">
-            <div class="post-detail-wrap-outer">
-                <div class="profile-actions">
-                    <a href="/Contest/Settings/Problems/@Model.ContestID" class="profile-btn"><img src="/Images/back.png" alt="返回列表" /></a>
-                    <a href="/Problem/Edit/@Model.ID" class="profile-btn"><img src="/Images/description.png" alt="基本信息" /></a>
-                    <a href="/Problem/TestCases/@Model.ID" class="profile-btn"><img src="/Images/code.png" alt="测试数据" /></a>
-                    <a href="/Problem/Special/@Model.ID" class="profile-btn"><img src="/Images/judgers.png" alt="特殊比较" /></a>
-                    <a href="/Problem/Standard/@Model.ID" class="profile-btn"><img src="/Images/judgers.png" alt="标准程序" /></a>
-                    <a href="/Problem/Range/@Model.ID" class="profile-btn"><img src="/Images/judgers.png" alt="数据校验" /></a>
-                    <a href="/Solution/@Model.ID" class="profile-btn"><img src="/Images/contests.png" alt="解题报告" /></a>
-                </div>
-                <div class="post-detail-wrap">
-                    <div class="post-title"><h2>特殊比较器 - @Model.Title</h2></div>
-                    <div class="post-info"></div>
-                    <div class="post-content">
-                        @using (Html.BeginForm("Special", "Problem", new { id = Model.ID }, FormMethod.Post, null))
+        <div class="grid_9 shadow">
+            <div class="contest-main">
+                <div class="post-info"></div>
+                <div>
+                    <h3>特殊比较器</h3>
+                    @using (Html.BeginForm("Special", "Problem", new { id = Model.ID }, FormMethod.Post, null))
+                    {
+                        @Html.AntiForgeryToken()
+                        <p><textarea name="special" id="editor">@Model.SpecialJudge</textarea></p>
+                        <p>
+                            语言：<select id="lstLanguages" name="language">
+                                @{
+                        var i = 0;
+                        foreach (var name in CodeComb.Entity.CommonEnums.LanguageDisplay)
                         {
-                            @Html.AntiForgeryToken()
-                            <p><textarea name="special" id="editor">@Model.SpecialJudge</textarea></p>
-                            <p>
-                                语言：<select id="lstLanguages" name="language">
-                                    @{
-                                        var i = 0;
-                                        foreach (var name in CodeComb.Entity.CommonEnums.LanguageDisplay)
-                                        {
-                                            if (Model.SpecialJudgeLanguageAsInt == i)
-                                            {
-                                                <option value="@(i++)" selected>@name</option>
-                                            }
-                                            else
-                                            {
-                                                <option value="@(i++)">@name</option>
-                                            }
-                                        }
-                                    }
-                                </select>
-                            </p>
-                            <p><input type="submit" class="button button-def" value="保存" /> 注:Java类名应为"Spj"。@Html.ActionLink("帮助","Index","FAQ",null,null)</p>
+                            if (Model.SpecialJudgeLanguageAsInt == i)
+                            {
+                                <option value="@(i++)" selected>@name</option>
+                            }
+                            else
+                            {
+                                <option value="@(i++)">@name</option>
+                            }
                         }
-                    </div>
+                                }
+                            </select>
+                        </p>
+                        <p><input type="submit" class="button button-def" value="保存" /> 注:Java类名应为"Spj"。@Html.ActionLink("帮助", "Index", "FAQ", null, null)</p>
+                    }
                 </div>
             </div>
+        </div><div class="grid_3">
+
+            <div class="post-module problem-actions">
+                <h3>管理题目</h3>
+                <div class="post-module-content">
+                    <p><a href="/Problem/Edit/@Model.ID">基本信息管理</a></p>
+                    <p><a href="/Problem/TestCases/@Model.ID">测试数据管理</a></p>
+                    <p><a href="/Problem/Special/@Model.ID">特殊比较器</a></p>
+                    <p><a href="/Problem/Standard/@Model.ID">标程设置</a></p>
+                    <p><a href="/Problem/Range/@Model.ID">数据校验器</a></p>
+                    <p><a href="/Solution/@Model.ID">解题报告</a></p>
+                </div>
+            </div>
+
+            <div class="post-module problem-actions">
+                <h3>管理比赛</h3>
+                <div class="post-module-content">
+                    <p><a href="/Contest/Settings/General/@Model.ID">基本信息管理</a></p>
+                    <p><a href="/Contest/Settings/Problems/@Model.ID">题目管理</a></p>
+                    <p><a href="/Contest/Settings/Manager/@Model.ID">比赛裁判管理</a></p>
+                    <p><a href="/Contest/Settings/More/@Model.ID">比赛完整性检测</a></p>
+                    <p><a href="/Contest/@Model.ID">返回比赛</a></p>
+                </div>
+            </div>
+
         </div><div class="clear"></div>
     </div>
 </div>

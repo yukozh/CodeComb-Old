@@ -15,13 +15,28 @@ namespace CodeComb.Web.Controllers
         public ActionResult GetContacts(string ids)
         {
             var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
-            var _ids = jss.Deserialize<List<int>>(ids);
+            List<int> _ids;
+            try
+            {
+                _ids = jss.Deserialize<List<int>>(ids);
+            }
+            catch {
+                _ids = new List<int>();
+            }
             var contacts = new List<Models.View.Contact>();
             var unread = (from m in DbContext.Messages
                           where m.Receiver.Username == User.Identity.Name
                           && !m.Read
                           select m.SenderID).ToList();
+            var receivers = (from m in DbContext.Messages
+                             where m.Receiver.Username == User.Identity.Name
+                             select m.SenderID).ToList();
+            var senders = (from m in DbContext.Messages
+                             where m.Sender.Username == User.Identity.Name
+                             select m.ReceiverID).ToList();
             _ids = _ids.Union(unread).ToList();
+            _ids = _ids.Union(receivers).ToList();
+            _ids = _ids.Union(senders).ToList();
             foreach (var id in _ids.Distinct())
                 try
                 {

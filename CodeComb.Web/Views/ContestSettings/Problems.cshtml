@@ -1,82 +1,87 @@
 ﻿@model CodeComb.Entity.Contest
 @{
     ViewBag.Title = "题目列表 - " + Model.Title;
+    ViewBag.BannerTitle = Model.Title;
     var IsMaster = (bool)ViewBag.IsMaster;
     var IsCreator = (bool)ViewBag.IsCreator;
 }
-
-<div class="post-detail-body">
+<div class="contest-body">
     <div class="cont-wrap">
-        <div class="grid_12">
-            <div class="post-detail-wrap-outer">
-                <div class="profile-actions">
-                    <a href="/Contest/@Model.ID" class="profile-btn"><img src="/Images/back.png" alt="返回比赛" /></a>
-                    <a href="/Contest/Settings/General/@Model.ID" class="profile-btn"><img src="/Images/description.png" alt="基本信息" /></a>
-                    <a href="/Contest/Settings/Problems/@Model.ID" class="profile-btn"><img src="/Images/code.png" alt="题目管理" /></a>
-                    <a href="/Contest/Settings/Manager/@Model.ID" class="profile-btn"><img src="/Images/standings.png" alt="管理人员" /></a>
-                    <a href="/Contest/Settings/More/@Model.ID" class="profile-btn"><img src="/Images/judgers.png" alt="其他操作" /></a>
-                </div>
-                <div class="post-detail-wrap">
-                    <div class="post-title"><h2>题目列表 - @Model.Title</h2></div>
-                    <div class="post-info"></div>
-                    <div class="post-content">
-                        <p><a href="javascript:$('#frmCreateProblem').submit();">添加题目</a></p>
-                        @using (Html.BeginForm("Create", "Problem", new { id = Model.ID }, FormMethod.Post, new { id = "frmCreateProblem" }))
-                        {
-                            @Html.AntiForgeryToken()
-                        }
-                        @using (Html.BeginForm("Hide", "Problem", new { id = Model.ID }, FormMethod.Post, new { id="frmHideProblem"}))
-                        {
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" id="ProblemID" />
-                            <input type="hidden" name="hide" id="Hide" />
-                        }
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>题目编号</th>
-                                    <th>题目名称</th>
-                                    <th>分值</th>
-                                    <th>能力值</th>
-                                    @if (ViewBag.CurrentUser.Role >= CodeComb.Entity.UserRole.Master) 
-                                    {
-                                        <th>状态</th>
-                                    }
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @{var i = 'A';
-                                    foreach (var item in Model.Problems.OrderBy(x => x.Credit))
-                                    {
-                                        <tr>
-                                            <td>@(i++)</td>
-                                            <td>@Html.ActionLink(item.Title, "Show", "Problem", new { id = item.ID }, null)</td>
-                                            <td>@item.Credit</td>
-                                            <td>@item.Difficulty</td>
-                                            @if (ViewBag.CurrentUser.Role >= CodeComb.Entity.UserRole.Master) 
-                                            {
-                                                <td>
-                                                    <select class="lstHide" pid="@item.ID">
-                                                        <option value="false" @(!item.Hide?"selected":"")>在列表显示</option>
-                                                        <option value="true" @(item.Hide ? "selected" : "") > 在列表隐藏</option>
-                                                    </select>
-                                                </td>
-                                            }
-                                            <td>@Html.ActionLink("编辑", "Edit", "Problem", new { id = item.ID }, null) <a href="javascript:$('#DeleteProblemID').val(@item.ID);$('#frmDeleteProblem').submit();">删除</a></td>
-                                        </tr>
-                                    }
+        <div class="grid_9 shadow">
+            <div class="contest-main">
+                <div class="post-info"></div>
+                <div>
+                    <h3>题目列表</h3>
+                    @using (Html.BeginForm("Create", "Problem", new { id = Model.ID }, FormMethod.Post, new { id = "frmCreateProblem" }))
+                    {
+                        @Html.AntiForgeryToken()
+                    }
+                    @using (Html.BeginForm("Hide", "Problem", new { id = Model.ID }, FormMethod.Post, new { id = "frmHideProblem" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" id="ProblemID" />
+                        <input type="hidden" name="hide" id="Hide" />
+                    }
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>题目编号</th>
+                                <th>题目名称</th>
+                                <th>分值</th>
+                                <th>能力值</th>
+                                @if (ViewBag.CurrentUser.Role >= CodeComb.Entity.UserRole.Master)
+                                {
+                                    <th>状态</th>
                                 }
-                            </tbody>
-                        </table>
-                        @using (Html.BeginForm("Delete", "Problem", FormMethod.Post, new { id="frmDeleteProblem"}))
-                        {
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="ProblemID" id="DeleteProblemID" value="0" />
-                        }
-                    </div>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{var i = 'A';
+                            foreach (var item in Model.Problems.OrderBy(x => x.Credit))
+                            {
+                                <tr>
+                                    <td>@(i++)</td>
+                                    <td>@Html.ActionLink(item.Title, "Show", "Problem", new { id = item.ID }, null)</td>
+                                    <td>@item.Credit</td>
+                                    <td>@item.Difficulty</td>
+                                    @if (ViewBag.CurrentUser.Role >= CodeComb.Entity.UserRole.Master)
+                                    {
+                                        <td>
+                                            <select class="lstHide" pid="@item.ID">
+                                                <option value="false" @(!item.Hide ? "selected" : "")>在列表显示</option>
+                                                <option value="true" @(item.Hide ? "selected" : "")> 在列表隐藏</option>
+                                            </select>
+                                        </td>
+                                    }
+                                    <td>@Html.ActionLink("编辑", "Edit", "Problem", new { id = item.ID }, null) <a href="javascript:$('#DeleteProblemID').val(@item.ID);$('#frmDeleteProblem').submit();">删除</a></td>
+                                </tr>
+                            }
+                            }
+                        </tbody>
+                    </table>
+                    <p><a href="javascript:$('#frmCreateProblem').submit();">添加题目</a></p>
+                    @using (Html.BeginForm("Delete", "Problem", FormMethod.Post, new { id = "frmDeleteProblem" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="ProblemID" id="DeleteProblemID" value="0" />
+                    }
                 </div>
             </div>
+        </div><div class="grid_3">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="post-module problem-actions">
+                    <h3>管理比赛</h3>
+                    <div class="post-module-content">
+                        <p><a href="/Contest/Settings/General/@Model.ID">基本信息管理</a></p>
+                        <p><a href="/Contest/Settings/Problems/@Model.ID">题目管理</a></p>
+                        <p><a href="/Contest/Settings/Manager/@Model.ID">比赛裁判管理</a></p>
+                        <p><a href="/Contest/Settings/More/@Model.ID">比赛完整性检测</a></p>
+                        <p><a href="/Contest/@Model.ID">返回比赛</a></p>
+                    </div>
+                </div>
+            }
         </div><div class="clear"></div>
     </div>
 </div>
