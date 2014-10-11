@@ -1046,16 +1046,16 @@ body {
 .profile-actions {
 	position: absolute;
 	top: 0;
-	left: -70px;
+	left: -60px;
 	width: 32px;
 }
 
 .profile-btn {
 	display: block;
-	margin-bottom: 2px;
+	margin-bottom: 5px;
 	padding: 15px 15px 15px 15px;
-	width: 32px;
-	height:32px;
+	width: 24px;
+	height:24px;
 	background: rgba(0,0,0,0.5);
     filter:Alpha(opacity=50); 
     *background:#000;
@@ -1067,7 +1067,8 @@ body {
 	font-size: .9em;
 	-webkit-transition: background-color .2s linear;
 	transition: background-color .2s linear;
-    
+    border-radius:50%;
+    behavior:url(/Styles/PIE.htc);
 }
 
 .profile-btn:hover {

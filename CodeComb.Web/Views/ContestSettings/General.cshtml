@@ -1,66 +1,72 @@
 ﻿@model CodeComb.Entity.Contest
 @{
     ViewBag.Title = "基本信息管理 - " + Model.Title;
+    ViewBag.BannerTitle = Model.Title;
     var IsMaster = (bool)ViewBag.IsMaster;
     var IsCreator = (bool)ViewBag.IsCreator;
 }
-<div class="post-detail-body">
+<div class="contest-body">
     <div class="cont-wrap">
-        <div class="grid_12">
-            <div class="post-detail-wrap-outer">
-                <div class="profile-actions">
-                    <a href="/Contest/@Model.ID" class="profile-btn"><img src="/Images/back.png" alt="返回比赛" /></a>
-                    <a href="/Contest/Settings/General/@Model.ID" class="profile-btn"><img src="/Images/description.png" alt="基本信息" /></a>
-                    <a href="/Contest/Settings/Problems/@Model.ID" class="profile-btn"><img src="/Images/code.png" alt="题目管理" /></a>
-                    <a href="/Contest/Settings/Manager/@Model.ID" class="profile-btn"><img src="/Images/standings.png" alt="管理人员" /></a>
-                    <a href="/Contest/Settings/More/@Model.ID" class="profile-btn"><img src="/Images/judgers.png" alt="其他操作" /></a>
-                </div>
-                <div class="post-detail-wrap">
-                    <div class="post-title"><h2>基本信息管理 - @Model.Title</h2></div>
-                    <div class="post-info"></div>
-                    <div class="post-content">
-                        @using (Html.BeginForm("General", "ContestSettings", new { id = Model.ID }, FormMethod.Post, null))
-                        {
-                            @Html.AntiForgeryToken()
-                            <blockquote>
-                                <p>比赛名称：@Html.TextBoxFor(x => x.Title, new { @class = "textbox", style = "width:470px" })</p>
-                                <p>比赛介绍：</p>
-                                <p>@Html.TextAreaFor(x => x.Content, new { @class = "ckeditor" })</p>
-                                <p>
-                                    比赛赛制：<select name="FormatAsInt" id="lstContestFormat">
-                                        @for (int i = 0; i < ((string[])ViewBag.ContestFormats).Count(); i++)
-                                        {
-                                            if (Model.FormatAsInt == i)
-                                            {
-                                                <option value="@i" selected>@ViewBag.ContestFormats[i]</option>
-                                            }
-                                            else
-                                            { 
-                                                <option value="@i">@ViewBag.ContestFormats[i]</option>
-                                            }
-                                        }
-                                    </select>
-                                </p>
-                                <p>开始时间：@Html.TextBoxFor(x => x.Begin, new { @class = "textbox", @id = "startTime" })</p>
-                                <p>结束时间：@Html.TextBoxFor(x => x.End, new { @class = "textbox", @id = "endTime" })</p>
-                                <div id="TopCoderSettings" style="display:none">
-                                    <p>休息开始：@Html.TextBoxFor(x => x.RestBegin, new { @class = "textbox", @id = "restStartTime" })</p>
-                                    <p>休息结束：@Html.TextBoxFor(x => x.RestEnd, new { @class = "textbox", @id = "restEndTime" })</p>
-                                </div>
-                                <p>比赛适合能力范围：@Html.TextBoxFor(x => x.RatingBegin, new { @class = "textbox" }) 至 @Html.TextBoxFor(x => x.RatingEnd, new { @class = "textbox" })</p>
-                                <p>比赛密码：@Html.TextBoxFor(x => x.Password, new { @class = "textbox" }) (不填写则为公开赛，修改后所有人需重新验证该密码。)</p>
-                                <p>开放答疑平台：@Html.CheckBoxFor(x => x.AllowClarification)开启</p>
-                                <p>开放打印服务：@Html.CheckBoxFor(x => x.AllowPrintRequest)开启</p>
-                                @if (ViewBag.CurrentUser.Role >= CodeComb.Entity.UserRole.Master)
+        <div class="grid_9 shadow">
+            <div class="contest-main">
+                <div class="post-info"></div>
+                <div>
+                    <h3>基本信息</h3>
+                  @using (Html.BeginForm("General", "ContestSettings", new { id = Model.ID }, FormMethod.Post, null))
+                  {
+                    @Html.AntiForgeryToken()
+                    <blockquote>
+                        <p>比赛名称：@Html.TextBoxFor(x => x.Title, new { @class = "textbox", style = "width:470px" })</p>
+                        <p>比赛介绍：</p>
+                        <p>@Html.TextAreaFor(x => x.Content, new { @class = "ckeditor" })</p>
+                        <p>
+                            比赛赛制：<select name="FormatAsInt" id="lstContestFormat">
+                                @for (int i = 0; i < ((string[])ViewBag.ContestFormats).Count(); i++)
                                 {
-                                    <p>官方推荐：@Html.CheckBoxFor(x => x.Ready) 开启后将在比赛列表中显示</p>
+                                    if (Model.FormatAsInt == i)
+                                    {
+                                        <option value="@i" selected>@ViewBag.ContestFormats[i]</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@i">@ViewBag.ContestFormats[i]</option>
+                                    }
                                 }
-                            </blockquote>
-                            <p><input type="submit" class="button button-def" value="保存" /></p>
+                            </select>
+                        </p>
+                        <p>开始时间：@Html.TextBoxFor(x => x.Begin, new { @class = "textbox", @id = "startTime" })</p>
+                        <p>结束时间：@Html.TextBoxFor(x => x.End, new { @class = "textbox", @id = "endTime" })</p>
+                        <div id="TopCoderSettings" style="display:none">
+                            <p>休息开始：@Html.TextBoxFor(x => x.RestBegin, new { @class = "textbox", @id = "restStartTime" })</p>
+                            <p>休息结束：@Html.TextBoxFor(x => x.RestEnd, new { @class = "textbox", @id = "restEndTime" })</p>
+                        </div>
+                        <p>比赛适合能力范围：@Html.TextBoxFor(x => x.RatingBegin, new { @class = "textbox" }) 至 @Html.TextBoxFor(x => x.RatingEnd, new { @class = "textbox" })</p>
+                        <p>比赛密码：@Html.TextBoxFor(x => x.Password, new { @class = "textbox" }) (不填写则为公开赛，修改后所有人需重新验证该密码。)</p>
+                        <p>开放答疑平台：@Html.CheckBoxFor(x => x.AllowClarification)开启</p>
+                        <p>开放打印服务：@Html.CheckBoxFor(x => x.AllowPrintRequest)开启</p>
+                        @if (ViewBag.CurrentUser.Role >= CodeComb.Entity.UserRole.Master)
+                        {
+                            <p>审核：@Html.CheckBoxFor(x => x.Ready) 审核通过后将被标记为评级赛</p>
                         }
-                    </div>
+                    </blockquote>
+                    <p><input type="submit" class="button button-def" value="保存" /></p>
+                  }
                 </div>
             </div>
+        </div><div class="grid_3">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="post-module problem-actions">
+                    <h3>管理比赛</h3>
+                    <div class="post-module-content">
+                        <p><a href="/Contest/Settings/General/@Model.ID">基本信息管理</a></p>
+                        <p><a href="/Contest/Settings/Problems/@Model.ID">题目管理</a></p>
+                        <p><a href="/Contest/Settings/Manager/@Model.ID">比赛裁判管理</a></p>
+                        <p><a href="/Contest/Settings/More/@Model.ID">比赛完整性检测</a></p>
+                        <p><a href="/Contest/@Model.ID">返回比赛</a></p>
+                    </div>
+                </div>
+            }
         </div><div class="clear"></div>
     </div>
 </div>

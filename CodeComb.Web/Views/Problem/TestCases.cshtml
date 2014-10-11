@@ -1,80 +1,97 @@
 ﻿@model Problem
 @{
     ViewBag.Title = "编辑数据 - " + Model.Title;
+    ViewBag.BannerTitle = Model.Title;
     var IsMaster = (bool)ViewBag.IsMaster;
     var IsCreator = (bool)ViewBag.IsCreator;
     string[] Css = { "green", "blue", "orange", "purple" };
 }
-<div class="post-detail-body">
+
+<div class="contest-body">
     <div class="cont-wrap">
-        <div class="grid_12">
-            <div class="post-detail-wrap-outer">
-                <div class="profile-actions">
-                    <a href="/Contest/Settings/Problems/@Model.ContestID" class="profile-btn"><img src="/Images/back.png" alt="返回列表" /></a>
-                    <a href="/Problem/Edit/@Model.ID" class="profile-btn"><img src="/Images/description.png" alt="基本信息" /></a>
-                    <a href="/Problem/TestCases/@Model.ID" class="profile-btn"><img src="/Images/code.png" alt="测试数据" /></a>
-                    <a href="/Problem/Special/@Model.ID" class="profile-btn"><img src="/Images/judgers.png" alt="特殊比较" /></a>
-                    <a href="/Problem/Standard/@Model.ID" class="profile-btn"><img src="/Images/judgers.png" alt="标准程序" /></a>
-                    <a href="/Problem/Range/@Model.ID" class="profile-btn"><img src="/Images/judgers.png" alt="数据校验" /></a>
-                    <a href="/Solution/@Model.ID" class="profile-btn"><img src="/Images/contests.png" alt="解题报告" /></a>
-                </div>
-                <div class="post-detail-wrap">
-                    <div class="post-title"><h2>测试数据 - @Model.Title</h2></div>
-                    <div class="post-info"></div>
-                    <div class="post-content">
-                        <p><a href="javascript:$.colorbox({ inline: true, width: 'auto', href: '#TestCaseUpload'});">上传打包数据</a> <a href="javascript:$.colorbox({ inline: true, width: 'auto', href: '#TestCaseTextUpload'});">上传手打数据</a></p>
-                        @using (Html.BeginForm("ChangeTestCaseType", "Problem", null, FormMethod.Post, new { id="frmChangeType"}))
-                        {
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="tid" id="TestCaseID" />
-                            <input type="hidden" name="type" id="TestCaseType" />
-                        }
-                        <table>
-                            <thead>
+        <div class="grid_9 shadow">
+            <div class="contest-main">
+                <div class="post-info"></div>
+                <div>
+                    <h3>测试数据</h3>
+                    @using (Html.BeginForm("ChangeTestCaseType", "Problem", null, FormMethod.Post, new { id = "frmChangeType" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="tid" id="TestCaseID" />
+                        <input type="hidden" name="type" id="TestCaseType" />
+                    }
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>输入大小</th>
+                                <th>输出大小</th>
+                                <th>类型</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.TestCases.OrderBy(x => x.Type))
+                            {
                                 <tr>
-                                    <th>输入大小</th>
-                                    <th>输出大小</th>
-                                    <th>类型</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.TestCases.OrderBy(x => x.Type))
-                                { 
-                                    <tr>
-                                        <td>@(item.Input.Length / 1024) KiB</td>
-                                        <td>@(item.Output.Length / 1024) KiB</td>
-                                        <td>
-                                            <select class="lstTestCaseType" tid="@item.ID">
-                                                @{
-                                                    var names = Enum.GetNames(typeof(CodeComb.Entity.TestCaseType));
-                                                    for (var i = 0; i < names.Count(); i++)
-                                                    {
-                                                        if (item.TypeAsInt == i)
-                                                        { 
-                                                            <option value="@i" selected>@names[i]</option>
-                                                        }
-                                                        else
-                                                        { 
-                                                            <option value="@i">@names[i]</option>
-                                                        }
-                                                    }
-                                                }
-                                            </select>
-                                        </td>
-                                        <td><a href="javascript:EditTestCase(@item.ID)">编辑</a> <a href="javascript:$('#DeleteID').val(@item.ID);$('#frmDeleteTestCase').submit();">删除</a> </td>
-                                    </tr>
+                                    <td>@(item.Input.Length / 1024) KiB</td>
+                                    <td>@(item.Output.Length / 1024) KiB</td>
+                                    <td>
+                                        <select class="lstTestCaseType" tid="@item.ID">
+                                            @{
+                                var names = Enum.GetNames(typeof(CodeComb.Entity.TestCaseType));
+                                for (var i = 0; i < names.Count(); i++)
+                                {
+                                    if (item.TypeAsInt == i)
+                                    {
+                                        <option value="@i" selected>@names[i]</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@i">@names[i]</option>
+                                    }
                                 }
-                            </tbody>
-                        </table>
-                        @using (Html.BeginForm("DeleteTestCase", "Problem", null, FormMethod.Post, new { id = "frmDeleteTestCase" }))
-                        { 
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" id="DeleteID" name="id" />
-                        }
-                    </div>
+                                            }
+                                        </select>
+                                    </td>
+                                    <td><a href="javascript:EditTestCase(@item.ID)">编辑</a> <a href="javascript:$('#DeleteID').val(@item.ID);$('#frmDeleteTestCase').submit();">删除</a> </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <p><a href="javascript:$.colorbox({ inline: true, width: 'auto', href: '#TestCaseUpload'});">上传打包数据</a> <a href="javascript:$.colorbox({ inline: true, width: 'auto', href: '#TestCaseTextUpload'});">上传手打数据</a></p>
+
+                    @using (Html.BeginForm("DeleteTestCase", "Problem", null, FormMethod.Post, new { id = "frmDeleteTestCase" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" id="DeleteID" name="id" />
+                    }
                 </div>
             </div>
+        </div><div class="grid_3">
+
+            <div class="post-module problem-actions">
+                <h3>管理题目</h3>
+                <div class="post-module-content">
+                    <p><a href="/Problem/Edit/@Model.ID">基本信息管理</a></p>
+                    <p><a href="/Problem/TestCases/@Model.ID">测试数据管理</a></p>
+                    <p><a href="/Problem/Special/@Model.ID">特殊比较器</a></p>
+                    <p><a href="/Problem/Standard/@Model.ID">标程设置</a></p>
+                    <p><a href="/Problem/Range/@Model.ID">数据校验器</a></p>
+                    <p><a href="/Solution/@Model.ID">解题报告</a></p>
+                </div>
+            </div>
+
+            <div class="post-module problem-actions">
+                <h3>管理比赛</h3>
+                <div class="post-module-content">
+                    <p><a href="/Contest/Settings/General/@Model.ID">基本信息管理</a></p>
+                    <p><a href="/Contest/Settings/Problems/@Model.ID">题目管理</a></p>
+                    <p><a href="/Contest/Settings/Manager/@Model.ID">比赛裁判管理</a></p>
+                    <p><a href="/Contest/Settings/More/@Model.ID">比赛完整性检测</a></p>
+                    <p><a href="/Contest/@Model.ID">返回比赛</a></p>
+                </div>
+            </div>
+
         </div><div class="clear"></div>
     </div>
 </div>

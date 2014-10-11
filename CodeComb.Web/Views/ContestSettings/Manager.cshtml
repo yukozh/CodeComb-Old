@@ -1,48 +1,55 @@
 ﻿@model CodeComb.Entity.Contest
 @{
     ViewBag.Title = "比赛管理员 - " + Model.Title;
+    ViewBag.BannerTitle = Model.Title;
     var IsMaster = (bool)ViewBag.IsMaster;
     var IsCreator = (bool)ViewBag.IsCreator;
 }
-<div class="post-detail-body">
+<div class="contest-body">
     <div class="cont-wrap">
-        <div class="grid_12">
-            <div class="post-detail-wrap-outer">
-                <div class="profile-actions">
-                    <a href="/Contest/@Model.ID" class="profile-btn"><img src="/Images/back.png" alt="返回比赛" /></a>
-                    <a href="/Contest/Settings/General/@Model.ID" class="profile-btn"><img src="/Images/description.png" alt="基本信息" /></a>
-                    <a href="/Contest/Settings/Problems/@Model.ID" class="profile-btn"><img src="/Images/code.png" alt="题目管理" /></a>
-                    <a href="/Contest/Settings/Manager/@Model.ID" class="profile-btn"><img src="/Images/standings.png" alt="管理人员" /></a>
-                    <a href="/Contest/Settings/More/@Model.ID" class="profile-btn"><img src="/Images/judgers.png" alt="其他操作" /></a>
-                </div>
-                <div class="post-detail-wrap">
-                    <div class="post-title"><h2>比赛管理员 - @Model.Title</h2></div>
-                    <div class="post-info"></div>
-                    <div class="post-content">
-                        <blockquote>
-                            @foreach (var item in Model.Managers)
-                            {
-                                if (item.IsCreator)
-                                {
-                                    <p>@Html.Gravatar(item.User.Gravatar, 180, "post-face") <a href="/User/@item.UserID">@Html.Nickname(item.User.Nickname, item.User.Ratings.Sum(x => x.Credit) + 1500)</a></p>
-                                }
-                                else
-                                {
-                                    <p>@Html.Gravatar(item.User.Gravatar, 180, "post-face") <a href="/User/@item.UserID">@Html.Nickname(item.User.Nickname, item.User.Ratings.Sum(x => x.Credit) + 1500)</a> [<a href="javascript:$('#DeleteID').val(@item.ID);$.colorbox({ inline: true, width: 'auto', href: '#DeleteContestManager'});">删除</a>]</p>
-                                }
-                            }
-                        </blockquote>
-                        @using (Html.BeginForm("AddManager", "ContestSettings", new { id = Model.ID }, FormMethod.Post, new { id = "frmAddManager" }))
+        <div class="grid_9 shadow">
+            <div class="contest-main">
+                <div class="post-info"></div>
+                <div>
+                    <h3>管理员列表</h3>
+                    <blockquote>
+                        @foreach (var item in Model.Managers)
                         {
-                            @Html.AntiForgeryToken()
-                            <p>添加管理员：@Html.TextBox("user_id", null, new { placeholder = "用户ID", @class="textbox" }) <input type="submit" value="添加" class="button button-def" /></p>
+                            if (item.IsCreator)
+                            {
+                                <p>@Html.Gravatar(item.User.Gravatar, 180, "post-face") <a href="/User/@item.UserID">@Html.Nickname(item.User.Nickname, item.User.Ratings.Sum(x => x.Credit) + 1500)</a></p>
+                            }
+                            else
+                            {
+                                <p>@Html.Gravatar(item.User.Gravatar, 180, "post-face") <a href="/User/@item.UserID">@Html.Nickname(item.User.Nickname, item.User.Ratings.Sum(x => x.Credit) + 1500)</a> [<a href="javascript:$('#DeleteID').val(@item.ID);$.colorbox({ inline: true, width: 'auto', href: '#DeleteContestManager'});">删除</a>]</p>
+                            }
                         }
-                    </div>
+                    </blockquote>
+                    @using (Html.BeginForm("AddManager", "ContestSettings", new { id = Model.ID }, FormMethod.Post, new { id = "frmAddManager" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <p>添加管理员：@Html.TextBox("user_id", null, new { placeholder = "用户ID", @class = "textbox" }) <input type="submit" value="添加" class="button button-def" /></p>
+                    }
                 </div>
             </div>
+        </div><div class="grid_3">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="post-module problem-actions">
+                    <h3>管理比赛</h3>
+                    <div class="post-module-content">
+                        <p><a href="/Contest/Settings/General/@Model.ID">基本信息管理</a></p>
+                        <p><a href="/Contest/Settings/Problems/@Model.ID">题目管理</a></p>
+                        <p><a href="/Contest/Settings/Manager/@Model.ID">比赛裁判管理</a></p>
+                        <p><a href="/Contest/Settings/More/@Model.ID">比赛完整性检测</a></p>
+                        <p><a href="/Contest/@Model.ID">返回比赛</a></p>
+                    </div>
+                </div>
+            }
         </div><div class="clear"></div>
     </div>
 </div>
+
 <div style="display:none">
     <div id="DeleteContestManager">
         @using (Html.BeginForm("DeleteManager", "ContestSettings", new { id = Model.ID }, FormMethod.Post, null))

@@ -1,10 +1,7 @@
 ﻿@model CodeComb.Entity.Problem
 @{
     ViewBag.Title = Model.Title;
-    if (Model.Contest.Begin <= DateTime.Now && DateTime.Now <= Model.Contest.End)
-    {
-        ViewBag.BannerTitle = Model.Title;
-    }
+    ViewBag.BannerTitle = Model.Title;
     var IsMaster = (bool)ViewBag.IsMaster;
     var IsCreator = (bool)ViewBag.IsCreator;
 }
@@ -19,12 +16,12 @@
                     <div>
                         @if (!System.String.IsNullOrEmpty(Model.Background))
                         {
-                            <h3>背景</h3>
+                            <h3>题目背景</h3>
                             <div class="post-content">@Html.Sanitized(Model.Background)</div>
                         }
                         @if (!System.String.IsNullOrEmpty(Model.Description))
                         {
-                            <h3>描述</h3>
+                            <h3>题目描述</h3>
                             <div class="post-content">@Html.Sanitized(Model.Description)</div>
                         }
                         @if (!System.String.IsNullOrEmpty(Model.Input))
@@ -67,38 +64,38 @@
                 </div>
             </div><div class="grid_3">
                 @if (User.Identity.IsAuthenticated)
-{
-    <div class="post-module module-contest-problems">
-        <p><a href="javascript:void(0)" id="btnLoadCodeEditBox">提交评测</a></p>
-        @if (User.Identity.IsAuthenticated && Model.Contest.Format == ContestFormat.Codeforces)
-        {
-            if (ViewBag.IsLocked)
-            { 
-                <p>该题已锁定</p>
-            }
-            else
-            { 
-                <p><a href="javascript:Lock()" id="btnLock">锁定该题</a></p>
-                using (Html.BeginForm("Lock", "Problem", new { id = Model.ID }, FormMethod.Post, new { id = "frmLockProblem" }))
-                { 
-                    @Html.AntiForgeryToken()
+                {
+                    <div class="post-module module-contest-problems">
+                        <p><a href="javascript:void(0)" id="btnLoadCodeEditBox">提交评测</a></p>
+                        @if (User.Identity.IsAuthenticated && Model.Contest.Format == ContestFormat.Codeforces)
+                        {
+                            if (ViewBag.IsLocked)
+                            {
+                                <p>该题已锁定</p>
+                            }
+                            else
+                            {
+                                <p><a href="javascript:Lock()" id="btnLock">锁定该题</a></p>
+                                using (Html.BeginForm("Lock", "Problem", new { id = Model.ID }, FormMethod.Post, new { id = "frmLockProblem" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                }
+                                <script>
+                                    function Lock() {
+                                        $.post("/Problem/Lock/@Model.ID", $("#frmLockProblem").serialize(), function (result) { CastMsg(result) });
+                                    }
+                                </script>
+                            }
+                        }
+                        <div class="post-module-content">
+                            @foreach (CodeComb.Entity.Status status in ViewBag.Statuses)
+                            {
+                                <div class="contest-problem-item post-cate-item"><div class=""><span class="status-tag status-bg-@Html.GetResultCss(status.Result)">@Html.GetResultShortTitle(status.Result)</span></div>@Html.ActionLink(status.Time.ToString("MM-dd HH:mm"), "Show", "Status", new { id = status.ID }, null)</div>
+                            }
+                        </div>
+
+                    </div>
                 }
-                <script>
-                    function Lock()
-                    {
-                        $.post("/Problem/Lock/@Model.ID", $("#frmLockProblem").serialize(), function (result) { CastMsg(result) });
-                    }
-                </script>
-            }
-        }
-        <div class="post-module-content">
-            @foreach (CodeComb.Entity.Status status in ViewBag.Statuses)
-        {
-                <div class="contest-problem-item post-cate-item"><div class=""><span class="status-tag status-bg-@Html.GetResultCss(status.Result)">@Html.GetResultShortTitle(status.Result)</span></div>@Html.ActionLink(status.Time.ToString("MM-dd HH:mm"), "Show", "Status", new { id=status.ID}, null)</div>
-        }
-            </div>
-        </div>
-}
                 <div class="post-module">
                     <h3>Limits</h3>
                     <div class="post-module-content">
@@ -137,80 +134,109 @@
 }
 else
 {
-    <div class="post-detail-body">
+    <div class="contest-body">
         <div class="cont-wrap">
-            <div class="grid_12">
-                <div class="post-detail-wrap-outer">
-                    <div class="profile-actions">
-                        @if (User.Identity.IsAuthenticated)
+            <div class="grid_9 shadow">
+                <div class="contest-main">
+                    <div class="post-info"></div>
+                    <div>
+                        @if (!System.String.IsNullOrEmpty(Model.Background))
                         {
-                            <a href="javascript:void(0)" id="btnLoadCodeEditBox" class="profile-btn"><img src="/Images/code.png" alt="提交代码" /></a>
+                            <h3>题目背景</h3>
+                            <div class="post-content">@Html.Sanitized(Model.Background)</div>
                         }
-                        <a href="/Problem/Status/@Model.ID" class="profile-btn"><img src="/Images/status.png" alt="评测状态" /></a>
-                        @if (Model.Contest.AllowClarification)
+                        @if (!System.String.IsNullOrEmpty(Model.Description))
                         {
-                            <a href="/Contest/Clar/@Model.ContestID" class="profile-btn"><img src="/Images/clar.png" alt="答疑平台" /></a>
+                            <h3>题目描述</h3>
+                            <div class="post-content">@Html.Sanitized(Model.Description)</div>
                         }
-                        <a href="/Solution/@Model.ID" class="profile-btn"><img src="/Images/contests.png" alt="查看题解" /></a>
-                        @if (IsMaster)
+                        @if (!System.String.IsNullOrEmpty(Model.Input))
                         {
-                            <a href="/Problem/Edit/@Model.ID" class="profile-btn"><img src="/Images/settings.png" alt="管理题目" /></a>
-                            <a href="/Contest/Settings/General/@Model.Contest.ID" class="profile-btn"><img src="/Images/settings.png" alt="管理比赛" /></a>
+                            <h3>输入格式</h3>
+                            <div class="post-content">@Html.Sanitized(Model.Input)</div>
+                        }
+                        @if (!System.String.IsNullOrEmpty(Model.Output))
+                        {
+                            <h3>输出格式</h3>
+                            <div class="post-content">@Html.Sanitized(Model.Output)</div>
+                        }
+                        @if (Model.TestCases.Where(x => x.Type == TestCaseType.Sample).Count() > 0)
+                        {
+                            var i = 1;
+                            foreach (var testcase in Model.TestCases.Where(x => x.Type == TestCaseType.Sample).ToList())
+                            {
+                                <h3>样例数据 @(i++)</h3>
+                                <div class="post-content">
+                                    <p>
+                                        输入　
+                                        [<a class="testcase-copywrap" data-id="i@(i - 1)" href="javascript:;">复制</a>]
+                                    </p>
+                                    <blockquote class="testcase" id="testcase-i@(i - 1)">
+                                        @Html.Sanitized(HttpUtility.HtmlEncode(testcase.Input.TrimEnd('\n')).Replace("\n", "<br/>"))
+                                    </blockquote>
+                                    <p>输出</p>
+                                    <blockquote class="testcase">
+                                        @Html.Sanitized(HttpUtility.HtmlEncode(testcase.Output.TrimEnd('\n')).Replace("\n", "<br/>"))
+                                    </blockquote>
+                                </div>
+                            }
+                        }
+                        @if (!System.String.IsNullOrEmpty(Model.Hint))
+                        {
+                            <h3>备注</h3>
+                            <div class="post-content">@Html.Sanitized(Model.Hint)</div>
                         }
                     </div>
-                    <div class="post-detail-wrap">
-                        <div class="post-title"><h2>@Model.Title</h2></div>
-                        <div class="post-info">
-                            <div class="post-cate-item">Time Limit: @(Model.TimeLimit)ms&nbsp;&nbsp;&nbsp;&nbsp;Memory Limit: @(Model.MemoryLimit)KiB&nbsp;&nbsp;&nbsp;&nbsp;Java class name: Main&nbsp;&nbsp;&nbsp;&nbsp;Judge mode: @(System.String.IsNullOrEmpty(Model.SpecialJudge) ? "Normal" : "Special")</div>
-                            @if (!System.String.IsNullOrEmpty(Model.Background))
+                </div>
+            </div><div class="grid_3">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="post-module problem-actions">
+                        <h3>操作</h3>
+                        <div class="post-module-content">
+                            <p><a href="javascript:void(0)" id="btnLoadCodeEditBox">提交评测</a></p>
+                            <p><a href="/Problem/Status/@Model.ID">评测记录</a></p>
+                            <p><a href="/Contest/Clar/@Model.ContestID">答疑平台</a></p>
+                            <p><a href="/Solution/@Model.ID">查看题解</a></p>
+                            @if (ViewBag.IsMaster)
                             {
-                                <h3>背景</h3>
-                                <div class="post-content">@Html.Sanitized(Model.Background)</div>
-                            }
-                            @if (!System.String.IsNullOrEmpty(Model.Description))
-                            {
-                                <h3>描述</h3>
-                                <div class="post-content">@Html.Sanitized(Model.Description)</div>
-                            }
-                            @if (!System.String.IsNullOrEmpty(Model.Input))
-                            {
-                                <h3>输入格式</h3>
-                                <div class="post-content">@Html.Sanitized(Model.Input)</div>
-                            }
-                            @if (!System.String.IsNullOrEmpty(Model.Output))
-                            {
-                                <h3>输出格式</h3>
-                                <div class="post-content">@Html.Sanitized(Model.Output)</div>
-                            }
-                            @if (Model.TestCases.Where(x => x.Type == TestCaseType.Sample).Count() > 0)
-                            {
-                                var i = 1;
-                                foreach (var testcase in Model.TestCases.Where(x => x.Type == TestCaseType.Sample).ToList())
-                                {
-                                    <h3>样例数据 @(i++)</h3>
-                                    <div class="post-content">
-                                        <p>
-                                            输入　
-                                            [<a class="testcase-copywrap" data-id="i@(i - 1)" href="javascript:;">复制</a>]
-                                        </p>
-                                        <blockquote class="testcase" id="testcase-i@(i - 1)">
-                                            @Html.Sanitized(HttpUtility.HtmlEncode(testcase.Input.TrimEnd('\n')).Replace("\n", "<br/>"))
-                                        </blockquote>
-                                        <p>输出</p>
-                                        <blockquote class="testcase">
-                                            @Html.Sanitized(HttpUtility.HtmlEncode(testcase.Output.TrimEnd('\n')).Replace("\n", "<br/>"))
-                                        </blockquote>
-                                    </div>
-                                }
-                            }
-                            @if (!System.String.IsNullOrEmpty(Model.Hint))
-                            {
-                                <h3>备注</h3>
-                                <div class="post-content">@Html.Sanitized(Model.Hint)</div>
+                                <p><a href="/Problem/Edit/@Model.ID">管理题目</a></p>
+                                <p><a href="/Contest/Settings/General/@Model.Contest.ID">管理比赛</a></p>
                             }
                         </div>
                     </div>
+                }
+                <div class="post-module">
+                    <h3>Limits</h3>
+                    <div class="post-module-content">
+                        <div class="post-cate-item">Time: @(Model.TimeLimit)ms per test case</div>
+                        <div class="post-cate-item">Memory: @(Model.MemoryLimit)KiB</div>
+                        <div class="post-cate-item">Java class name: Main</div>
+                        <div class="post-cate-item">Judge mode: @(System.String.IsNullOrEmpty(Model.SpecialJudge) ? "Normal" : "Special")</div>
+                    </div>
                 </div>
+
+                <div class="post-module">
+                    <h3>答疑平台</h3>
+                    <div class="post-module-content">
+                        @foreach (var item in Model.Clarifications.Where(x => x.Status == ClarificationStatus.BroadCast).OrderByDescending(x => x.Time))
+                        {
+                            <div class="post-cate-item"><a href="javascript:ShowClar(@item.ID)">@item.Question</a></div>
+                        }
+                    </div>
+                </div>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="post-module module-contest-problems">
+                        <div class="post-module-content">
+                            @foreach (CodeComb.Entity.Status status in ViewBag.Statuses)
+                            {
+                                <div class="contest-problem-item post-cate-item"><div class=""><span class="status-tag status-bg-@Html.GetResultCss(status.Result)">@Html.GetResultShortTitle(status.Result)</span></div>@Html.ActionLink(status.Time.ToString("MM-dd HH:mm"), "Show", "Status", new { id = status.ID }, null)</div>
+                            }
+                        </div>
+                    </div>
+                }
             </div><div class="clear"></div>
         </div>
     </div>
@@ -228,18 +254,18 @@ else
                 <p>
                     <select id="lstLanguages" name="language_id">
                         @{
-                            var i = 0;
-                            foreach (var name in CodeComb.Entity.CommonEnums.LanguageDisplay)
-                            {
-                                if (((CodeComb.Entity.User)ViewBag.CurrentUser).CommonLanguageAsInt == i)
-                                {
-                                    <option value="@(i++)" selected>@name</option>
-                                }
-                                else
-                                {
-                                    <option value="@(i++)">@name</option>
-                                }
-                            }
+                var i = 0;
+                foreach (var name in CodeComb.Entity.CommonEnums.LanguageDisplay)
+                {
+                    if (((CodeComb.Entity.User)ViewBag.CurrentUser).CommonLanguageAsInt == i)
+                    {
+                        <option value="@(i++)" selected>@name</option>
+                    }
+                    else
+                    {
+                        <option value="@(i++)">@name</option>
+                    }
+                }
                         }
                     </select>
                     <input type="button" id="btnSubmitCode" class="button button-def" value="提交" />
