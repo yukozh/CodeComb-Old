@@ -41,6 +41,9 @@ namespace CodeComb.Web.Helpers
             {"hr", new string[]         {"style", "class"}},
             {"label", new string[]      {"style", "class"}},
 
+            {"small", new string[]      {"style", "class"}},
+            {"big", new string[]      {"style", "class"}},
+
             {"h1", new string[]         {"style", "class"}},
             {"h2", new string[]         {"style", "class"}},
             {"h3", new string[]         {"style", "class"}},

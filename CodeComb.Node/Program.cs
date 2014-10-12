@@ -110,12 +110,31 @@ Code Comb Node");
         static void HubConnection_Reconnected()
         {
             hubJudge.Invoke("Auth", Username, Password, MaxThreads);
+            Console.WriteLine("Reauthentication on reconnected.");
         }
 
         static void HubConnection_Closed()
         {
-            HubConnection.Start().Wait();
-            hubJudge.Invoke("Auth", Username, Password, MaxThreads);
+            Task.Factory.StartNew(() => 
+            {
+                bool success = false;
+                while (!success)
+                {
+                    try
+                    {
+                        HubConnection.Start().Wait();
+                        Console.WriteLine("SignalR is restarting.");
+                        hubJudge.Invoke("Auth", Username, Password, MaxThreads);
+                        Console.WriteLine("Reauthentication on started.");
+                    }
+                    catch
+                    {
+                        System.Threading.Thread.Sleep(5000);
+                        continue;
+                    }
+                    success = true;
+                }
+            });
         }
     }
 }
