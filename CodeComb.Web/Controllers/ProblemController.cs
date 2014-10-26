@@ -97,6 +97,14 @@ namespace CodeComb.Web.Controllers
                         ViewBag.IsLocked = true;
                 }
             }
+            if (DateTime.Now >= contest.End)
+            {
+                statuses = (from s in DbContext.Statuses
+                            where s.UserID == user.ID
+                            && s.ProblemID == problem.ID
+                            orderby s.Time descending
+                            select s).Take(20).ToList();
+            }
             ViewBag.Statuses = statuses;
             return View(problem);
         }

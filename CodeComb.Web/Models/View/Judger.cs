@@ -12,7 +12,7 @@ namespace CodeComb.Web.Models.View
         {
             ID = user.ID;
             Nickname = Helpers.ColorName.GetNicknameHtml(user.Nickname, 4000);
-            Gravatar = Helpers.Gravatar.GetAvatarURL(user.Email, 50);
+            Gravatar = Helpers.Gravatar.GetAvatarURL(user.Gravatar, 50);
             Motto = HttpUtility.HtmlEncode(user.Motto);
             Ratio = client.Ratio;
         }

@@ -408,7 +408,10 @@ namespace CodeComb.Node
             else if (Mode == JudgeHelper.Mode.Spj)
                 p.StandardInput.WriteLine("");
             p.StandardInput.WriteLine(Mode.ToString() + ".out");
-            p.StandardInput.WriteLine("");
+            if(Mode==JudgeHelper.Mode.Spj)
+                p.StandardInput.WriteLine(Mode.ToString() + ".err");
+            else
+                p.StandardInput.WriteLine("");
             p.StandardInput.WriteLine("");
             p.StandardInput.WriteLine(time);
             p.StandardInput.WriteLine(memory);
@@ -435,7 +438,7 @@ namespace CodeComb.Node
                 JudgeFeedBack.Result = Entity.JudgeResult.RuntimeError;
                 if (Mode != JudgeHelper.Mode.Main)
                     JudgeFeedBack.Result = Entity.JudgeResult.SystemError;
-                JudgeFeedBack.Hint = String.Format(GetModeName(Mode) + "运行时崩溃");
+                JudgeFeedBack.Hint = String.Format(GetModeName(Mode) + "运行时崩溃，返回"+Result.ExitCode);
                 Feedback(JudgeFeedBack);
                 return false;
             }

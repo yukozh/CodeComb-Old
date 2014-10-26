@@ -54,7 +54,7 @@ namespace CodeComb.Web.SignalR
                 return null;
             return DbContext.TestCases.Find(ID).Hash;
         }
-        public void Auth(string Username, string Password, int MaxThreads)
+        public bool Auth(string Username, string Password, int MaxThreads)
         {
             var pwd = Helpers.Security.SHA1(Password);
             var user = (from u in DbContext.Users
@@ -107,7 +107,9 @@ namespace CodeComb.Web.SignalR
                     DbContext.SaveChanges();
                     SignalR.CodeCombHub.context.Clients.All.onStatusCreated(new Models.View.Status(status));//推送新状态
                 }
+                return true;
             }
+            return false;
         }
         public void JudgeFeedBack(JudgeFeedback jfb)
         {

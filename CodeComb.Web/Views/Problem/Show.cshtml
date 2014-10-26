@@ -117,7 +117,8 @@
                         }
                     </div>
                 </div>
-
+            @if (Model.Clarifications.Where(x => x.Status == ClarificationStatus.BroadCast).OrderByDescending(x => x.Time).Count() > 0)
+            { 
                 <div class="post-module">
                     <h3>Broadcasts</h3>
                     <div class="post-module-content">
@@ -127,7 +128,7 @@
                         }
                     </div>
                 </div>
-
+            }
             </div><div class="clear"></div>
         </div>
     </div>
@@ -215,7 +216,8 @@ else
                         <div class="post-cate-item">Judge mode: @(System.String.IsNullOrEmpty(Model.SpecialJudge) ? "Normal" : "Special")</div>
                     </div>
                 </div>
-
+            @if (Model.Clarifications.Where(x => x.Status == ClarificationStatus.BroadCast).OrderByDescending(x => x.Time).Count() > 0)
+            { 
                 <div class="post-module">
                     <h3>答疑平台</h3>
                     <div class="post-module-content">
@@ -225,8 +227,8 @@ else
                         }
                     </div>
                 </div>
-
-                @if (User.Identity.IsAuthenticated)
+            }
+                @if (User.Identity.IsAuthenticated && ViewBag.Statuses.Count > 0)
                 {
                     <div class="post-module module-contest-problems">
                         <div class="post-module-content">

@@ -51,7 +51,7 @@ namespace CodeComb.Node
          {
              while (true)
              {
-                 System.Threading.Thread.Sleep(0);
+                 System.Threading.Thread.Sleep(1000);
              }
          }
         static void Main(string[] args)
