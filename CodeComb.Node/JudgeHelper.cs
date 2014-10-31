@@ -94,7 +94,6 @@ namespace CodeComb.Node
                     DownloadFile(jt.DataID);
                 }
 
-                //
                 MakeCodeFile(jt.ID, jt.Code, (int)jt.CodeLanguage, Mode.Main);
 
                 //编译选手程序
@@ -592,10 +591,12 @@ namespace CodeComb.Node
         {
             Program.hubJudge.Invoke("JudgeFeedBack", jfb);
             Program.CurrentThreads--;
+            Console.WriteLine(jfb.ID + " " + jfb.Result.ToString());
+            //Console.WriteLine(String.Format("当前负载：{0}/{1}", Program.CurrentThreads, Program.MaxThreads));
             try
             {
-                if (System.IO.Directory.Exists(Program.TempPath + @"\" + jfb.ID))
-                    System.IO.Directory.Delete(Program.TempPath + @"\" + jfb.ID, true);
+                //if (System.IO.Directory.Exists(Program.TempPath + @"\" + jfb.ID))
+                   //System.IO.Directory.Delete(Program.TempPath + @"\" + jfb.ID, true);
             }
             catch { }
         }
